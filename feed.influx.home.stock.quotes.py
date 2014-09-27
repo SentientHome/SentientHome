@@ -19,7 +19,7 @@ def numerify(v):
 
 CODES_GOOGLE = {
   "c":      "change",
-  "cp":     "price_close",
+  "cp":     "change_pct",
   "div":    "dividend",
   "e":      "exchange",
   "el":     "price_last_exchange",
@@ -35,7 +35,7 @@ CODES_GOOGLE = {
   "c_fix":  "c_fix",
   "l_fix":  "l_fix",
   "cp_fix": "cp_fix",
-  "pcls_fix":"pcls_fix",
+  "pcls_fix":"price_prior_close",
   "s":      "s",
 }
 
