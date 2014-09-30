@@ -22,11 +22,12 @@ def numerify(v):
 
 def quotes_feed(influx_path, finance_path, series_name, symbol_list):
 
-  print finance_path + symbol_list
-
-  data = requests.get(finance_path + symbol_list)
-
-  print data.text
+  try:
+    data = requests.get(finance_path + symbol_list)
+  except Exception:
+    print data
+    print 'Exception getting data from ' + finance_path + symbol_list
+    return
 
   # Can't use raw JSON response from Google, must convert numbers to numeric
   financial_data = [{k: numerify(v) for k, v in d.items()} for d in json.loads(data.text[3:])]
