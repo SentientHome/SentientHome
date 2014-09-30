@@ -13,9 +13,44 @@ import ConfigParser
 # Turn text encoded numeric values into numbers - needed for InfluxDB
 def numerify(v):
     try:
-        return int(v) if v.isdigit() else float(v)
+      return int(v) if v.isdigit() else float(v)
     except ValueError:
+      try:
         return v.encode('ascii')
+      except ValueError:
+        return v
+
+def quotes_feed(influx_path, finance_path, series_name, symbol_list):
+
+  print finance_path + symbol_list
+
+  data = requests.get(finance_path + symbol_list)
+
+  print data.text
+
+  # Can't use raw JSON response from Google, must convert numbers to numeric
+  financial_data = [{k: numerify(v) for k, v in d.items()} for d in json.loads(data.text[3:])]
+
+  # Have to iterate over quotes as some Google values seem optional depending on quote
+  for quote in financial_data:
+    # Re-key the JSON response with friendly names
+    rekeyed_quote = dict([(CODES_GOOGLE.get(key, key), value) for key, value in quote.iteritems()])
+
+    event = [{
+      'name': series_name,
+      'columns': rekeyed_quote.keys(),
+      'points': [ rekeyed_quote.values() ]
+      }]
+
+    print event
+
+    try:
+      r = requests.post(influx_path, data=json.dumps(event))
+      print r
+    except Exception:
+      print 'Exception posting data to ' + influx_path[:influx_path.find('&p=')]
+      pass
+
 
 CODES_GOOGLE = {
   "c":      "change",
@@ -42,11 +77,13 @@ CODES_GOOGLE = {
 config = ConfigParser.ConfigParser()
 config.read(os.path.expanduser('~/home.cfg'))
 
-stock_provider_addr   = config.get('stockquotes', 'stock_provider_addr')
-stock_provider_port   = config.get('stockquotes', 'stock_provider_port')
-stock_provider_path   = config.get('stockquotes', 'stock_provider_path')
-stock_list            = config.get('stockquotes', 'stock_list')
-stock_poll_interval   = int(config.get('stockquotes', 'stock_poll_interval', 1))
+finance_provider_addr = config.get('finance', 'finance_provider_addr')
+finance_provider_port = config.get('finance', 'finance_provider_port')
+finance_provider_path = config.get('finance', 'finance_provider_path')
+finance_stock_list    = config.get('finance', 'finance_stock_list')
+finance_index_list    = config.get('finance', 'finance_index_list')
+finance_currency_list = config.get('finance', 'finance_currency_list')
+finance_poll_interval = int(config.get('finance', 'finance_poll_interval', 1))
 influx_addr           = config.get('influxdb', 'influx_addr')
 influx_port           = config.get('influxdb', 'influx_port')
 influx_db             = config.get('influxdb', 'influx_db')
@@ -55,33 +92,15 @@ influx_pass           = config.get('influxdb', 'influx_pass')
 
 influx_path = "http://" + influx_addr + ":" + influx_port + "/db/" + influx_db + "/series?time_precision=s&u=" + influx_user
 print "Path: " + influx_path
-stock_path = "http://" + stock_provider_addr + ":" + stock_provider_port + stock_provider_path + stock_list
-print "Stock Path: " + stock_path
+finance_path = "http://" + finance_provider_addr + ":" + finance_provider_port + finance_provider_path
+print "Finance Path: " + finance_path
 
 while True:
-  status = requests.get(stock_path)
 
-  # Can't use raw JSON response from Google, must convert numbers to numeric
-  quotes = [{k: numerify(v) for k, v in d.items()} for d in json.loads(status.text[3:])]
+  quotes_feed(influx_path + "&p=" + influx_pass, finance_path, 'indexes', finance_index_list)
 
-  # Have to iterate over quotes as some Google values seem optional depending on quote
-  for quote in quotes:
-    # Re-key the JSON response with friendly names
-    rekeyed_quote = dict([(CODES_GOOGLE.get(key, key), value) for key, value in quote.iteritems()])
+  quotes_feed(influx_path + "&p=" + influx_pass, finance_path, 'stockquotes', finance_stock_list)
 
-    event = [{
-      'name': 'stockquotes',
-      'columns': rekeyed_quote.keys(),
-      'points': [ rekeyed_quote.values() ]
-      }]
+  quotes_feed(influx_path + "&p=" + influx_pass, finance_path, 'currencies', finance_currency_list)
 
-    print event
-
-    try:
-      r = requests.post(influx_path + "&p=" + influx_pass, data=json.dumps(event))
-      print r
-    except Exception:
-      print 'Exception posting data to ' + influx_path
-      pass
-
-  time.sleep(stock_poll_interval)
+  time.sleep(finance_poll_interval)
