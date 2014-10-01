@@ -13,31 +13,32 @@ import ConfigParser
 
 # Helper function needed to convert part of the XML response to a Dictionary
 def etree_to_dict(t):
-    d = {t.tag: {} if t.attrib else None}
-    children = list(t)
-    if children:
-        dd = defaultdict(list)
-        for dc in map(etree_to_dict, children):
-            for k, v in dc.iteritems():
-                dd[k].append(v)
-        d = {t.tag: {k:v[0] if len(v) == 1 else v for k, v in dd.iteritems()}}
-    if t.attrib:
-        d[t.tag].update(('@' + k, v) for k, v in t.attrib.iteritems())
-    if t.text:
-        text = t.text.strip()
-        if children or t.attrib:
-            if text:
-              d[t.tag]['#text'] = text
-        else:
-          # When asigning the value try integer, then float, then text
+  d = {t.tag: {} if t.attrib else None }
+
+  children = list(t)
+  if children:
+      dd = defaultdict(list)
+      for dc in map(etree_to_dict, children):
+          for k, v in dc.iteritems():
+              dd[k].append(v)
+      d = {t.tag: {k:v[0] if len(v) == 1 else v for k, v in dd.iteritems()}}
+  if t.attrib:
+      d[t.tag].update(('@' + k, v) for k, v in t.attrib.iteritems())
+  if t.text:
+      text = t.text.strip()
+      if children or t.attrib:
+          if text:
+            d[t.tag]['#text'] = text
+      else:
+        # When asigning the value try integer, then float, then text
+        try:
+          d[t.tag] = int(text)
+        except ValueError:
           try:
-            d[t.tag] = int(text)
+            d[t.tag] = float(text)
           except ValueError:
-            try:
-              d[t.tag] = float(text)
-            except ValueError:
-              d[t.tag] = text
-    return d
+            d[t.tag] = text
+  return d
 
 config = ConfigParser.ConfigParser()
 config.read(os.path.expanduser('~/home.cfg'))
@@ -45,6 +46,7 @@ config.read(os.path.expanduser('~/home.cfg'))
 autelis_addr   = config.get('autelis', 'autelis_addr')
 autelis_user   = config.get('autelis', 'autelis_user')
 autelis_pass   = config.get('autelis', 'autelis_pass')
+autelis_poll_interval = int(config.get('autelis', 'autelis_poll_interval', 1))
 influx_addr    = config.get('influxdb', 'influx_addr')
 influx_port    = config.get('influxdb', 'influx_port')
 influx_db      = config.get('influxdb', 'influx_db')
@@ -57,17 +59,16 @@ print "Path: " + influx_path
 while True:
   status = requests.get('http://' + autelis_addr + '/status.xml', auth=(autelis_user, autelis_pass))
 
-  root = ET.fromstring(status.text)
-# Alternative for offline testing:  
-#  root = ET.parse('status.xml')
-  temp = root.find('temp')
+#  data = etree_to_dict(ET.parse('samples/autelis.status.xml').getroot())
 
-  dtemp = etree_to_dict(temp)
+  data = etree_to_dict(ET.fromstring(status.text))
+
+  alldata = dict(data['response']['equipment'].items() + data['response']['system'].items() + data['response']['temp'].items())
 
   event = [{
     'name': 'pool',
-    'columns': dtemp['temp'].keys(),
-    'points': [ dtemp['temp'].values() ]
+    'columns': alldata.keys(),
+    'points': [ alldata.values() ]
   }]
 
   print event
@@ -76,8 +77,7 @@ while True:
     r = requests.post(influx_path + "&p=" + influx_pass, data=json.dumps(event))
     print r
   except Exception:
-
     print 'Exception posting data to ' + influx_path
     pass
 
-  time.sleep(30)
+  time.sleep(autelis_poll_interval)
