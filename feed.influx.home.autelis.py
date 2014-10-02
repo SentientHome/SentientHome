@@ -59,9 +59,11 @@ print "Path: " + influx_path
 while True:
   status = requests.get('http://' + autelis_addr + '/status.xml', auth=(autelis_user, autelis_pass))
 
-#  data = etree_to_dict(ET.parse('samples/autelis.status.xml').getroot())
+  # For offline development:
+  #data = etree_to_dict(ET.parse('samples/autelis.status.xml').getroot())
 
   data = etree_to_dict(ET.fromstring(status.text))
+  # Data Structure Documentation: http://www.autelis.com/wiki/index.php?title=Pool_Control_(PI)_HTTP_Command_Reference
 
   alldata = dict(data['response']['equipment'].items() + data['response']['system'].items() + data['response']['temp'].items())
 
