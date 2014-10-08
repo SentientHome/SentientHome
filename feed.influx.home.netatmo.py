@@ -43,7 +43,7 @@ while True:
 
   for key in devData.keys():
     event = [{
-      'name': 'netatmo',
+      'name': 'netatmo.' + key,
       'columns': devData[key].keys(),
       'points': [ devData[key].values() ]
     }]
