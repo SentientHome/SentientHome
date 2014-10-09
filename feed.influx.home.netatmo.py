@@ -11,6 +11,18 @@ import os
 import ConfigParser
 import lnetatmo
 
+# Conversion: Celcius to Fahrenheit
+def CtoF(t):
+  return (t*9)/5+32
+
+# Conversion: mili Bar to inch Hg
+def mBtoiHg(p):
+  return p*0.02953
+
+# Conversion: millimeter to inch
+def mmtoin(m):
+  return m*0.03937
+
 config = ConfigParser.ConfigParser()
 config.read(os.path.expanduser('~/home.cfg'))
 
@@ -41,7 +53,27 @@ while True:
 
   devData = devList.lastData()
 
+  # Optional metric to imperal conversions
+  # Not all sensors have all metrics
   for key in devData.keys():
+    try:
+      devData[key]['TemperatureF']=CtoF(devData[key]['Temperature'])
+      devData[key]['min_tempF']=CtoF(devData[key]['min_temp'])
+      devData[key]['max_tempF']=CtoF(devData[key]['max_temp'])
+    except Exception:
+      pass
+
+    try:
+      devData[key]['PressureiHg']=mBtoiHg(devData[key]['Pressure'])
+    except Exception:
+      pass
+
+    try:
+      devData[key]['sum_rain_1in']=mmtoin(devData[key]['sum_rain_1'])
+      devData[key]['sum_rain_24in']=mmtoin(devData[key]['sum_rain_24'])
+    except Exception:
+      pass
+
     event = [{
       'name': 'netatmo.' + key,
       'columns': devData[key].keys(),
