@@ -13,6 +13,8 @@ import locale
 import ConfigParser
 
 # Helper function needed to convert part of the XML response to a Dictionary
+# Enhanced version to convert numeric data from strings to numeric data types
+# leverage locale.atoi and atof to deal with thousand separators
 def etree_to_dict(t):
   d = {t.tag: {} if t.attrib else None }
 
@@ -74,25 +76,27 @@ while True:
 
   #print status.text
 
+  # set locale so we can easily strip the komma in the zindexValue
+  locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' )
   data = etree_to_dict(ET.fromstring(status.text))
-  # Data Structure Documentation: http://www.autelis.com/wiki/index.php?title=Pool_Control_(PI)_HTTP_Command_Reference
-
-  #print data
+  # Data Structure Documentation: http://www.zillow.com/howto/api/APIOverview.htm
 
   property_data = data['{http://www.zillow.com/static/xsd/Zestimate.xsd}zestimate']['response']['zestimate']
-  print property_data
-
   local_data = data['{http://www.zillow.com/static/xsd/Zestimate.xsd}zestimate']['response']['localRealEstate']
-  print local_data
 
   event = [{
     'name': 'zillow',
-    'columns': ['valuation', '30daychange', 'rangehigh', 'rangelow', 'percentile', 'last-updated'],
+    'columns': ['valuation', '30daychange', 'rangehigh', 'rangelow', 'percentile', 'last-updated',
+                'region', 'regiontype', 'zindexValue'],
     'points': [[ property_data['amount'], property_data['valueChange'],
                 property_data['valuationRange']['high'],
                 property_data['valuationRange']['low'],
                 property_data['percentile'],
-                property_data['last-updated']]]
+                property_data['last-updated'],
+                local_data['region']['@name'],
+                local_data['region']['@type'],
+                local_data['region']['zindexValue']
+                ]]
   }]
 
   print event
