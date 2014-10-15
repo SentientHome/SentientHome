@@ -35,6 +35,7 @@ netatmo_client_id     = config.get('netatmo', 'netatmo_client_id')
 netatmo_client_secret = config.get('netatmo', 'netatmo_client_secret')
 netatmo_user          = config.get('netatmo', 'netatmo_user')
 netatmo_pass          = config.get('netatmo', 'netatmo_pass')
+netatmo_unique        = int(config.get('netatmo', 'netatmo_unique', 1))
 netatmo_poll_interval = int(config.get('netatmo', 'netatmo_poll_interval', 5))
 
 
@@ -78,8 +79,13 @@ while True:
       except Exception:
         pass
 
+      if netatmo_unique == 1:
+        devData[key]['Module']=key
+      else:
+        devData[key]['Module']=station_name + '.' + key
+
       event = [{
-        'name': 'netatmo.' + station_name + '.' + key,
+        'name': 'netatmo',
         'columns': devData[key].keys(),
         'points': [ devData[key].values() ]
       }]
