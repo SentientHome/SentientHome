@@ -49,44 +49,48 @@ authorization = lnetatmo.ClientAuth( clientId = netatmo_client_id,
 while True:
   devList = lnetatmo.DeviceList(authorization)
 
-  print devList.lastData().keys()
+  print devList.stations.keys()
 
-  devData = devList.lastData()
+  # Loop through all stations in the account
+  for station in devList.stations.keys():
 
-  # Optional metric to imperal conversions
-  # Not all sensors have all metrics
-  for key in devData.keys():
-    try:
-      devData[key]['TemperatureF']=CtoF(devData[key]['Temperature'])
-      devData[key]['min_tempF']=CtoF(devData[key]['min_temp'])
-      devData[key]['max_tempF']=CtoF(devData[key]['max_temp'])
-    except Exception:
-      pass
+    station_name = devList.stations[station]['station_name']
+    devData = devList.lastData(station=station_name)
 
-    try:
-      devData[key]['PressureiHg']=mBtoiHg(devData[key]['Pressure'])
-    except Exception:
-      pass
+    # Optional metric to imperal conversions
+    # Not all sensors have all metrics
+    for key in devData.keys():
+      try:
+        devData[key]['TemperatureF']=CtoF(devData[key]['Temperature'])
+        devData[key]['min_tempF']=CtoF(devData[key]['min_temp'])
+        devData[key]['max_tempF']=CtoF(devData[key]['max_temp'])
+      except Exception:
+        pass
 
-    try:
-      devData[key]['sum_rain_1in']=mmtoin(devData[key]['sum_rain_1'])
-      devData[key]['sum_rain_24in']=mmtoin(devData[key]['sum_rain_24'])
-    except Exception:
-      pass
+      try:
+        devData[key]['PressureiHg']=mBtoiHg(devData[key]['Pressure'])
+      except Exception:
+        pass
 
-    event = [{
-      'name': 'netatmo.' + key,
-      'columns': devData[key].keys(),
-      'points': [ devData[key].values() ]
-    }]
+      try:
+        devData[key]['sum_rain_1in']=mmtoin(devData[key]['sum_rain_1'])
+        devData[key]['sum_rain_24in']=mmtoin(devData[key]['sum_rain_24'])
+      except Exception:
+        pass
 
-    print event
+      event = [{
+        'name': 'netatmo.' + station_name + '.' + key,
+        'columns': devData[key].keys(),
+        'points': [ devData[key].values() ]
+      }]
 
-    try:
-      r = requests.post(influx_path + "&p=" + influx_pass, data=json.dumps(event))
-      print r
-    except Exception:
-      print 'Exception posting data to ' + influx_path
-      pass
+      print event
+
+      try:
+        r = requests.post(influx_path + "&p=" + influx_pass, data=json.dumps(event))
+        print r
+      except Exception:
+        print 'Exception posting data to ' + influx_path
+        pass
 
   time.sleep(netatmo_poll_interval)
