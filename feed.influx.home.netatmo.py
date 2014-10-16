@@ -42,15 +42,33 @@ netatmo_poll_interval = int(config.get('netatmo', 'netatmo_poll_interval', 5))
 influx_path = "http://" + influx_addr + ":" + influx_port + "/db/" + influx_db + "/series?time_precision=s&u=" + influx_user
 print "Path: " + influx_path
 
-authorization = lnetatmo.ClientAuth( clientId = netatmo_client_id,
+try:
+  authorization = lnetatmo.ClientAuth( clientId = netatmo_client_id,
                             clientSecret = netatmo_client_secret,
                             username = netatmo_user,
                             password = netatmo_pass )
+except Exception:
+  # Something went wrong authorizing the connection to the NetAtmo service
+  print "Error connecting to NetAtmo. Retrying in 60 sec..."
+
+  time.sleep(60)
+  try:
+    print "Re-atempting NetAtmo Connection... "
+    authorization = lnetatmo.ClientAuth( clientId = netatmo_client_id,
+                              clientSecret = netatmo_client_secret,
+                              username = netatmo_user,
+                              password = netatmo_pass )
+    pass
+  except Exception:
+    print "Repeat error connecting to Netatmo. Exiting..."
+    raise
+
+print "NetAtmo Connection established."
 
 while True:
   devList = lnetatmo.DeviceList(authorization)
 
-  print devList.stations.keys()
+  # print devList.stations.keys()
 
   # Loop through all stations in the account
   for station in devList.stations.keys():
