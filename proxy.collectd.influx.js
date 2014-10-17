@@ -4,9 +4,14 @@ var http = require('http'),
     home = require('home'),
     iniparser = require('iniparser');
 
-var config = iniparser.parseSync(home.resolve('~/home.cfg'));
-
 console.log('Starting InfluxDB proxy for collectd');
+
+try {
+  var config = iniparser.parseSync(home.resolve('~/home.cfg'));
+} catch (err) {
+  console.log('Error loading ~/home.cfg: ', err);
+  process.exit(1);
+}
 
 var influx_path = '/db/' + config.influxdb.influx_db + '/series?u=' + config.influxdb.influx_user + '&p=' + config.influxdb.influx_pass + '&time_precision=s';
 
@@ -80,5 +85,3 @@ var server = http.createServer(function(req, res) {
 server.listen(config.collectd_proxy.collectd_proxy_port, config.collectd_proxy.collectd_proxy_addr);
 
 console.log('Proxy started on port', config.collectd_proxy.collectd_proxy_port, 'addr', config.collectd_proxy.collectd_proxy_addr);
-
-
