@@ -41,7 +41,7 @@ def etree_to_dict(t):
   return d
 
 config = ConfigParser.ConfigParser()
-config.read(os.path.expanduser('~/home.cfg'))
+config.read(os.path.expanduser('~/.config/home/home.cfg'))
 
 autelis_addr   = config.get('autelis', 'autelis_addr')
 autelis_user   = config.get('autelis', 'autelis_user')

@@ -13,7 +13,7 @@ import ConfigParser
 import nest_thermostat
 
 config = ConfigParser.ConfigParser()
-config.read(os.path.expanduser('~/home.cfg'))
+config.read(os.path.expanduser('~/.config/home/home.cfg'))
 
 influx_addr    = config.get('influxdb', 'influx_addr')
 influx_port    = config.get('influxdb', 'influx_port')

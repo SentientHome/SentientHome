@@ -24,7 +24,7 @@ def mmtoin(m):
   return m*0.03937
 
 config = ConfigParser.ConfigParser()
-config.read(os.path.expanduser('~/home.cfg'))
+config.read(os.path.expanduser('~/.config/home/home.cfg'))
 
 influx_addr           = config.get('influxdb', 'influx_addr')
 influx_port           = config.get('influxdb', 'influx_port')

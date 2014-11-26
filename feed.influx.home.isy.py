@@ -12,7 +12,7 @@ import ConfigParser
 from  ISY.IsyEvent import ISYEvent
 
 config = ConfigParser.ConfigParser()
-config.read(os.path.expanduser('~/home.cfg'))
+config.read(os.path.expanduser('~/.config/home/home.cfg'))
     
 isy_addr = config.get('isy', 'isy_addr')
 isy_user = config.get('isy', 'isy_user')
@@ -31,7 +31,7 @@ def event_feed(*arg):
   data = arg[0]
 
   event = [{
-    'name': 'isy', 
+    'name': 'isy',
     'columns': data.keys(),
     'points': [ data.values() ]
   }]
@@ -55,4 +55,3 @@ try:
   server.events_loop()   #no return
 except KeyboardInterrupt:
   print "Exiting"
-

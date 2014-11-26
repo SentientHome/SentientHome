@@ -51,7 +51,7 @@ def etree_to_dict(t):
   return d
 
 config = ConfigParser.ConfigParser()
-config.read(os.path.expanduser('~/home.cfg'))
+config.read(os.path.expanduser('~/.config/home/home.cfg'))
 
 zillow_addr            = config.get('zillow', 'zillow_addr')
 zillow_port            = config.get('zillow', 'zillow_port')

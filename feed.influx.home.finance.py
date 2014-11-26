@@ -76,7 +76,7 @@ CODES_GOOGLE = {
 }
 
 config = ConfigParser.ConfigParser()
-config.read(os.path.expanduser('~/home.cfg'))
+config.read(os.path.expanduser('~/.config/home/home.cfg'))
 
 finance_provider_addr = config.get('finance', 'finance_provider_addr')
 finance_provider_port = config.get('finance', 'finance_provider_port')

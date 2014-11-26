@@ -13,7 +13,7 @@ import ConfigParser
 from RainEagle import Eagle, to_epoch_1970
 
 config = ConfigParser.ConfigParser()
-config.read(os.path.expanduser('~/home.cfg'))
+config.read(os.path.expanduser('~/.config/home/home.cfg'))
 
 eagle_addr     = config.get('raineagle', 'eagle_addr')
 eagle_poll_interval = int(config.get('raineagle', 'eagle_poll_interval', 1))
