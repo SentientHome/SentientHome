@@ -39,4 +39,4 @@ Copyright (C) 2014 Oliver Ratzesberger
 
 SoCo is released under the [Apache License, Version 2.0][1]
 
-  [1]: https://github.com/fxstein/SentientHome/blob/master/README.md
+  [1]: https://github.com/fxstein/SentientHome/blob/master/LICENSE.md
