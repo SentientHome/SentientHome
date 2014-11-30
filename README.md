@@ -31,3 +31,12 @@ These are some of the main technologies and components of the Home Automation pr
     Autelis - Pool Controller for Pentair Easytouch systems
     SmartThings - Hub to integrate Cloud and local services
     Wireless Sensor Tags - Temp/Humidity and motion sensors
+
+License
+-------
+
+Copyright (C) 2014 Oliver Ratzesberger
+
+SoCo is released under the [Apache License, Version 2.0][1]
+
+  [1]: https://github.com/fxstein/SentientHome/blob/master/README.md
