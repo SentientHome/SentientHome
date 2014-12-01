@@ -41,7 +41,7 @@ class shEventHandler:
         self._checkpoint = time.clock()
 
     def sleep(self):
-        if self._poll_intervall > -1:
+        if self._poll_intervall >= 0:
             time_to_sleep = self._poll_intervall -\
                             (time.clock() -\
                             self._checkpoint)

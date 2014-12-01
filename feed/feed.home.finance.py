@@ -10,7 +10,7 @@ sys.path.append(os.path.abspath('..'))
 # Sentient Home configuration
 from common.shconfig import shConfig
 from common.shutil import numerify
-from common.shevent import shEventHandler
+from common.sheventhandler import shEventHandler
 
 import logging as log
 log.info('Starting feed for Google Finance data')
