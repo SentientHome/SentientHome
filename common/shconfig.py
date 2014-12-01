@@ -43,6 +43,8 @@ class shConfig:
 
         self._setTarget()
 
+        self._setRulesEngine()
+
     def get(self, section, setting, default=''):
         try:
             return self._config.get(section, setting)
@@ -56,7 +58,16 @@ class shConfig:
         try:
             return self._config.getint(section, setting)
         except Exception:
-            if default:
+            if default != '':
+                return default
+            else:
+                raise
+
+    def getfloat(self, section, setting, default=''):
+        try:
+            return self._config.getfloat(section, setting)
+        except Exception:
+            if default != '':
                 return default
             else:
                 raise
@@ -65,11 +76,11 @@ class shConfig:
         self._target         = self.get('sentienthome', 'target', 'INFLUXDB')
 
         if self._target=='INFLUXDB':
-            self._target_addr    = self.get('influxdb', 'influx_addr')
-            self._target_port    = self.get('influxdb', 'influx_port')
-            self._target_db      = self.get('influxdb', 'influx_db')
-            self._target_user    = self.get('influxdb', 'influx_user')
-            self._target_pass    = self.get('influxdb', 'influx_pass')
+            self._target_addr = self.get('influxdb', 'influx_addr')
+            self._target_port = self.get('influxdb', 'influx_port')
+            self._target_db   = self.get('influxdb', 'influx_db')
+            self._target_user = self.get('influxdb', 'influx_user')
+            self._target_pass = self.get('influxdb', 'influx_pass')
 
             # safe path without password
             self._target_path_safe = "http://" + self._target_addr + ":" + \
@@ -83,6 +94,16 @@ class shConfig:
 
         log.debug('Target output: %s', self._target_path_safe)
 
+    def _setRulesEngine(self):
+        self._rules_engine = self.getint('sentienthome', 'rules_engine', 0)
+
+        # TODO: Implement rules engine
+        self._rules_path = ''
+        self._rules_path_safe = ''
+
+        if self._rules_engine == 1:
+            log.debug('Rules engine at: %s', self._target_path_safe)
+
     def getTarget(self):
         return self._target
 
@@ -91,6 +112,15 @@ class shConfig:
 
     def getTargetPath(self):
         return self._target_path
+
+    def getRulesEngineActive(self):
+        return self._rules_engine
+
+    def getRulesPathSafe(self):
+        return self._rules_path_safe
+
+    def getRulesPath(self):
+        return self._rules_path
 
 #
 # Do nothing
