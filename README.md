@@ -9,7 +9,9 @@ It is written with simplicity in mind, rather than perfection. Less is more. Tec
 
 As such the project makes use of simple components like supervisor, collectd, InfluxDB and Grafana - to name a few. Ultimately it should not make any difference if it is deployed in private or public cloud, even though we strongly believe Home Automation data does not belong in public clouds. This is your most private data and you should be in control of it.
 
-The project has been developed on an old Mac Mini as the primay paltform but should ultimately be available on any python enabled platform. We are espcially targeting the Raspberry PI as one of the platforms to leverage for this project.
+As we have learned from various cloud based solutions, the availability of internet connections and cloud capacity rarely allows cloud based solution to operate at or above 98% of availability. For an automated home that relies on events to happen 24x7 that is simply not acceptable.
+
+The project has been developed on an old Mac Mini as the primary platform but should ultimately be available on any python enabled platform. I am especially targeting the Raspberry PI as one of the platforms to leverage for this project.
 
 An Overview
 -----------
@@ -48,6 +50,7 @@ These are some of the main technologies and components of the Home Automation pr
     NEST - Thermostats and Smoke Detectors
     Netatmo - Personal Climate and Weather modules.
     Sonos - Amplifiers and Speakers
+    Philips Hue - Smart controlable lighting
     Autelis - Pool Controller for Pentair Easytouch systems
     SmartThings - Hub to integrate Cloud and local services
     Wireless Sensor Tags - Temp/Humidity and motion sensors
