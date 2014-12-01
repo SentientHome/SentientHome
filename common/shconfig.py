@@ -95,31 +95,41 @@ class shConfig:
         log.debug('Target output: %s', self._target_path_safe)
 
     def _setRulesEngine(self):
-        self._rules_engine = self.getint('sentienthome', 'rules_engine', 0)
+        self._rules_engine_active = self.getint('sentienthome', 'rules_engine', 0)
 
         # TODO: Implement rules engine
-        self._rules_path = ''
-        self._rules_path_safe = ''
+        self._rules_path = None
+        self._rules_path_safe = None
 
-        if self._rules_engine == 1:
+        if self._rules_engine_active == 1:
             log.debug('Rules engine at: %s', self._target_path_safe)
 
-    def getTarget(self):
+    @property
+    def config(self):
+        return self._config
+
+    @property
+    def target(self):
         return self._target
 
-    def getTargetPathSafe(self):
+    @property
+    def target_path_safe(self):
         return self._target_path_safe
 
-    def getTargetPath(self):
+    @property
+    def target_path(self):
         return self._target_path
 
-    def getRulesEngineActive(self):
-        return self._rules_engine
+    @property
+    def rules_engine_active(self):
+        return self._rules_engine_active
 
-    def getRulesPathSafe(self):
+    @property
+    def rules_path_safe(self):
         return self._rules_path_safe
 
-    def getRulesPath(self):
+    @property
+    def rules_path(self):
         return self._rules_path
 
 #

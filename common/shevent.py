@@ -13,11 +13,6 @@ class shEventHandler:
 
     def __init__(self, config, poll_intervall=-1.0):
         self._config = config
-        self._target_path = self._config.getTargetPath()
-        self._target_path_safe = self._config.getTargetPathSafe()
-        self._rules_engine_active = self._config.getRulesEngineActive()
-        self._rules_path = self._config.getRulesPath()
-        self._rules_path_safe = self._config.getRulesPathSafe()
         self._poll_intervall = poll_intervall
 
         self.checkPoint()
@@ -25,21 +20,21 @@ class shEventHandler:
     def postEvent(self, event):
         # First deposit the event data into our target store
         try:
-            r = requests.post(self._target_path, data=json.dumps(event))
+            r = requests.post(self._config.target_path, data=json.dumps(event))
             log.info('Target store response: %s', r)
         except Exception:
             # Report a problem but keep going...
-            log.warn('Exception posting data to %s', self._target_path_safe)
+            log.warn('Exception posting data to %s', self._config.target_path_safe)
             pass
 
         # Now post the same event into our rules engine if active
-        if self._rules_engine_active == 1:
+        if self._config.rules_engine_active == 1:
             try:
-                r = requests.post(self._rules_path, data=json.dumps(event))
+                r = requests.post(self._config.rules_path, data=json.dumps(event))
                 log.info('Rules engine response: %s', r)
             except Exception:
                 # Report a problem but keep going...
-                log.warn('Exception posting data to %s', self._rules_path_safe)
+                log.warn('Exception posting data to %s', self._config.rules_path_safe)
                 pass
 
     def checkPoint(self):
@@ -58,6 +53,11 @@ class shEventHandler:
             log.warn('No poll intervall defined. Nothing to sleep.')
 
         self.checkPoint()
+
+    @property
+    def config(self):
+        return self._config
+
 
 #
 # Do nothing
