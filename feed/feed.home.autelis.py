@@ -18,7 +18,7 @@ log.info('Starting feed for Autelis PentAir Easytouch Controller')
 import requests
 
 config = shConfig('~/.config/home/home.cfg')
-handler = shEventHandler(config, config.getfloat('autelis', 'autelis_poll_interval', 5))
+handler = shEventHandler(config, config.getfloat('autelis', 'autelis_poll_interval', 10))
 
 while True:
     r = requests.get('http://' + config.get('autelis', 'autelis_addr') +\
