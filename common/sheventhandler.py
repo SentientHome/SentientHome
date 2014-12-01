@@ -18,23 +18,25 @@ class shEventHandler:
         self.checkPoint()
 
     def postEvent(self, event):
-        # First deposit the event data into our target store
+        # First deposit the event data into our event store
         try:
-            r = requests.post(self._config.target_path, data=json.dumps(event))
-            log.info('Target store response: %s', r)
+            r = requests.post(self._config.event_store_path, data=json.dumps(event))
+            log.info('Event store response: %s', r)
         except Exception:
             # Report a problem but keep going...
-            log.warn('Exception posting data to %s', self._config.target_path_safe)
+            log.warn('Exception posting data to event store: %s',\
+                            self._config.event_store_path_safe)
             pass
 
-        # Now post the same event into our rules engine if active
-        if self._config.rules_engine_active == 1:
+        # Now post the same event into our event engine if active
+        if self._config.event_engine_active == 1:
             try:
-                r = requests.post(self._config.rules_path, data=json.dumps(event))
-                log.info('Rules engine response: %s', r)
+                r = requests.post(self._config.event_engine_path, data=json.dumps(event))
+                log.info('Event engine response: %s', r)
             except Exception:
                 # Report a problem but keep going...
-                log.warn('Exception posting data to %s', self._config.rules_path_safe)
+                log.warn('Exception posting data to event engine: %s',\
+                                self._config.event_engine_path_safe)
                 pass
 
     def checkPoint(self):

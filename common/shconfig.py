@@ -41,9 +41,9 @@ class shConfig:
         else:
             log.warn('SentientHome: Unsupported logging level')
 
-        self._setTarget()
+        self._setEventStore()
 
-        self._setRulesEngine()
+        self._setEventEngine()
 
     def get(self, section, setting, default=''):
         try:
@@ -72,65 +72,68 @@ class shConfig:
             else:
                 raise
 
-    def _setTarget(self):
-        self._target         = self.get('sentienthome', 'target', 'INFLUXDB')
+    def _setEventStore(self):
+        self._event_store     = self.get('sentienthome', 'event_store', 'INFLUXDB')
 
-        if self._target=='INFLUXDB':
-            self._target_addr = self.get('influxdb', 'influx_addr')
-            self._target_port = self.get('influxdb', 'influx_port')
-            self._target_db   = self.get('influxdb', 'influx_db')
-            self._target_user = self.get('influxdb', 'influx_user')
-            self._target_pass = self.get('influxdb', 'influx_pass')
+        if self._event_store=='INFLUXDB':
+            self._event_store_addr = self.get('influxdb', 'influx_addr')
+            self._event_store_port = self.get('influxdb', 'influx_port')
+            self._event_store_db   = self.get('influxdb', 'influx_db')
+            self._event_store_user = self.get('influxdb', 'influx_user')
+            self._event_store_pass = self.get('influxdb', 'influx_pass')
 
-            # safe path without password
-            self._target_path_safe = "http://" + self._target_addr + ":" + \
-                                self._target_port + "/db/" + \
-                                self._target_db + "/series?time_precision=s&u=" + \
-                                self._target_user
-            # complete target path with full authentication
-            self._target_path = self._target_path_safe + "&p=" + self._target_pass
+            # safe event store path without password
+            # can be used for reporting and general debugging
+            self._event_store_path_safe =\
+                    "http://" + self._event_store_addr + ":" + \
+                                self._event_store_port + "/db/" + \
+                                self._event_store_db + "/series?time_precision=s&u=" + \
+                                self._event_store_user
+            # complete event store path with full authentication
+            self._event_store_path = self._event_store_path_safe +\
+                                "&p=" + self._event_store_pass
         else:
-            log.critical('Unsupported target output: %s', self._target)
+            log.critical('Unsupported event store: %s', self._event_store)
 
-        log.debug('Target output: %s', self._target_path_safe)
+        log.debug('Event store @: %s', self._event_store_path_safe)
 
-    def _setRulesEngine(self):
-        self._rules_engine_active = self.getint('sentienthome', 'rules_engine', 0)
+    def _setEventEngine(self):
+        self._event_engine_active = self.getint('sentienthome', 'event_engine', 0)
 
-        # TODO: Implement rules engine
-        self._rules_path = None
-        self._rules_path_safe = None
+        # TODO: Implement event engine
+        self._event_engine_path = None
+        self._event_engine_path_safe = None
 
-        if self._rules_engine_active == 1:
-            log.debug('Rules engine at: %s', self._target_path_safe)
+        if self._event_engine_active == 1:
+            log.debug('Event engine @: %s', self._event_engine_path_safe)
 
     @property
     def config(self):
         return self._config
 
     @property
-    def target(self):
-        return self._target
+    def event_store(self):
+        return self._event_store
 
     @property
-    def target_path_safe(self):
-        return self._target_path_safe
+    def event_store_path_safe(self):
+        return self._event_store_path_safe
 
     @property
-    def target_path(self):
-        return self._target_path
+    def event_store_path(self):
+        return self._event_store_path
 
     @property
-    def rules_engine_active(self):
-        return self._rules_engine_active
+    def event_engine_active(self):
+        return self._event_engine_active
 
     @property
-    def rules_path_safe(self):
-        return self._rules_path_safe
+    def event_engine_path_safe(self):
+        return self._event_engine_path_safe
 
     @property
-    def rules_path(self):
-        return self._rules_path
+    def event_engine_path(self):
+        return self._event_engine_path
 
 #
 # Do nothing
