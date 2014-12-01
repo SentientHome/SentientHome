@@ -30,15 +30,19 @@ def etree_to_dict(t):
             if text:
                 d[t.tag]['#text'] = text
         else:
-            # When asigning the value try integer, then float, then text
-            try:
-                d[t.tag] = int(text)
-            except ValueError:
-                try:
-                    d[t.tag] = float(text)
-                except ValueError:
-                    d[t.tag] = text
+            # Turn numeric values into such
+            d[t.tag] = numerify(text)
     return d
+
+# Turn text encoded numeric values into numbers
+def numerify(v):
+    try:
+      return int(v) if v.isdigit() else float(v)
+    except ValueError:
+      try:
+        return v.encode('ascii')
+      except ValueError:
+        return v
 
 #
 # Do nothing
