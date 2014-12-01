@@ -9,46 +9,39 @@ sys.path.append(os.path.abspath('..'))
 
 # Sentient Home configuration
 from common.shconfig import shConfig
-from common.shutil import etree_to_dict
+from common.shutil import text_etree_to_dict
+from common.shevent import shEventHandler
 
 import logging as log
 log.info('Starting feed for Autelis PentAir Easytouch Controller')
 
 import requests
-import json
-import xml.etree.ElementTree as ET
-import time
 
 config = shConfig('~/.config/home/home.cfg')
+handler = shEventHandler(config, config.getfloat('autelis', 'autelis_poll_interval', 5))
 
 while True:
-  response = requests.get('http://' + config.get('autelis', 'autelis_addr') +\
-                        '/status.xml', auth=(config.get('autelis', 'autelis_user'),\
-                         config.get('autelis', 'autelis_pass')))
+    r = requests.get('http://' + config.get('autelis', 'autelis_addr') +\
+                     '/status.xml', auth=(config.get('autelis', 'autelis_user'),\
+                     config.get('autelis', 'autelis_pass')))
+    # Data Structure Documentation: http://www.autelis.com/wiki/index.php?title=Pool_Control_(PI)_HTTP_Command_Reference
 
-  # For offline development:
-  #data = etree_to_dict(ET.parse('samples/autelis.status.xml').getroot())
+    log.debug('Fetch data: %s', r.text)
 
-  data = etree_to_dict(ET.fromstring(response.text))
-  # Data Structure Documentation: http://www.autelis.com/wiki/index.php?title=Pool_Control_(PI)_HTTP_Command_Reference
+    data = text_etree_to_dict(r.text)
 
-  alldata = dict(data['response']['equipment'].items() + \
-                data['response']['system'].items() + \
-                data['response']['temp'].items())
+    alldata = dict(data['response']['equipment'].items() + \
+                   data['response']['system'].items() + \
+                   data['response']['temp'].items())
 
-  event = [{
-    'name': 'pool',
-    'columns': alldata.keys(),
-    'points': [ alldata.values() ]
-  }]
+    event = [{
+        'name': 'pool', # Time Series Name
+        'columns': alldata.keys(), # Keys
+        'points': [ alldata.values() ] # Data points
+    }]
 
-  log.debug('Event data: %s', event)
+    log.debug('Event data: %s', event)
 
-  try:
-    r = requests.post(config.getTargetPath(), data=json.dumps(event))
-    log.info(r)
-  except Exception:
-    log.warn('Exception posting data to %s', config.getTargetPathSafe())
-    pass
+    handler.postEvent(event)
 
-  time.sleep(config.getint('autelis', 'autelis_poll_interval', 5))
+    handler.sleep()
