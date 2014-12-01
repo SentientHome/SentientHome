@@ -19,14 +19,15 @@ class shEventHandler:
 
     def postEvent(self, event):
         # First deposit the event data into our event store
-        try:
-            r = requests.post(self._config.event_store_path, data=json.dumps(event))
-            log.info('Event store response: %s', r)
-        except Exception:
-            # Report a problem but keep going...
-            log.warn('Exception posting data to event store: %s',\
-                            self._config.event_store_path_safe)
-            pass
+        if self._config.event_store_active == 1:
+            try:
+                r = requests.post(self._config.event_store_path, data=json.dumps(event))
+                log.info('Event store response: %s', r)
+            except Exception:
+                # Report a problem but keep going...
+                log.warn('Exception posting data to event store: %s',\
+                                self._config.event_store_path_safe)
+                pass
 
         # Now post the same event into our event engine if active
         if self._config.event_engine_active == 1:
@@ -44,11 +45,13 @@ class shEventHandler:
 
     def sleep(self):
         if self._poll_intervall >= 0:
+            # Logic to true up the poll intervall time for time lost processing
             time_to_sleep = self._poll_intervall -\
                             (time.clock() -\
                             self._checkpoint)
-            # Enforce minimum of .1 sec
+            # Enforce minimum of .1 sec and avoid negative
             if time_to_sleep < .1: time_to_sleep = .1
+
             log.debug('Time to sleep: %fs', time_to_sleep)
             time.sleep(time_to_sleep)
         else:
@@ -59,7 +62,6 @@ class shEventHandler:
     @property
     def config(self):
         return self._config
-
 
 #
 # Do nothing

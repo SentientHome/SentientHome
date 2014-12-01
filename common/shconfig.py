@@ -75,12 +75,22 @@ class shConfig:
     def _setEventStore(self):
         self._event_store     = self.get('sentienthome', 'event_store', 'INFLUXDB')
 
-        if self._event_store=='INFLUXDB':
-            self._event_store_addr = self.get('influxdb', 'influx_addr')
-            self._event_store_port = self.get('influxdb', 'influx_port')
-            self._event_store_db   = self.get('influxdb', 'influx_db')
-            self._event_store_user = self.get('influxdb', 'influx_user')
-            self._event_store_pass = self.get('influxdb', 'influx_pass')
+        if self._event_store=='DEVNULL':
+            self._event_store_active = 0
+            self._event_store_addr   = None
+            self._event_store_port   = None
+            self._event_store_db     = None
+            self._event_store_user   = None
+            self._event_store_pass   = None
+            self._event_store_path_safe = None
+            self._event_store_path   = None
+        elif self._event_store=='INFLUXDB':
+            self._event_store_active = 1
+            self._event_store_addr   = self.get('influxdb', 'influx_addr')
+            self._event_store_port   = self.get('influxdb', 'influx_port')
+            self._event_store_db     = self.get('influxdb', 'influx_db')
+            self._event_store_user   = self.get('influxdb', 'influx_user')
+            self._event_store_pass   = self.get('influxdb', 'influx_pass')
 
             # safe event store path without password
             # can be used for reporting and general debugging
@@ -114,6 +124,10 @@ class shConfig:
     @property
     def event_store(self):
         return self._event_store
+
+    @property
+    def event_store_active(self):
+        return self._event_store_active
 
     @property
     def event_store_path_safe(self):
