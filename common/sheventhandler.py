@@ -46,9 +46,6 @@ class shEventHandler:
     def sleep(self):
         # Put processing to sleep until next polling interval
 
-        # Leverage donwtime to check for updated config file
-        self._config.reloadModifiedConfig()
-
         if self._poll_intervall >= 0:
             # Logic to true up the poll intervall time for time lost processing
             time_to_sleep = self._poll_intervall -\
