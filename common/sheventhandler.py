@@ -44,6 +44,11 @@ class shEventHandler:
         self._checkpoint = time.clock()
 
     def sleep(self):
+        # Put processing to sleep until next polling interval
+
+        # Leverage donwtime to check for updated config file
+        self._config.reloadModifiedConfig()
+
         if self._poll_intervall >= 0:
             # Logic to true up the poll intervall time for time lost processing
             time_to_sleep = self._poll_intervall -\
@@ -58,6 +63,10 @@ class shEventHandler:
             log.warn('No poll intervall defined. Nothing to sleep.')
 
         self.checkPoint()
+
+        # Leverage end of donwtime to check for updated config file
+        self._config.reloadModifiedConfig()
+
 
     @property
     def config(self):

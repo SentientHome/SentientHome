@@ -12,20 +12,26 @@ log.basicConfig(format='%(asctime)s %(module)s %(levelname)s: %(message)s')
 class shConfig:
     'SentientHome minimalistic configuration automation'
 
-    def __init__(self, configPath):
+    def __init__(self, config_path):
         self._config = ConfigParser.SafeConfigParser()
+        self._config_path = os.path.expanduser(config_path)
 
+        self._logger = log.getLogger()
+
+        self._readConfig()
+
+
+    def _readConfig(self):
         try:
-            log.info('Reading Sentient Home configuration from: %s', configPath)
-            self._config.read(os.path.expanduser(configPath))
+            log.info('Reading SentientHome configuration from: %s', self._config_path)
+            self._config.read(self._config_path)
         except Exception:
-            try:
-                self._config.read(configPath)
-            except Exception:
-                raise
+            log.critical('Unable to read configuration from: %s', self._config_path)
+            raise
+
+        self._config_modified = os.path.getmtime(self._config_path)
 
         self._loglevel = self.get('sentienthome', 'loglevel', 'DEFAULT')
-        self._logger = log.getLogger()
 
         if self._loglevel == 'INFO':
             self._logger.setLevel(log.INFO)
@@ -44,6 +50,14 @@ class shConfig:
         self._setEventStore()
 
         self._setEventEngine()
+
+
+    def reloadModifiedConfig(self):
+        # test if configfile has been updated and if so reload
+        if self._config_modified != os.path.getmtime(self._config_path):
+            log.info('Config file modification detected. Reloading %s', self._config_path)
+            self._readConfig()
+
 
     def get(self, section, setting, default=''):
         try:
