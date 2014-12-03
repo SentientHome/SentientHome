@@ -4,6 +4,7 @@ __copyright__ = 'Copyright (C) 2014 Oliver Ratzesberger'
 __license__   = 'Apache License, Version 2.0'
 
 import os
+import time
 import ConfigParser
 import logging as log
 
@@ -32,6 +33,7 @@ class shConfig:
         self._config_modified = os.path.getmtime(self._config_path)
 
         self._loglevel = self.get('sentienthome', 'loglevel', 'DEFAULT')
+        self._retries = self.getint('sentienthome', 'retries', 10)
 
         if self._loglevel == 'INFO':
             self._logger.setLevel(log.INFO)
@@ -51,12 +53,17 @@ class shConfig:
 
         self._setEventEngine()
 
+        # Record time stamp of latest config update
+        self._config_last_time = time.time()
+
 
     def reloadModifiedConfig(self):
-        # test if configfile has been updated and if so reload
-        if self._config_modified != os.path.getmtime(self._config_path):
-            log.info('Config file modification detected. Reloading %s', self._config_path)
-            self._readConfig()
+        # Limit reload to once ever 10s+
+        if (time.time() - self._config_last_time) > 10:
+            # test if configfile has been updated and if so reload
+            if self._config_modified != os.path.getmtime(self._config_path):
+                log.info('Config file modification detected. Reloading %s', self._config_path)
+                self._readConfig()
 
 
     def get(self, section, setting, default=''):
@@ -134,6 +141,10 @@ class shConfig:
     @property
     def config(self):
         return self._config
+
+    @property
+    def retries(self):
+        return self._retries
 
     @property
     def event_store(self):
