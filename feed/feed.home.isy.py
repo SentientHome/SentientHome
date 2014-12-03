@@ -17,12 +17,9 @@ import logging as log
 log.info('Starting feed for Universal Devices ISY994')
 
 import requests
-import time
 
 config = shConfig('~/.config/home/home.cfg')
 handler = shEventHandler(config)
-
-last_time = time.time()
 
 # Realtime event feeder
 def eventFeed(*arg):
@@ -39,16 +36,38 @@ def eventFeed(*arg):
 
     handler.postEvent(event)
 
-    if (time.time() - last_time) > 10:
-        config.reloadModifiedConfig()
+    # Reload config if modified - self limited to once every 10s+
+    config.reloadModifiedConfig()
 
 # Setup ISY socket listener
 # Be aware: Even though we are able to update the config at runtime
 # we do not take down the web socket subscription once established
 server = ISYEvent()
-server.subscribe(addr=config.get('isy', 'isy_addr'),\
-                 userl=config.get('isy', 'isy_user'),\
-                 userp=config.get('isy', 'isy_pass'))
+
+retries = 0
+
+while True:
+    try:
+        server.subscribe(addr=config.get('isy', 'isy_addr'),\
+                         userl=config.get('isy', 'isy_user'),\
+                         userp=config.get('isy', 'isy_pass'))
+        break
+    except Exception:
+        retries += 1
+
+        log.warn('Cannot connect to ISY. Attempt %n of %n',\
+                        retries, config.retries)
+
+        if retries >= config.retries:
+            log.Error('Unable to connect to ISY. Exiting...')
+            raise
+
+        # Wait for the next poll intervall until we retry
+        # also allows for configuration to get updated
+        handler.sleep()
+        continue
+
+
 server.set_process_func(eventFeed, "")
 
 try:
