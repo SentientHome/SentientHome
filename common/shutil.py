@@ -44,6 +44,18 @@ def numerify(v):
       except ValueError:
         return v
 
+# Conversion: Celcius to Fahrenheit
+def CtoF(t):
+  return (t*9)/5+32
+
+# Conversion: mili Bar to inch Hg
+def mBtoiHg(p):
+  return p*0.02953
+
+# Conversion: millimeter to inch
+def mmtoin(m):
+  return m*0.03937
+
 #
 # Do nothing
 # (syntax check)
