@@ -19,7 +19,7 @@ log.info('Starting feed for Netatmo climate data')
 import time
 
 config = shConfig('~/.config/home/home.cfg')
-handler = shEventHandler(config, config.getint('autelis', 'netatmo_poll_interval', 10))
+handler = shEventHandler(config, config.getfloat('autelis', 'netatmo_poll_interval', 10))
 
 netatmo_unique        = int(config.get('netatmo', 'netatmo_unique', 1))
 

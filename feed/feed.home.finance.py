@@ -84,7 +84,7 @@ finance_currency_list = config.get('finance', 'finance_currency_list')
 finance_path = "http://" + finance_provider_addr + ":" + finance_provider_port + finance_provider_path
 log.debug("Finance Path: %s", finance_path)
 
-handler = shEventHandler(config, config.getint('finance', 'finance_poll_interval', 30))
+handler = shEventHandler(config, config.getfloat('finance', 'finance_poll_interval', 30))
 
 while True:
 

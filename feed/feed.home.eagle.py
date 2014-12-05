@@ -17,7 +17,7 @@ import logging as log
 log.info('Starting feed for Rainforest Eagle gateway')
 
 config = shConfig('~/.config/home/home.cfg')
-handler = shEventHandler(config, config.getint('raineagle', 'eagle_poll_interval', 5))
+handler = shEventHandler(config, config.getfloat('raineagle', 'eagle_poll_interval', 5))
 
 retries = 0
 
