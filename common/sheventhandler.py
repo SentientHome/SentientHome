@@ -11,7 +11,7 @@ import time
 class shEventHandler:
     'SentientHome event handler'
 
-    def __init__(self, config, poll_intervall=-1.0):
+    def __init__(self, config, poll_intervall=10):
         self._config = config
         self._poll_intervall = poll_intervall
 
