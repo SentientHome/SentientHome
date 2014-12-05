@@ -19,7 +19,7 @@ log.info('Starting feed for Netatmo climate data')
 import time
 
 config = shConfig('~/.config/home/home.cfg')
-handler = shEventHandler(config, config.getfloat('autelis', 'netatmo_poll_interval', 10))
+handler = shEventHandler(config, config.getint('autelis', 'netatmo_poll_interval', 10))
 
 netatmo_unique        = int(config.get('netatmo', 'netatmo_unique', 1))
 
@@ -35,7 +35,7 @@ while True:
         break
     except Exception:
         retries += 1
-        
+
         # Something went wrong authorizing the connection to the NetAtmo service
         log.warn( 'Cannot connect to NetAtmo. Attemp %n of %n', i, config.retries )
 
