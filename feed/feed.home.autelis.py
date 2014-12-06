@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath('..'))
 
 # Sentient Home configuration
 from common.shconfig import shConfig
-from common.shutil import text_etree_to_dict
+from common.shutil import xml_to_dict
 from common.sheventhandler import shEventHandler
 
 import logging as log
@@ -48,7 +48,7 @@ while True:
 
     log.debug('Fetch data: %s', r.text)
 
-    data = text_etree_to_dict(r.text)
+    data = xml_to_dict(r.text)
 
     alldata = dict(data['response']['equipment'].items() + \
                    data['response']['system'].items() + \

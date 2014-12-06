@@ -6,7 +6,7 @@ __license__   = 'Apache License, Version 2.0'
 from collections import defaultdict
 import xml.etree.ElementTree as ET
 
-def text_etree_to_dict(text):
+def xml_to_dict(text):
     t = ET.fromstring(text)
 
     return etree_to_dict(t)
@@ -28,7 +28,7 @@ def etree_to_dict(t):
         text = t.text.strip()
         if c or t.attrib:
             if text:
-                d[t.tag]['#text'] = text
+                d[t.tag] = numerify(text)
         else:
             # Turn numeric values into such
             d[t.tag] = numerify(text)
