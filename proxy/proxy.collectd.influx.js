@@ -9,7 +9,7 @@ console.log('Starting InfluxDB proxy for collectd');
 try {
   var config = iniparser.parseSync(home.resolve('~/.config/home/home.cfg'));
 } catch (err) {
-  console.log('Error loading ~/home.cfg: ', err);
+  console.log('Error loading ~/.config/home/home.cfg: ', err);
   process.exit(1);
 }
 
