@@ -63,7 +63,7 @@ var server = http.createServer(function(req, res) {
       }
     });
     var forwarded_req = {
-      hostname: config.influxdb.influx_host,
+      hostname: config.influxdb.influx_addr,
       port: config.influxdb.influx_port,
       path: influx_path,
       method: 'POST'
