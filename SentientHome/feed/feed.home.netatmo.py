@@ -5,7 +5,7 @@ __license__   = 'Apache License, Version 2.0'
 
 # Make sure we have access to SentientHome commons
 import os, sys
-sys.path.append(os.path.abspath('..'))
+sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 
 # Sentient Home configuration
 from common.shconfig import shConfig
