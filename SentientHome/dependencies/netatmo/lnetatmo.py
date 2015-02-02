@@ -286,20 +286,20 @@ def getStationMinMaxTH(station=None, module=None):
 if __name__ == "__main__":
 
     from sys import exit, stdout, stderr
-    
+
     if not _CLIENT_ID or not _CLIENT_SECRET or not _USERNAME or not _PASSWORD :
            stderr.write("Library source missing identification arguments to check lnetatmo.py (user/password/etc...)")
            exit(1)
-    
+
     authorization = ClientAuth()                # Test authentication method
     user = User(authorization)                  # Test GETUSER
     devList = DeviceList(authorization)         # Test DEVICELIST
     devList.MinMaxTH()                          # Test GETMEASURE
-    
+
     # If we reach this line, all is OK
-    
+
     # If launched interactively, display OK message
     if stdout.isatty():
         print("lnetatmo.py : OK")
-    
+
     exit(0)

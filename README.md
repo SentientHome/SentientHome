@@ -58,7 +58,7 @@ These are some of the main technologies and components of the Home Automation pr
 License
 -------
 
-Copyright (C) 2014 Oliver Ratzesberger
+Copyright (C) 2015 Oliver Ratzesberger
 
 SentientHome is released under the [Apache License, Version 2.0][1]
 
