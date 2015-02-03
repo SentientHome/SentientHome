@@ -23,6 +23,9 @@ class shEventHandler:
             try:
                 r = requests.post(self._config.event_store_path, data=json.dumps(event))
                 log.info('Event store response: %s', r)
+                if r.status_code <> 200:
+                    log.warn('Event rejected by %s', self._config.event_store_path_safe)
+                    log.warn('Event data: %s', event)
             except Exception:
                 # Report a problem but keep going...
                 log.warn('Exception posting data to event store: %s',\
@@ -34,6 +37,9 @@ class shEventHandler:
             try:
                 r = requests.post(self._config.event_engine_path, data=json.dumps(event))
                 log.info('Event engine response: %s', r)
+                if r.status_code <> 200:
+                    log.warn('Event rejected by %s', self._config.event_engine_path_safe)
+                    log.warn('Event data: %s', event)
             except Exception:
                 # Report a problem but keep going...
                 log.warn('Exception posting data to event engine: %s',\
