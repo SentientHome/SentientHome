@@ -38,15 +38,15 @@ def etree_to_dict(t):
 def numerify(v):
     try:
       return int(v) if v.isdigit() else float(v)
-    except ValueError:
+    except Exception:
       try:
         return v.encode('ascii')
-      except ValueError:
+      except Exception:
         return v
 
 # Helper to rekey flattened dicts
 def rekey_dict(key, d):
-    return dict((key + '.' + k, v) for k, v in d.iteritems())
+    return dict((key + '.' + k, numerify(v)) for k, v in d.iteritems())
 
 # Helper to flatten embeded structures
 # If there is a dict within a dict this function will pop the dict and
