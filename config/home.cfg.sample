@@ -3,7 +3,7 @@
 ; SentientHome monitors changes to this file and reloads during downtime
 
 [sentienthome]
-; loglevel possible values: INFO, WARN, DEBUG, DEFAULT; default=DEFAULT
+; loglevel possible values: INFO, WARNING, ERROR, CRITICAL, DEBUG, DEFAULT; default=DEFAULT
 loglevel               = DEBUG
 ; Number of retries for connection issues; default=10
 retries                = 10
