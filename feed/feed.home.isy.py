@@ -26,11 +26,26 @@ def eventFeed(*arg):
 
     data = arg[0]
 
-    event = [{
-        'name': 'isy',
-        'columns': data.keys(),
-        'points': [ data.values() ]
-    }]
+    # Flatten out embedded structures
+    if type(data['eventInfo']) is dict:
+        eventInfo = data.pop('eventInfo')
+        log.debug('EventInfo data: %s', eventInfo)
+
+        rekeyed_eventInfo = dict(('eventInfo.' + key, value) \
+                                for key, value in eventInfo.iteritems())
+        alldata = dict(data.items() + rekeyed_eventInfo.items())
+
+        event = [{
+            'name': 'isy',
+            'columns': alldata.keys(),
+            'points': [ alldata.values() ]
+        }]
+    else:
+        event = [{
+            'name': 'isy',
+            'columns': data.keys(),
+            'points': [ data.values() ]
+        }]
 
     log.debug('Event data: %s', event)
 
