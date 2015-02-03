@@ -44,7 +44,7 @@ def numerify(v):
       except Exception:
         return v
 
-# Helper to rekey flattened dicts
+# Helper to rekey flattened dicts in dot notation
 def rekey_dict(key, d):
     return dict((key + '.' + k, numerify(v)) for k, v in d.iteritems())
 
