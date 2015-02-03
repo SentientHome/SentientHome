@@ -55,14 +55,17 @@ def rekey_dict(key, d):
 def flatten_dict(d):
     f = d
 
-    keys = d.keys()
-    for k in keys:
-        if type(d[k]) is dict:
-            subdict = d.pop(k)
-            r = rekey_dict(k, subdict)
-            # Recursion to walk embeded structures
-            r2 = flatten_dict(r)
-            f = dict(d.items() + r2.items())
+    if type(d) is dict:
+        # Interate over keys to check for embeded dicts
+        keys = d.keys()
+        for k in keys:
+            if type(d[k]) is dict:
+                subdict = d.pop(k)
+                # Rekey the sub dict in dot notation
+                r = rekey_dict(k, subdict)
+                # Recursion to walk embeded structures
+                r2 = flatten_dict(r)
+                f = dict(d.items() + r2.items())
 
     return f
 
