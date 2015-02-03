@@ -44,6 +44,28 @@ def numerify(v):
       except ValueError:
         return v
 
+# Helper to rekey flattened dicts
+def rekey_dict(key, d):
+    return dict((key + '.' + k, v) for k, v in d.iteritems())
+
+# Helper to flatten embeded structures
+# If there is a dict within a dict this function will pop the dict and
+# insert is rekeyed keys and values into the main dict. The key of the
+# embedded dict will be prepended with a separator '.' to the keys
+def flatten_dict(d):
+    f = d
+
+    keys = d.keys()
+    for k in keys:
+        if type(d[k]) is dict:
+            subdict = d.pop(k)
+            r = rekey_dict(k, subdict)
+            # Recursion to walk embeded structures
+            r2 = flatten_dict(r)
+            f = dict(d.items() + r2.items())
+
+    return f
+
 # Conversion: Celcius to Fahrenheit
 def CtoF(t):
   return (t*9)/5+32
