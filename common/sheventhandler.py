@@ -41,7 +41,7 @@ class shEventHandler:
                 if r.status_code == 200:
                     log.info('Event engine response: %s', r)
                 else:
-                    log.warn('Event store response: %s', r)
+                    log.warn('Event engine response: %s', r)
                     log.warn('Event rejected by %s', self._config.event_engine_path_safe)
                     log.warn('Event data: %s', event)
             except Exception:
