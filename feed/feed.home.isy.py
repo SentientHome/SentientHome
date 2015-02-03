@@ -9,7 +9,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 
 # Sentient Home configuration
 from common.shconfig import shConfig
-from common.shutil import numerify
+from common.shutil import flatten_dict
 from common.sheventhandler import shEventHandler
 from dependencies.ISY.IsyEvent import ISYEvent
 
@@ -21,31 +21,17 @@ import requests
 config = shConfig('~/.config/home/home.cfg')
 handler = shEventHandler(config)
 
+
 # Realtime event feeder
 def eventFeed(*arg):
 
-    data = arg[0]
+    data = flatten_dict(arg[0])
 
-    # Flatten out embedded structures
-    if type(data['eventInfo']) is dict:
-        eventInfo = data.pop('eventInfo')
-        log.debug('EventInfo data: %s', eventInfo)
-
-        rekeyed_eventInfo = dict(('eventInfo.' + key, value) \
-                                for key, value in eventInfo.iteritems())
-        alldata = dict(data.items() + rekeyed_eventInfo.items())
-
-        event = [{
-            'name': 'isy',
-            'columns': alldata.keys(),
-            'points': [ alldata.values() ]
-        }]
-    else:
-        event = [{
-            'name': 'isy',
-            'columns': data.keys(),
-            'points': [ data.values() ]
-        }]
+    event = [{
+        'name': 'isy',
+        'columns': data.keys(),
+        'points': [ data.values() ]
+    }]
 
     log.debug('Event data: %s', event)
 
