@@ -35,15 +35,18 @@ class shConfig:
         self._loglevel = self.get('sentienthome', 'loglevel', 'DEFAULT')
         self._retries = self.getint('sentienthome', 'retries', 10)
 
+        log.info('Switching logging to %s level.', self._loglevel)
+
         if self._loglevel == 'INFO':
             self._logger.setLevel(log.INFO)
-            log.info('Switching logging to INFO level.')
-        elif self._loglevel == 'WARN':
-            self._logger.setLevel(log.WARN)
-            log.warn('Switching logging to WARN level.')
         elif self._loglevel == 'DEBUG':
             self._logger.setLevel(log.DEBUG)
-            log.debug('Switching logging to DEBUG level.')
+        elif self._loglevel == 'WARNING':
+            self._logger.setLevel(log.WARNING)
+        elif self._loglevel == 'ERROR':
+            self._logger.setLevel(log.ERROR)
+        elif self._loglevel == 'CRITICAL':
+            self._logger.setLevel(log.CRITICAL)
         elif self._loglevel == 'DEFAULT':
             log.info('Logging at system default level.')
         else:
