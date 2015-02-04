@@ -17,13 +17,6 @@ log.info('Starting feed for Autelis PentAir Easytouch Controller')
 
 import requests
 
-
-#temporary
-import json
-
-
-
-
 config = shConfig('~/.config/home/home.cfg')
 handler = shEventHandler(config, config.getfloat('autelis', 'autelis_poll_interval', 10))
 
@@ -34,7 +27,8 @@ while True:
         r = requests.get('http://' + config.get('autelis', 'autelis_addr') +\
                          '/status.xml', auth=(config.get('autelis', 'autelis_user'),\
                          config.get('autelis', 'autelis_pass')))
-        # Data Structure Documentation: http://www.autelis.com/wiki/index.php?title=Pool_Control_(PI)_HTTP_Command_Reference
+        # Data Structure Documentation: http://www.autelis.com/wiki/index.php?
+        # title=Pool_Control_(PI)_HTTP_Command_Reference
     except Exception:
         retries += 1
 
@@ -47,7 +41,7 @@ while True:
 
         # Wait for the next poll intervall until we retry
         # also allows for configuration to get updated
-        handler.sleep()
+        handler.sleep(config.getfloat('autelis', 'autelis_poll_interval', 10))
         continue
 
     # Reset retries once we get a valid response
@@ -69,10 +63,7 @@ while True:
 
     log.debug('Event data: %s', event)
 
-    log.debug('json data: %s', json.dumps(event))
-
-
-
     handler.postEvent(event)
 
-    handler.sleep()
+    # We reset the poll interval in case the configuration has changed
+    handler.sleep(config.getfloat('autelis', 'autelis_poll_interval', 10))
