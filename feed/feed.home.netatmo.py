@@ -1,4 +1,4 @@
-#!/usr/local/bin/python -u
+#!/usr/local/bin/python3 -u
 __author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
 __license__   = 'Apache License, Version 2.0'
@@ -41,7 +41,7 @@ while True:
             log.error( 'Unable to connect to Netatmo. Exiting...' )
             raise
 
-        handler.sleep()
+        handler.sleep(config.getfloat('autelis', 'netatmo_poll_interval', 10))
 
 log.info( 'NetAtmo Connection established.')
 
@@ -85,12 +85,12 @@ while True:
 
             event = [{
                 'name': 'netatmo',
-                'columns': devData[key].keys(),
-                'points': [ devData[key].values() ]
+                'columns': list(devData[key].keys()),
+                'points': [ list(devData[key].values()) ]
             }]
 
             log.debug('Event data: %s', event)
 
             handler.postEvent(event)
 
-    handler.sleep()
+    handler.sleep(config.getfloat('autelis', 'netatmo_poll_interval', 10))
