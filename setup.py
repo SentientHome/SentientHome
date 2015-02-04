@@ -1,4 +1,4 @@
-#!/usr/local/bin/python -u
+#!/usr/local/bin/python3 -u
 __author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
 __license__   = 'Apache License, Version 2.0'
@@ -21,6 +21,10 @@ if 0 != os.system('npm install iniparser'):
     quit()
 
 print 'Installing Python3 dependencies'
+
+if 0 != os.system('pip3 install requests'):
+    print 'Error installing python3 requests package. Exiting...'
+    quit()
 
 if 0 != os.system('pip3 install asyncio'):
     print 'Error installing python3 asyncio package. Exiting...'
