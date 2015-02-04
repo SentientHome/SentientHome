@@ -46,7 +46,7 @@ while True:
             log.error( 'Unable to connect to Rainforest Eagle. Exiting...' )
             raise
 
-        handler.sleep()
+        handler.sleep(config.getfloat('raineagle', 'eagle_poll_interval', 5))
 
 retries = 0
 
@@ -96,7 +96,7 @@ while True:
                 log.error( 'Unable to connect to Rainforest Eagle. Exiting...' )
                 raise
 
-            handler.sleep()
+            handler.sleep(config.getfloat('raineagle', 'eagle_poll_interval', 5))
 
     # Reset retries on successful poll
     retries = 0
