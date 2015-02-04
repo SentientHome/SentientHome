@@ -5,6 +5,7 @@ __license__   = 'Apache License, Version 2.0'
 
 from collections import defaultdict
 import xml.etree.ElementTree as ET
+import locale
 
 def xml_to_dict(text):
     t = ET.fromstring(text)
@@ -35,11 +36,21 @@ def etree_to_dict(t):
     return d
 
 # Turn text encoded numeric values into numbers
+# Added locale functions to deal with thousands separators in incoming
 def numerify(v):
     try:
-        return int(v) if v.isdigit() else float(v)
+        return int(v)
     except Exception:
-        return v
+        try:
+            return locale.atoi(v)
+        except Exception:
+            try:
+                return float(v)
+            except Exception:
+                try:
+                    return locale.atof(v)
+                except Exception:
+                    return v
 
 # Helper to rekey flattened dicts in dot notation
 def rekey_dict(key, d):
