@@ -1,4 +1,4 @@
-#!/usr/local/bin/python -u
+#!/usr/local/bin/python3 -u
 __author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
 __license__   = 'Apache License, Version 2.0'
@@ -9,27 +9,39 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 
 # Sentient Home configuration
 from common.shconfig import shConfig
-from common.shutil import CtoF, mBtoiHg, mmtoin
+from common.shutil import numerify
 from common.sheventhandler import shEventHandler
-from dependencies.RainEagle import Eagle, to_epoch_1970
 
 import logging as log
 log.info('Starting feed for Rainforest Eagle gateway')
+
+import requests, json
 
 config = shConfig('~/.config/home/home.cfg')
 handler = shEventHandler(config, config.getfloat('raineagle', 'eagle_poll_interval', 5))
 
 retries = 0
 
+command =  '<LocalCommand>\n\
+                <Name>get_device_list</Name>\n\
+            </LocalCommand>'
+
 while True:
     try:
-        eg = Eagle(debug=0, addr=config.get('raineagle', 'eagle_addr'))
+        #r = requests.post('http://' + config.get('raineagle', 'eagle_addr') +\
+        #'/cgi-bin/cgi_manager', data=command)
+        r = requests.post('http://eagle.ratzesberger.private/cgi-bin/cgi_manager', data=command)
+        log.debug('Fetch data: %s', r.text)
+
+        device = json.loads(r.text)
+        device_macid = device['device_mac_id[0]']
+
         break
     except Exception:
         retries += 1
 
         # Something went wrong authorizing the connection to the Eagle gateway
-        log.warn( 'Cannot connect to Rainforest Eagle. Attemp %n of %n', i, config.retries )
+        log.warn( 'Cannot connect to Rainforest Eagle. Attempt %s of %s', retries, config.retries )
 
         if retries >= config.retries:
             log.error( 'Unable to connect to Rainforest Eagle. Exiting...' )
@@ -37,34 +49,60 @@ while True:
 
         handler.sleep()
 
+retries = 0
+
+command =  '<LocalCommand>\n\
+                <Name>get_usage_data</Name>\n\
+                <MacId>' + device_macid + '</MacId>\n\
+            </LocalCommand>'
+
 while True:
-    raindata= eg.get_device_data()
+    while True:
+        try:
+            r = requests.post('http://' + config.get('raineagle', 'eagle_addr') +\
+                                '/cgi-bin/cgi_manager', data=command)
+            log.debug('Fetch data: %s', r.text)
 
-    idemanddata = raindata['InstantaneousDemand']
+            devicedata = dict((k, numerify(v)) for k, v in json.loads(r.text).items())
 
-    imultiplier = int(idemanddata['Multiplier'], 16)
-    idivisor = int(idemanddata['Divisor'], 16)
-    idemand = int(idemanddata['Demand'], 16)
+            if devicedata['demand_units'] == 'W':
+                power = devicedata['demand']
+            elif devicedata['demand_units'] == 'kW':
+                power = devicedata['demand'] * 1000
+            else:
+                log.warn( 'Unsupport demand units: %s', devicedata['demand_units'] )
+                raise
 
-    if idemand > 0x7FFFFFFF: idemand -= 0x100000000
-    if imultiplier == 0 : imultiplier = 1
-    if idivisor == 0 : idivisor = 1
+            if devicedata['summation_units'] == 'Wh':
+                received  = devicedata['summation_received']
+                delivered = devicedata['summation_delivered']
+            elif devicedata['summation_units'] == 'kWh':
+                received  = devicedata['summation_received'] * 1000
+                delivered = devicedata['summation_delivered'] * 1000
+            elif devicedata['summation_units'] == 'MWh':
+                received  = devicedata['summation_received'] * 1000 * 1000
+                delivered = devicedata['summation_delivered'] * 1000 * 1000
+            else:
+                log.warn( 'Unsupport summation units: %s', devicedata['summation_units'] )
+                raise
 
-    power = ((idemand * imultiplier) / float (idivisor))*1000
+            break
+        except Exception:
+            retries += 1
+
+            # Something went wrong authorizing the connection to the Eagle gateway
+            log.warn( 'Cannot fetch device data. Attempt %s of %s', retries, config.retries )
+
+            if retries >= config.retries:
+                log.error( 'Unable to connect to Rainforest Eagle. Exiting...' )
+                raise
+
+            handler.sleep()
+
+    # Reset retries on successful poll
+    retries = 0
+
     amps = power/240
-
-    csumdata = raindata['CurrentSummation']
-
-    csummultiplier = int(csumdata['Multiplier'], 16)
-    csumdivisor = int(csumdata['Divisor'], 16)
-    csumreceived = int(csumdata['SummationReceived'], 16)
-    csumdelivered = int(csumdata['SummationDelivered'], 16)
-
-    if csummultiplier == 0 : csummultiplier = 1
-    if csumdivisor == 0 : csumdivisor = 1
-
-    received = ((csumreceived * csummultiplier) / float (csumdivisor))*1000
-    delivered = ((csumdelivered * csummultiplier) / float (csumdivisor))*1000
 
     event = [{
         'name': 'power',
@@ -76,4 +114,5 @@ while True:
 
     handler.postEvent(event)
 
-    handler.sleep()
+    # We reset the poll interval in case the configuration has changed
+    handler.sleep(config.getfloat('raineagle', 'eagle_poll_interval', 5))
