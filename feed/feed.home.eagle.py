@@ -28,9 +28,8 @@ command =  '<LocalCommand>\n\
 
 while True:
     try:
-        #r = requests.post('http://' + config.get('raineagle', 'eagle_addr') +\
-        #'/cgi-bin/cgi_manager', data=command)
-        r = requests.post('http://eagle.ratzesberger.private/cgi-bin/cgi_manager', data=command)
+        r = requests.post('http://' + config.get('raineagle', 'eagle_addr') +\
+                            '/cgi-bin/cgi_manager', data=command)
         log.debug('Fetch data: %s', r.text)
 
         device = json.loads(r.text)
