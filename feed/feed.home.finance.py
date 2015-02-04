@@ -1,4 +1,4 @@
-#!/usr/local/bin/python -u
+#!/usr/local/bin/python3 -u
 __author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
 __license__   = 'Apache License, Version 2.0'
@@ -59,12 +59,12 @@ def quotes_feed(event_handler, finance_path, series_name, symbol_list):
     for quote in financial_data:
         # Re-key the JSON response with friendly names
         rekeyed_quote = dict([(CODES_GOOGLE.get(key, key), value)\
-                                for key, value in quote.iteritems()])
+                                for key, value in quote.items()])
 
         event = [{
             'name': series_name,
-            'columns': rekeyed_quote.keys(),
-            'points': [ rekeyed_quote.values() ]
+            'columns': list(rekeyed_quote.keys()),
+            'points': [ list(rekeyed_quote.values()) ]
             }]
 
         log.debug('Event data: %s', event)
@@ -94,4 +94,4 @@ while True:
 
   quotes_feed(handler, finance_path, 'currencies', finance_currency_list)
 
-  handler.sleep()
+  handler.sleep(config.getfloat('finance', 'finance_poll_interval', 30))
