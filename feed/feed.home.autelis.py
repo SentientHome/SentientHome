@@ -1,4 +1,4 @@
-#!/usr/local/bin/python -u
+#!/usr/local/bin/python3 -u
 __author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
 __license__   = 'Apache License, Version 2.0'
@@ -16,6 +16,13 @@ import logging as log
 log.info('Starting feed for Autelis PentAir Easytouch Controller')
 
 import requests
+
+
+#temporary
+import json
+
+
+
 
 config = shConfig('~/.config/home/home.cfg')
 handler = shEventHandler(config, config.getfloat('autelis', 'autelis_poll_interval', 10))
@@ -50,17 +57,21 @@ while True:
 
     data = xml_to_dict(r.text)
 
-    alldata = dict(data['response']['equipment'].items() + \
-                   data['response']['system'].items() + \
-                   data['response']['temp'].items())
+    alldata = dict(list(data['response']['equipment'].items()) + \
+                    list(data['response']['system'].items()) + \
+                    list(data['response']['temp'].items()))
 
     event = [{
         'name': 'pool', # Time Series Name
-        'columns': alldata.keys(), # Keys
-        'points': [ alldata.values() ] # Data points
+        'columns': list(alldata.keys()), # Keys
+        'points': [ list(alldata.values()) ] # Data points
     }]
 
     log.debug('Event data: %s', event)
+
+    log.debug('json data: %s', json.dumps(event))
+
+
 
     handler.postEvent(event)
 
