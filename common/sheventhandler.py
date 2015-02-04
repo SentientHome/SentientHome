@@ -11,9 +11,9 @@ import time
 class shEventHandler:
     'SentientHome event handler'
 
-    def __init__(self, config, poll_intervall=10):
+    def __init__(self, config, poll_interval=10):
         self._config = config
-        self._poll_intervall = poll_intervall
+        self._poll_interval = poll_interval
 
         self.checkPoint()
 
@@ -53,12 +53,15 @@ class shEventHandler:
     def checkPoint(self):
         self._checkpoint = time.clock()
 
-    def sleep(self):
+    def sleep(self, poll_interval=''):
+        # Update poll_interval if supplied
+        if poll_interval != '': self._poll_interval = poll_interval
+
         # Put processing to sleep until next polling interval
 
-        if self._poll_intervall >= 0:
+        if self._poll_interval >= 0:
             # Logic to true up the poll intervall time for time lost processing
-            time_to_sleep = self._poll_intervall -\
+            time_to_sleep = self._poll_interval -\
                             (time.clock() -\
                             self._checkpoint)
             # Enforce minimum of .1 sec and avoid negative
