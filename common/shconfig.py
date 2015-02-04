@@ -71,27 +71,42 @@ class shConfig:
 
     def get(self, section, setting, default=''):
         try:
-            return self._config.get(section, setting)
+            s = self._config.get(section, setting)
+            log.debug('Config section: %s setting: %s default: %s set to: %s',
+                        section, setting, default, s)
+            return s
         except Exception:
             if default:
+                log.debug('Config section: %s setting: %s default: %s',
+                        section, setting, default)
                 return default
             else:
                 raise
 
     def getint(self, section, setting, default=''):
         try:
-            return self._config.getint(section, setting)
+            s = self._config.getint(section, setting)
+            log.debug('Config section: %s setting: %s default: %s set to: %s',
+                        section, setting, default, s)
+            return s
         except Exception:
             if default != '':
+                log.debug('Config section: %s setting: %s default: %s',
+                        section, setting, default)
                 return default
             else:
                 raise
 
     def getfloat(self, section, setting, default=''):
         try:
-            return self._config.getfloat(section, setting)
+            s = self._config.getfloat(section, setting)
+            log.debug('Config section: %s setting: %s default: %s set to: %s',
+                        section, setting, default, s)
+            return s
         except Exception:
             if default != '':
+                log.debug('Config section: %s setting: %s default: %s',
+                        section, setting, default)
                 return default
             else:
                 raise
