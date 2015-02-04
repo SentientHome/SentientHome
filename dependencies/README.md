@@ -3,8 +3,8 @@ External Dependencies
 
 To allow for single package deployment of the project the following external dependencies are being packaged as part of the SentientHome project:
 
-ISY
----
+ISY - About to get refactored
+-----------------------------
 
 Created by Peter Shipley <peter.shipley@gmail.com> and licensed under BSD.
 This is part of the ISYlib-python package and hosted on github:
