@@ -1,4 +1,4 @@
-#!/usr/local/bin/python -u
+#!/usr/local/bin/python3 -u
 __author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
 __license__   = 'Apache License, Version 2.0'
@@ -24,7 +24,7 @@ handler = shEventHandler(config, config.getfloat('zillow', 'zillow_poll_interval
 retries = 0
 
 # set locale so we can easily strip the komma in the zindexValue
-locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' )
+locale.setlocale( locale.LC_ALL, 'en_US' )
 
 while True:
     try:
@@ -45,7 +45,7 @@ while True:
 
         # Wait for the next poll intervall until we retry
         # also allows for configuration to get updated
-        handler.sleep()
+        handler.sleep(config.getfloat('zillow', 'zillow_poll_interval', 3600))
         continue
 
     # Reset retries once we get a valid response
@@ -78,4 +78,4 @@ while True:
 
     handler.postEvent(event)
 
-    handler.sleep()
+    handler.sleep(config.getfloat('zillow', 'zillow_poll_interval', 3600))
