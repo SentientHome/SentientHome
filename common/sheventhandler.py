@@ -1,4 +1,4 @@
-#!/usr/local/bin/python -u
+#!/usr/local/bin/python3 -u
 __author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
 __license__   = 'Apache License, Version 2.0'
@@ -30,7 +30,7 @@ class shEventHandler:
                     log.warn('Event data: %s', event)
             except Exception:
                 # Report a problem but keep going...
-                log.warn('Exception posting data to event store: %s',\
+                log.error('Exception posting data to event store: %s',\
                                 self._config.event_store_path_safe)
                 pass
 
@@ -46,7 +46,7 @@ class shEventHandler:
                     log.warn('Event data: %s', event)
             except Exception:
                 # Report a problem but keep going...
-                log.warn('Exception posting data to event engine: %s',\
+                log.error('Exception posting data to event engine: %s',\
                                 self._config.event_engine_path_safe)
                 pass
 

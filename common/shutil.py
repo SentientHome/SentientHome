@@ -1,4 +1,4 @@
-#!/usr/local/bin/python -u
+#!/usr/local/bin/python3 -u
 __author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
 __license__   = 'Apache License, Version 2.0'
@@ -13,17 +13,17 @@ def xml_to_dict(text):
 
 # Helper function needed to convert an XML response to a Dictionary
 def etree_to_dict(t):
-    d = {t.tag: {} if t.attrib else None }
+    d = {t.tag: {} if t.attrib else None}
 
     c = list(t)
     if c:
         dd = defaultdict(list)
         for dc in map(etree_to_dict, c):
-            for k, v in dc.iteritems():
+            for k, v in dc.items():
                 dd[k].append(v)
-        d = {t.tag: {k:v[0] if len(v) == 1 else v for k, v in dd.iteritems()}}
+        d = {t.tag: {k:v[0] if len(v) == 1 else v for k, v in dd.items()}}
     if t.attrib:
-        d[t.tag].update(('@' + k, v) for k, v in t.attrib.iteritems())
+        d[t.tag].update(('@' + k, v) for k, v in t.attrib.items())
     if t.text:
         text = t.text.strip()
         if c or t.attrib:
@@ -37,16 +37,13 @@ def etree_to_dict(t):
 # Turn text encoded numeric values into numbers
 def numerify(v):
     try:
-      return int(v) if v.isdigit() else float(v)
+        return int(v) if v.isdigit() else float(v)
     except Exception:
-      try:
-        return v.encode('ascii')
-      except Exception:
         return v
 
 # Helper to rekey flattened dicts in dot notation
 def rekey_dict(key, d):
-    return dict((key + '.' + k, numerify(v)) for k, v in d.iteritems())
+    return dict((key + '.' + k, numerify(v)) for k, v in d.items())
 
 # Helper to flatten embeded structures
 # If there is a dict within a dict this function will pop the dict and

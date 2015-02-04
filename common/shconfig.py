@@ -1,11 +1,11 @@
-#!/usr/local/bin/python -u
+#!/usr/local/bin/python3 -u
 __author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
 __license__   = 'Apache License, Version 2.0'
 
 import os
 import time
-import ConfigParser
+from configparser import ConfigParser
 import logging as log
 
 log.basicConfig(format='%(asctime)s %(module)s %(levelname)s: %(message)s')
@@ -14,7 +14,7 @@ class shConfig:
     'SentientHome minimalistic configuration automation'
 
     def __init__(self, config_path):
-        self._config = ConfigParser.SafeConfigParser()
+        self._config = ConfigParser()
         self._config_path = os.path.expanduser(config_path)
 
         self._logger = log.getLogger()
