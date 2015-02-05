@@ -1,4 +1,4 @@
-#!/usr/local/bin/python -u
+#!/usr/local/bin/python3 -u
 __author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
 __license__   = 'Apache License, Version 2.0'
@@ -11,7 +11,10 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 from common.shconfig import shConfig
 from common.shutil import flatten_dict
 from common.sheventhandler import shEventHandler
-from dependencies.ISY.IsyEvent import ISYEvent
+
+# Add path to submodule dependencies.ISYlib-python
+sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/../dependencies/ISYlib-python')
+from ISY.IsyEvent import ISYEvent
 
 import logging as log
 log.info('Starting feed for Universal Devices ISY994')
@@ -25,12 +28,13 @@ handler = shEventHandler(config)
 # Realtime event feeder
 def eventFeed(*arg):
 
+    # Flatten dict and turned ebeded structure into dot notation
     data = flatten_dict(arg[0])
 
     event = [{
         'name': 'isy',
-        'columns': data.keys(),
-        'points': [ data.values() ]
+        'columns': list(data.keys()),
+        'points': [ list(data.values()) ]
     }]
 
     log.debug('Event data: %s', event)
@@ -72,7 +76,7 @@ while True:
 server.set_process_func(eventFeed, "")
 
 try:
-    print "Use Control-C to exit"
+    print('Use Control-C to exit')
     server.events_loop()   #no return
 except KeyboardInterrupt:
     log.info('Exiting...')
