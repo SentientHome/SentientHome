@@ -1,0 +1,3 @@
+[submodule "dependencies/ISYlib-python"]
+	path = dependencies/ISYlib-python
+	url = https://github.com/fxstein/ISYlib-python
