@@ -65,7 +65,7 @@ def flatten_dict(d):
 
     if type(d) is dict:
         # Interate over keys to check for embeded dicts
-        keys = d.keys()
+        keys = list(d.keys())
         for k in keys:
             if type(d[k]) is dict:
                 subdict = d.pop(k)
@@ -73,7 +73,7 @@ def flatten_dict(d):
                 r = rekey_dict(k, subdict)
                 # Recursion to walk embeded structures
                 r2 = flatten_dict(r)
-                f = dict(d.items() + r2.items())
+                f = dict(list(d.items()) + list(r2.items()))
 
     return f
 
