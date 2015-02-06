@@ -147,11 +147,20 @@ class shConfig:
         log.debug('Event store @: %s', self._event_store_path_safe)
 
     def _setEventEngine(self):
-        self._event_engine_active = self.getint('sentienthome', 'event_engine', 0)
+        if self.get('sentienthome', 'event_engine', 'OFF') == 'ON':
+            self._event_engine_active = 1
+        else:
+            self._event_engine_active = 0
 
-        # TODO: Implement event engine
-        self._event_engine_path = None
-        self._event_engine_path_safe = None
+        self._event_engine_addr   = self.get('sentienthome', 'event_addr')
+        self._event_engine_port   = self.get('sentienthome', 'event_port')
+        self._event_engine_path_safe = \
+                    "http://" + self._event_engine_addr + ":" + \
+                                self._event_engine_port + \
+                                self.get('sentienthome', 'event_path')
+
+        # TODO: Add authentication
+        self._event_engine_path = self._event_engine_path_safe
 
         if self._event_engine_active == 1:
             log.debug('Event engine @: %s', self._event_engine_path_safe)

@@ -10,6 +10,11 @@ retries                = 10
 ; supported target stores. Currently only INFLUXDB and DEVNULL supported
 event_store            = INFLUXDB
 
+event_engine           = ON
+event_addr             = 127.0.0.1
+event_port             = 8080
+event_path             = /event
+
 [supervisord]
 supervisord_config     = /etc/supervisord.conf
 
