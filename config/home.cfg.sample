@@ -10,10 +10,14 @@ retries                = 10
 ; supported target stores. Currently only INFLUXDB and DEVNULL supported
 event_store            = INFLUXDB
 
+; enable event engine
 event_engine           = ON
 event_addr             = 127.0.0.1
 event_port             = 8080
 event_path             = /event
+
+; setup tracer events - used to schedule and detect missing events
+tracer_interval        = 5
 
 [supervisord]
 supervisord_config     = /etc/supervisord.conf
