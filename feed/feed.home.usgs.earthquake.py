@@ -17,6 +17,8 @@ log.info('Starting SentientHome feed for USGS earthquake data')
 
 import requests
 import json
+# For checkpoint file
+import pickle
 
 config = shConfig('~/.config/home/home.cfg')
 # default to 5 min polls - the frequency the USGS update the feed
@@ -24,13 +26,30 @@ handler = shEventHandler(config, config.getfloat('usgs_quake', 'usgs_quake_poll_
 
 retries = 0
 
+# Initial poll - most likely a day if the increments are hourly data
+# We do this to catchup on events in case the feed was down for some time
+path = config.get('usgs_quake', 'usgs_quake_init_path')
+
+# Empty event cache - Needed to dedup incoming events if we have processed them
 events = list()
+
+(xxx, tmpfilename) = os.path.split(__file__)
+checkpoint_filename = '/tmp/' + tmpfilename + '.json'
+# See if we can restore the event cache from a previsous checkpoint
+try:
+    with open(checkpoint_filename, 'rb') as f:
+        # The protocol version used is detected automatically, so we do not
+        # have to specify it.
+        events = pickle.load(f)
+except (OSError, EOFError) as e:
+    log.warning('Unable to read checkpoint file: %s', checkpoint_filename)
+    pass
 
 while True:
     try:
         # Get all earthquakes of the past hour
-        r = requests.get('http://' + config.get('usgs_quake', 'usgs_earthquake_addr') +\
-                         config.get('usgs_quake', 'usgs_earthquake_path'))
+        r = requests.get('http://' + config.get('usgs_quake', 'usgs_quake_addr') +\
+                         path)
     except Exception:
         retries += 1
 
@@ -67,6 +86,8 @@ while True:
     handler.postEvent(event)
 
     features = data['features']
+
+    newevent = False
 
     for f in features:
 
@@ -112,6 +133,7 @@ while True:
         else:
             log.debug('Event data: %s', event)
 
+            newevent = True
             events.insert(0, event)
 
             # TODO: Purge events older than x hours
@@ -120,5 +142,18 @@ while True:
 
         log.debug('Event Cache Count: %s', len(events))
 
+    # If new events have been added to our cache, checkpoint it to file
+    if newevent == True:
+        try:
+            with open(checkpoint_filename, 'wb') as f:
+                # Pickle the 'data' dictionary using the highest protocol available.
+                pickle.dump(events, f, pickle.HIGHEST_PROTOCOL)
+        except OSError:
+            log.warning('Unable to write checkpoint file: %s', checkpoint_filename)
+            pass
+
     # We reset the poll interval in case the configuration has changed
     handler.sleep(config.getfloat('usgs_quake', 'usgs_quake_poll_interval', 300))
+
+    # Reset poll path before looping with latest setting
+    path = config.get('usgs_quake', 'usgs_quake_path')
