@@ -7,17 +7,50 @@ import logging as log
 import requests
 import json
 import time
+import os
+import pickle
 
 class shEventHandler:
     'SentientHome event handler'
 
-    def __init__(self, config, poll_interval=10):
+    def __init__(self, config, poll_interval=10, dedupe=False):
         self._config = config
         self._poll_interval = poll_interval
+        # See if we need to enable deduping logic
+        self._dedupe = dedupe
+        # Empty event cache - Needed to dedup incoming events if we have processed them
+        self._events = list()
+        self._events_modified = False
 
         self.checkPoint()
 
-    def postEvent(self, event):
+        # If we are require to dedupe re-read the checkpoint file
+        if self._dedupe==True:
+            self._checkpoint_filename = os.path.join(\
+                    self._config.get('sentienthome', 'checkpoint_path'),\
+                    self._config.origin_filename + '.p')
+            # See if we can restore the event cache from a previsous checkpoint
+            try:
+                with open(self._checkpoint_filename, 'rb') as f:
+                    # The protocol version used is detected automatically, so we do not
+                    # have to specify it.
+                    self._events = pickle.load(f)
+            except (OSError, EOFError) as e:
+                log.warning('Unable to read checkpoint file: %s', self._checkpoint_filename)
+                pass
+
+    def postEvent(self, event, dedupe=False):
+        if dedupe == True:
+            if self._dedupe == True:
+                if event in self._events:
+                    log.debug('Supressing duplicate event: %s', event)
+                    return
+                else:
+                    self._events_modified = True
+                    self._events.insert(0, event)
+            else:
+                log.warning('Eventhandler dedupe logic not inititalized. Ignoring dedupe.')
+
         # First deposit the event data into our event store
         if self._config.event_store_active == 1:
             try:
@@ -50,7 +83,25 @@ class shEventHandler:
                                 self._config.event_engine_path_safe)
                 pass
 
-    def checkPoint(self):
+    def checkPoint(self, write=False):
+        if self._dedupe == True and write == True and self._events_modified == True:
+            # Before taking  checkpoint lets prune the cache and remove old events
+            # We keep 2 time the daily interval rate
+            maxlength = (int)(2 * 86400 / self._poll_interval)
+            del self._events[maxlength:]
+
+            try:
+                with open(self._checkpoint_filename, 'wb') as f:
+                    # Pickle the 'data' dictionary using the highest protocol available.
+                    pickle.dump(self._events, f, pickle.HIGHEST_PROTOCOL)
+            except OSError:
+                log.warning('Unable to write checkpoint file: %s', self._checkpoint_filename)
+                pass
+
+            # Now that we have written the checkpoint file reset modified flag
+            self._events_modified = False
+
+
         self._checkpoint = time.clock()
 
     def sleep(self, poll_interval=''):
@@ -67,12 +118,13 @@ class shEventHandler:
             # Enforce minimum of .1 sec and avoid negative
             if time_to_sleep < .1: time_to_sleep = .1
 
+            log.debug('Event Cache Count: %s', len(self._events))
             log.debug('Time to sleep: %fs', time_to_sleep)
             time.sleep(time_to_sleep)
         else:
             log.warn('No poll intervall defined. Nothing to sleep.')
 
-        self.checkPoint()
+        self.checkPoint(write=True)
 
         # Leverage end of donwtime to check for updated config file
         self._config.reloadModifiedConfig()
