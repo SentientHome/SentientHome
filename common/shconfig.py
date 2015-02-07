@@ -14,7 +14,9 @@ log.basicConfig(format='%(asctime)s %(module)s %(levelname)s: %(message)s')
 class shConfig:
     'SentientHome minimalistic configuration automation'
 
-    def __init__(self, config_path):
+    def __init__(self, config_path, name=None):
+        self._name = name
+
         self._config = ConfigParser()
         self._config_path = os.path.expanduser(config_path)
 
@@ -174,6 +176,10 @@ class shConfig:
     @property
     def config(self):
         return self._config
+
+    @property
+    def name(self):
+        return self._name
 
     @property
     def retries(self):
