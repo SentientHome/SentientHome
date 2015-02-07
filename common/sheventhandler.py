@@ -15,6 +15,9 @@ class shEventHandler:
 
     def __init__(self, config, poll_interval=10, dedupe=False):
         self._config = config
+
+        log.info('Starting feed for %s', self._config.name)
+
         self._poll_interval = poll_interval
         # See if we need to enable deduping logic
         self._dedupe = dedupe
@@ -118,17 +121,64 @@ class shEventHandler:
             # Enforce minimum of .1 sec and avoid negative
             if time_to_sleep < .1: time_to_sleep = .1
 
-            log.debug('Event Cache Count: %s', len(self._events))
             log.debug('Time to sleep: %fs', time_to_sleep)
             time.sleep(time_to_sleep)
         else:
             log.warn('No poll intervall defined. Nothing to sleep.')
+
+        if self._dedupe == True:
+            log.debug('Event Cache Count: %s', len(self._events))
 
         self.checkPoint(write=True)
 
         # Leverage end of donwtime to check for updated config file
         self._config.reloadModifiedConfig()
 
+    # RESTful helper to handle retries
+    def get(self, url, auth=None):
+        retries = 0
+
+        while True:
+            try:
+                return requests.get(url, auth=auth)
+            except Exception:
+                retries += 1
+
+                log.warn('Cannot GET from %s. Attempt %n of %n',\
+                         self._config.name, retries, self._config.retries)
+
+                if retries >= self._config.retries:
+                    log.Error('Cannot GET from to %s. Exiting...',\
+                              self._config.name)
+                    raise
+
+                # Wait for the next poll intervall until we retry
+                # also allows for configuration to get updated
+                self.sleep()
+                continue
+
+    # RESTful helper to handle retries
+    def post(self, url, auth=None, data=None):
+        retries = 0
+
+        while True:
+            try:
+                return requests.post(url, auth=auth, data=data)
+            except Exception:
+                retries += 1
+
+                log.warn('Cannot POST to %s. Attempt %n of %n',\
+                         self._config.name, retries, self._config.retries)
+
+                if retries >= self._config.retries:
+                    log.Error('Cannot POST to %s. Exiting...',\
+                              self._config.name)
+                    raise
+
+                # Wait for the next poll intervall until we retry
+                # also allows for configuration to get updated
+                self.sleep()
+                continue
 
     @property
     def config(self):
