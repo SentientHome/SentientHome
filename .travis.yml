@@ -2,10 +2,10 @@ language: python
 python:
   - "3.4"
 install:
-  - setup.py
+  - fxstein/SentientHome/setup.py
 before_script:
   - echo true
 script:
-  - common/shconfig.py
-  - common/sheventhandler.py
-  - common/shutil.py
+  - fxstein/SentientHome/common/shconfig.py
+  - fxstein/SentientHome/common/sheventhandler.py
+  - fxstein/SentientHome/common/shutil.py
