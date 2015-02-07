@@ -7,6 +7,7 @@ import os
 import time
 from configparser import ConfigParser
 import logging as log
+import inspect
 
 log.basicConfig(format='%(asctime)s %(module)s %(levelname)s: %(message)s')
 
@@ -20,6 +21,11 @@ class shConfig:
         self._logger = log.getLogger()
 
         self._readConfig()
+
+        # Lets store who is using this module - used for filenames
+        (self._origin_pathname, self._origin_filename) = os.path.split(inspect.stack()[-1][1])
+
+        log.debug('Origin: %s', self._origin_filename)
 
 
     def _readConfig(self):
@@ -200,6 +206,14 @@ class shConfig:
     @property
     def event_engine_path(self):
         return self._event_engine_path
+
+    @property
+    def origin_filename(self):
+        return self._origin_filename
+
+    @property
+    def origin_pathname(self):
+        return self._origin_pathname
 
 #
 # Do nothing
