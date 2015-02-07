@@ -1,0 +1,11 @@
+language: python
+python:
+  - "3.4"
+install:
+  - setup.py
+before_script:
+  - echo true
+script:
+  - common/shconfig.py
+  - common/sheventhandler.py
+  - common/shutil.py
