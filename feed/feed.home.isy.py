@@ -17,11 +17,8 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/../dependencies/
 from ISY.IsyEvent import ISYEvent
 
 import logging as log
-log.info('Starting feed for Universal Devices ISY994')
 
-import requests
-
-config = shConfig('~/.config/home/home.cfg')
+config = shConfig('~/.config/home/home.cfg', name='Universal Devices ISY994')
 handler = shEventHandler(config)
 
 

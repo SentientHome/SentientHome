@@ -14,9 +14,8 @@ from common.sheventhandler import shEventHandler
 from dependencies.netatmo import lnetatmo
 
 import logging as log
-log.info('Starting feed for Netatmo climate data')
 
-config = shConfig('~/.config/home/home.cfg')
+config = shConfig('~/.config/home/home.cfg', name='Netatmo Climate Data')
 handler = shEventHandler(config, config.getfloat('autelis', 'netatmo_poll_interval', 10))
 
 netatmo_unique = config.getint('netatmo', 'netatmo_unique', 1)

@@ -12,13 +12,11 @@ from common.shconfig import shConfig
 from common.sheventhandler import shEventHandler
 
 import logging as log
-log.info('Starting SentientHome Tracer')
-
 import time
 
 # Simple tracer that 'fires' events on a predefined interval
 
-config = shConfig('~/.config/home/home.cfg')
+config = shConfig('~/.config/home/home.cfg', name='SentientHome Tracer')
 handler = shEventHandler(config, config.getfloat('sentienthome', 'tracer_interval', 10))
 
 count = 0

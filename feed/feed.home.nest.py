@@ -5,7 +5,7 @@ __license__   = 'Apache License, Version 2.0'
 
 # Make sure we have access to SentientHome commons
 import os, sys
-sys.path.append(os.path.abspath('..'))
+sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 import json
 
 # Sentient Home configuration
@@ -14,11 +14,10 @@ from common.sheventhandler import shEventHandler
 from dependencies.nest_thermostat import Nest
 
 import logging as log
-log.info('Starting feed for Nest data')
 
 import collections
 
-config = shConfig('~/.config/home/home.cfg')
+config = shConfig('~/.config/home/home.cfg', name='Nest Data')
 handler = shEventHandler(config, config.getfloat('nest', 'nest_poll_interval', 60))
 
 retries = 0

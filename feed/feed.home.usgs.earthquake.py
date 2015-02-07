@@ -12,13 +12,10 @@ from common.shconfig import shConfig
 from common.sheventhandler import shEventHandler
 
 import logging as log
-
-log.info('Starting SentientHome feed for USGS earthquake data')
-
 import requests
 import json
 
-config = shConfig('~/.config/home/home.cfg')
+config = shConfig('~/.config/home/home.cfg', name='USGS Earthquake Data')
 # default to 5 min polls - the frequency the USGS update the feed
 handler = shEventHandler(config, config.getfloat('usgs_quake', 'usgs_quake_poll_interval', 300), dedupe=True)
 
@@ -29,30 +26,9 @@ retries = 0
 path = config.get('usgs_quake', 'usgs_quake_init_path')
 
 while True:
-    try:
-        # Get all earthquakes of the past hour
-        r = requests.get('http://' + config.get('usgs_quake', 'usgs_quake_addr') +\
-                         path)
-    except Exception:
-        retries += 1
-
-        log.warn('Cannot connect to USGS earthquake feed. Attempt %s of %s',\
-                        retries, config.retries)
-
-        if retries >= config.retries:
-            log.Error('Cannot connect to USGS earthquake feed. Exiting...')
-            raise
-
-        # Wait for the next poll intervall until we retry
-        # also allows for configuration to get updated
-        handler.sleep(config.getfloat('usgs_quake', 'usgs_quake_poll_interval', 300))
-        continue
-
-    # Reset retries once we get a valid response
-    retries = 0
-
-    #log.debug('Fetch data: %s', r.text)
-
+    # Get all earthquakes of the past hour
+    r = handler.get('http://' + config.get('usgs_quake', 'usgs_quake_addr') +\
+                     path)
     data = json.loads(r.text)
 
     m = data['metadata']

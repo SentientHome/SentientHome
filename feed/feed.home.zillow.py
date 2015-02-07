@@ -13,44 +13,20 @@ from common.shutil import xml_to_dict
 from common.sheventhandler import shEventHandler
 
 import logging as log
-log.info('Starting feed for Zillow home data')
-
-import requests
 import locale
 
-config = shConfig('~/.config/home/home.cfg')
+config = shConfig('~/.config/home/home.cfg', name='Zillow Home Data')
 handler = shEventHandler(config, config.getfloat('zillow', 'zillow_poll_interval', 3600))
-
-retries = 0
 
 # set locale so we can easily strip the komma in the zindexValue
 locale.setlocale( locale.LC_ALL, 'en_US' )
 
 while True:
-    try:
-        r = requests.get('http://' + config.get('zillow', 'zillow_addr') + ":" +\
-                                     config.get('zillow', 'zillow_port') +\
-                                     config.get('zillow', 'zillow_path') + "?zws-id=" +\
-                                     config.get('zillow', 'zillow_zws_id') + "&zpid=" +\
-                                     config.get('zillow', 'zillow_zpid'))
-    except Exception:
-        retries += 1
-
-        log.warn('Cannot connect to Zillow. Attempt %n of %n',\
-                        retries, config.retries)
-
-        if retries >= config.retries:
-            log.Error('Cannot connect to Zillow. Exiting...')
-            raise
-
-        # Wait for the next poll intervall until we retry
-        # also allows for configuration to get updated
-        handler.sleep(config.getfloat('zillow', 'zillow_poll_interval', 3600))
-        continue
-
-    # Reset retries once we get a valid response
-    retries = 0
-
+    r = handler.get('http://' + config.get('zillow', 'zillow_addr') + ":" +\
+                                config.get('zillow', 'zillow_port') +\
+                                config.get('zillow', 'zillow_path') + "?zws-id=" +\
+                                config.get('zillow', 'zillow_zws_id') + "&zpid=" +\
+                                config.get('zillow', 'zillow_zpid'))
     log.debug('Fetch data: %s', r.text)
 
     data = xml_to_dict(r.text)

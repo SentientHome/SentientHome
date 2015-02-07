@@ -13,10 +13,9 @@ from common.shutil import numerify
 from common.sheventhandler import shEventHandler
 
 import logging as log
-log.info('Starting feed for Google Finance data')
-
-import requests
 import json
+
+config = shConfig('~/.config/home/home.cfg', name='Google Finance Data')
 
 # Map more meaningful names to google finance codes
 CODES_GOOGLE = {
@@ -43,11 +42,7 @@ CODES_GOOGLE = {
 
 def quotes_feed(event_handler, finance_path, series_name, symbol_list):
 
-    try:
-        data = requests.get(finance_path + symbol_list)
-    except Exception:
-        log.warn('Exception getting data from %s%s', finance_path, symbol_list)
-        return
+    data = handler.get(finance_path + symbol_list)
 
     log.debug('Fetch data: %s', data.text)
 
@@ -71,27 +66,22 @@ def quotes_feed(event_handler, finance_path, series_name, symbol_list):
 
         event_handler.postEvent(event)
 
-
-config = shConfig('~/.config/home/home.cfg')
-
-finance_provider_addr = config.get('finance', 'finance_provider_addr')
-finance_provider_port = config.get('finance', 'finance_provider_port')
-finance_provider_path = config.get('finance', 'finance_provider_path')
-finance_stock_list    = config.get('finance', 'finance_stock_list')
-finance_index_list    = config.get('finance', 'finance_index_list')
-finance_currency_list = config.get('finance', 'finance_currency_list')
-
-finance_path = "http://" + finance_provider_addr + ":" + finance_provider_port + finance_provider_path
-log.debug("Finance Path: %s", finance_path)
-
-handler = shEventHandler(config, config.getfloat('finance', 'finance_poll_interval', 30))
+handler = shEventHandler(config,\
+                         config.getfloat('finance', 'finance_poll_interval', 30))
 
 while True:
+    finance_path = "http://" + config.get('finance', 'finance_provider_addr') +\
+                   ":" + config.get('finance', 'finance_provider_port') +\
+                   config.get('finance', 'finance_provider_path')
+    log.debug("Finance Path: %s", finance_path)
 
-  quotes_feed(handler, finance_path, 'indexes', finance_index_list)
+    quotes_feed(handler, finance_path, 'indexes',\
+                config.get('finance', 'finance_index_list'))
 
-  quotes_feed(handler, finance_path, 'stockquotes', finance_stock_list)
+    quotes_feed(handler, finance_path, 'stockquotes',\
+                config.get('finance', 'finance_stock_list'))
 
-  quotes_feed(handler, finance_path, 'currencies', finance_currency_list)
+    quotes_feed(handler, finance_path, 'currencies',\
+                config.get('finance', 'finance_currency_list'))
 
-  handler.sleep(config.getfloat('finance', 'finance_poll_interval', 30))
+    handler.sleep(config.getfloat('finance', 'finance_poll_interval', 30))

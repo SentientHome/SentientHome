@@ -13,42 +13,23 @@ from common.shutil import numerify
 from common.sheventhandler import shEventHandler
 
 import logging as log
-log.info('Starting feed for Rainforest Eagle gateway')
 
-import requests, json
+import json
 
-config = shConfig('~/.config/home/home.cfg')
-handler = shEventHandler(config, config.getfloat('raineagle', 'eagle_poll_interval', 5))
-
-retries = 0
+config = shConfig('~/.config/home/home.cfg', name='Rainforest Eagle Gateway')
+handler = shEventHandler(config,\
+                         config.getfloat('raineagle', 'eagle_poll_interval', 5))
 
 command =  '<LocalCommand>\n\
                 <Name>get_device_list</Name>\n\
             </LocalCommand>'
 
-while True:
-    try:
-        r = requests.post('http://' + config.get('raineagle', 'eagle_addr') +\
-                            '/cgi-bin/cgi_manager', data=command)
-        log.debug('Fetch data: %s', r.text)
+r = handler.post('http://' + config.get('raineagle', 'eagle_addr') +\
+                 '/cgi-bin/cgi_manager', data=command)
+log.debug('Fetch data: %s', r.text)
 
-        device = json.loads(r.text)
-        device_macid = device['device_mac_id[0]']
-
-        break
-    except Exception:
-        retries += 1
-
-        # Something went wrong authorizing the connection to the Eagle gateway
-        log.warn( 'Cannot connect to Rainforest Eagle. Attempt %s of %s', retries, config.retries )
-
-        if retries >= config.retries:
-            log.error( 'Unable to connect to Rainforest Eagle. Exiting...' )
-            raise
-
-        handler.sleep(config.getfloat('raineagle', 'eagle_poll_interval', 5))
-
-retries = 0
+device = json.loads(r.text)
+device_macid = device['device_mac_id[0]']
 
 command =  '<LocalCommand>\n\
                 <Name>get_usage_data</Name>\n\
@@ -56,50 +37,30 @@ command =  '<LocalCommand>\n\
             </LocalCommand>'
 
 while True:
-    while True:
-        try:
-            r = requests.post('http://' + config.get('raineagle', 'eagle_addr') +\
-                                '/cgi-bin/cgi_manager', data=command)
-            log.debug('Fetch data: %s', r.text)
+    r = handler.post('http://' + config.get('raineagle', 'eagle_addr') +\
+                     '/cgi-bin/cgi_manager', data=command)
+    log.debug('Fetch data: %s', r.text)
 
-            devicedata = dict((k, numerify(v)) for k, v in json.loads(r.text).items())
+    devicedata = dict((k, numerify(v)) for k, v in json.loads(r.text).items())
 
-            if devicedata['demand_units'] == 'W':
-                power = devicedata['demand']
-            elif devicedata['demand_units'] == 'kW':
-                power = devicedata['demand'] * 1000
-            else:
-                log.warn( 'Unsupport demand units: %s', devicedata['demand_units'] )
-                raise
+    if devicedata['demand_units'] == 'W':
+        power = devicedata['demand']
+    elif devicedata['demand_units'] == 'kW':
+        power = devicedata['demand'] * 1000
+    else:
+        log.error( 'Unsupport demand units: %s', devicedata['demand_units'] )
 
-            if devicedata['summation_units'] == 'Wh':
-                received  = devicedata['summation_received']
-                delivered = devicedata['summation_delivered']
-            elif devicedata['summation_units'] == 'kWh':
-                received  = devicedata['summation_received'] * 1000
-                delivered = devicedata['summation_delivered'] * 1000
-            elif devicedata['summation_units'] == 'MWh':
-                received  = devicedata['summation_received'] * 1000 * 1000
-                delivered = devicedata['summation_delivered'] * 1000 * 1000
-            else:
-                log.warn( 'Unsupport summation units: %s', devicedata['summation_units'] )
-                raise
-
-            break
-        except Exception:
-            retries += 1
-
-            # Something went wrong authorizing the connection to the Eagle gateway
-            log.warn( 'Cannot fetch device data. Attempt %s of %s', retries, config.retries )
-
-            if retries >= config.retries:
-                log.error( 'Unable to connect to Rainforest Eagle. Exiting...' )
-                raise
-
-            handler.sleep(config.getfloat('raineagle', 'eagle_poll_interval', 5))
-
-    # Reset retries on successful poll
-    retries = 0
+    if devicedata['summation_units'] == 'Wh':
+        received  = devicedata['summation_received']
+        delivered = devicedata['summation_delivered']
+    elif devicedata['summation_units'] == 'kWh':
+        received  = devicedata['summation_received'] * 1000
+        delivered = devicedata['summation_delivered'] * 1000
+    elif devicedata['summation_units'] == 'MWh':
+        received  = devicedata['summation_received'] * 1000 * 1000
+        delivered = devicedata['summation_delivered'] * 1000 * 1000
+    else:
+        log.error( 'Unsupport summation units: %s', devicedata['summation_units'] )
 
     amps = power/240
 
