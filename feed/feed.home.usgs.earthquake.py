@@ -44,7 +44,9 @@ while True:
 
     handler.postEvent(event)
 
-    features = data['features']
+    # Need to revser the order of incoming events as news are on top but we need
+    # to process in the order they happened.
+    features = data['features'][::-1]
 
     for f in features:
         event = [{
