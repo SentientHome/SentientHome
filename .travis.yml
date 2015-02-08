@@ -2,11 +2,8 @@ language: python
 python:
   - "3.4"
 install:
-  - SentientHome/setup.py
-before_script:
-  - pwd
-  - ls
+  - python setup.py
 script:
-  - SentientHome/common/shconfig.py
-  - SentientHome/common/sheventhandler.py
-  - SentientHome/common/shutil.py
+  - python common/shconfig.py
+  - python common/sheventhandler.py
+  - python common/shutil.py
