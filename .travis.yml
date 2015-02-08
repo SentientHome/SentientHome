@@ -2,10 +2,11 @@ language: python
 python:
   - "3.4"
 install:
-  - fxstein/SentientHome/setup.py
+  - SentientHome/setup.py
 before_script:
-  - echo true
+  - pwd
+  - ls
 script:
-  - fxstein/SentientHome/common/shconfig.py
-  - fxstein/SentientHome/common/sheventhandler.py
-  - fxstein/SentientHome/common/shutil.py
+  - SentientHome/common/shconfig.py
+  - SentientHome/common/sheventhandler.py
+  - SentientHome/common/shutil.py
