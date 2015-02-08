@@ -2,6 +2,8 @@ SentientHome
 ============
 
 [![Build Status](https://travis-ci.org/fxstein/SentientHome.svg?branch=master)](https://travis-ci.org/fxstein/SentientHome)
+[![Code Climate](https://codeclimate.com/github/fxstein/SentientHome/badges/gpa.svg)](https://codeclimate.com/github/fxstein/SentientHome)
+[![Test Coverage](https://codeclimate.com/github/fxstein/SentientHome/badges/coverage.svg)](https://codeclimate.com/github/fxstein/SentientHome)
 
 This is currently work in progress for a Sentient Home Automation project I am working on.
 
