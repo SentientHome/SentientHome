@@ -8,6 +8,7 @@ import requests
 import json
 import time
 import os
+from collections import deque
 import pickle
 
 class shEventHandler:
@@ -21,14 +22,16 @@ class shEventHandler:
         self._poll_interval = poll_interval
         # See if we need to enable deduping logic
         self._dedupe = dedupe
-        # Empty event cache - Needed to dedup incoming events if we have processed them
-        self._events = list()
-        self._events_modified = False
 
         self.checkPoint()
 
         # If we are require to dedupe re-read the checkpoint file
         if self._dedupe==True:
+            # Empty event cache - Needed to dedup incoming events if we have processed them
+            self._events_maxlen = (int)(86400 / self._poll_interval)
+            self._events = deque(maxlen=self._events_maxlen)
+            self._events_modified = False
+            # Assemble a filename for the physical checkpoint
             self._checkpoint_filename = os.path.join(\
                     self._config.get('sentienthome', 'checkpoint_path'),\
                     self._config.origin_filename + '.p')
@@ -41,6 +44,12 @@ class shEventHandler:
             except (OSError, EOFError) as e:
                 log.warning('Unable to read checkpoint file: %s', self._checkpoint_filename)
                 pass
+            # Fianlly check if the current class version uses the same datatype
+            if type(self._events) != type(deque(maxlen=self._events_maxlen)):
+                # This is only a checkpoint: truncate, dont bother converting
+                log.debug("Checkpoint file data type was: %s",  type(self._events))
+                self._events = deque(maxlen=self._events_maxlen)
+                log.debug("Checkpoint file data type now: %s",  type(self._events))
 
     def postEvent(self, event, dedupe=False):
         if dedupe == True:
@@ -50,7 +59,7 @@ class shEventHandler:
                     return
                 else:
                     self._events_modified = True
-                    self._events.insert(0, event)
+                    self._events.appendleft(event)
             else:
                 log.warning('Eventhandler dedupe logic not inititalized. Ignoring dedupe.')
 
@@ -88,11 +97,7 @@ class shEventHandler:
 
     def checkPoint(self, write=False):
         if self._dedupe == True and write == True and self._events_modified == True:
-            # Before taking  checkpoint lets prune the cache and remove old events
-            # We keep 2 time the daily interval rate
-            maxlength = (int)(2 * 86400 / self._poll_interval)
-            del self._events[maxlength:]
-
+            # Write checkpoint deque type manages maxlength automatically
             try:
                 with open(self._checkpoint_filename, 'wb') as f:
                     # Pickle the 'data' dictionary using the highest protocol available.
@@ -104,20 +109,25 @@ class shEventHandler:
             # Now that we have written the checkpoint file reset modified flag
             self._events_modified = False
 
-
         self._checkpoint = time.clock()
 
     def sleep(self, poll_interval=''):
         # Update poll_interval if supplied
         if poll_interval != '': self._poll_interval = poll_interval
 
-        # Put processing to sleep until next polling interval
+        if self._dedupe == True:
+            log.debug('Event Cache Count: %s', len(self._events))
+            log.debug('Event Cache Max Size: %s', self._events.maxlen)
 
+        prior_checkpoint = self._checkpoint
+        self.checkPoint(write=True)
+
+        # Put processing to sleep until next polling interval
         if self._poll_interval >= 0:
             # Logic to true up the poll intervall time for time lost processing
             time_to_sleep = self._poll_interval -\
                             (time.clock() -\
-                            self._checkpoint)
+                            prior_checkpoint)
             # Enforce minimum of .1 sec and avoid negative
             if time_to_sleep < .1: time_to_sleep = .1
 
@@ -126,10 +136,7 @@ class shEventHandler:
         else:
             log.warn('No poll intervall defined. Nothing to sleep.')
 
-        if self._dedupe == True:
-            log.debug('Event Cache Count: %s', len(self._events))
-
-        self.checkPoint(write=True)
+        self.checkPoint()
 
         # Leverage end of donwtime to check for updated config file
         self._config.reloadModifiedConfig()
