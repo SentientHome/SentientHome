@@ -55,7 +55,7 @@ class shEventHandler:
         if dedupe == True:
             if self._dedupe == True:
                 if event in self._events:
-                    log.debug('Supressing duplicate event: %s', event)
+                    log.debug('Duplicate event: %.25s...', event[0]['points'])
                     return
                 else:
                     self._events_modified = True
