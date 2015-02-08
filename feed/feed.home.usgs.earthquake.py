@@ -46,10 +46,7 @@ while True:
 
     features = data['features']
 
-    newevent = False
-
     for f in features:
-
         event = [{
             'name': 'usgs.earthquake.feature', # Time Series Name
             'columns': ['id', 'long', 'lat', 'depth', 'mag', 'type'\
@@ -86,7 +83,7 @@ while True:
                          f['properties']['sig']
                           ]] # Data points
         }]
-
+        # dedupe automatically ignores events we have processed before
         handler.postEvent(event, dedupe=True)
 
     # We reset the poll interval in case the configuration has changed
