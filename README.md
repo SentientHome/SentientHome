@@ -1,6 +1,8 @@
 SentientHome
 ============
 
+[![Build Status](https://travis-ci.org/fxstein/SentientHome.svg?branch=master)](https://travis-ci.org/fxstein/SentientHome)
+
 This is currently work in progress for a Sentient Home Automation project I am working on.
 
 The project is primarily based on python.
