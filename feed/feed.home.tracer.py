@@ -24,21 +24,12 @@ count = 0
 while True:
     count += 1
 
-    tm = time.time()
-    st = time.localtime()
-    eventtype = 'localtime'
+    # time in milliseconds since epoch
+    tm = time.time()*1000
     event = [{
         'name': 'tracer', # Time Series Name
-        'columns': ['time', 'count', 'eventtype',
-                    'year', 'month', 'yday', 'mday', 'wday',
-                    'hour24', 'hour12', 'min', 'sec',
-                    'isdst', 'tzone', 'gmtoff'
-                    ], # Keys
-        'points': [[tm, count, eventtype,
-                    st.tm_year, st.tm_mon, st.tm_yday, st.tm_mday, st.tm_wday,
-                    st.tm_hour, st.tm_hour % 12, st.tm_min, st.tm_sec,
-                    st.tm_isdst, st.tm_zone, st.tm_gmtoff
-                    ], ] # Data points
+        'columns': ['time', 'count'], # Keys
+        'points': [[tm, count]] # Data points
     }]
 
     log.debug('Event data: %s', event)
