@@ -14,21 +14,60 @@ config = shConfig('~/.config/home/home.cfg')
 import asyncio
 from aiohttp import web
 import json
+import time
+from collections import defaultdict, deque
+
+cache = defaultdict(deque)
 
 import logging as log
 log.info('Starting Sentient Home Event Engine')
 
+cache = defaultdict(list)
+
 @asyncio.coroutine
 def handle_info(request):
-    output = {'msg' : 'SentientHome Event Engine'}
+    # TODO: Output generic engine statistics
+    output = {'msg' : 'SentientHome Event Engine',
+              'body': 'I`m alive!'}
+
+    for c in cache:
+        log.debug('%s Max Cache Entries: %s', c, cache[c].maxlen)
+        log.debug('%s Cache Entries: %s', c, len(cache[c]))
+
     return web.Response(body=json.dumps(output).encode('utf-8'))
 
 @asyncio.coroutine
 def handle_event(request):
 
     text = yield from request.text()
-    data = json.loads(text)
-    log.debug('Event Type: %s', data[0]['name'], )
+    event = json.loads(text)
+
+    # Assemble individual events from incoming stream
+    #
+    for e in event:
+        log.debug('Event Type: %s', e['name'], )
+        # Initialize event cache if it does not exist yet
+        if not cache[e['name']]:
+            # TODO: Lookup cache size from config
+            cache[e['name']] = deque(maxlen=500)
+
+        for p in e['points']:
+            if len(e['columns']) != len(p):
+                log.error('Number of Columns %s mismatches number of Points %s',\
+                            len(e['columns']), len(p))
+            myevent = dict()
+
+            # Timestamp the assembled event in milliseconds since epoch
+            myevent['shtime'] = time.time()*1000
+            for x in range(0, len(e['columns'])):
+                myevent[e['columns'][x]]=p[x]
+
+            log.debug('myevent: %s', myevent)
+
+            cache[e['name']].appendleft(myevent)
+
+            if e['name'] == 'tracer':
+                log.debug('Event Latency: %sms', myevent['shtime']-myevent['time'])
 
     output = {'msg' : 'Event Received'}
     return web.Response(body=json.dumps(output).encode('utf-8'))
