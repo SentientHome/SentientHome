@@ -42,7 +42,7 @@ while True:
 
     log.debug('Event data: %s', event)
 
-    handler.postEvent(event)
+    handler.postEvent(event, dedupe=True)
 
     # Need to revser the order of incoming events as news are on top but we need
     # to process in the order they happened.
@@ -51,10 +51,10 @@ while True:
     for f in features:
         event = [{
             'name': 'usgs.earthquake.feature', # Time Series Name
-            'columns': ['id', 'long', 'lat', 'depth', 'mag', 'type'\
-                        'magtype', 'tz', 'felt', 'place', 'status'\
-                        'gap', 'dmin', 'rms', 'ids', 'title', 'types'\
-                        'cdi', 'net', 'nst', 'sources', 'alert', 'time'\
+            'columns': ['id', 'long', 'lat', 'depth', 'mag', 'type',
+                        'magtype', 'tz', 'felt', 'place', 'status',
+                        'gap', 'dmin', 'rms', 'ids', 'title', 'types',
+                        'cdi', 'net', 'nst', 'sources', 'alert', 'time',
                         'tsunami', 'code', 'sig'
                         ], # Keys
             'points': [[ f['id'],\
