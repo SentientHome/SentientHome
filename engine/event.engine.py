@@ -57,8 +57,10 @@ def handle_event(request):
                             len(e['columns']), len(p))
             myevent = dict()
 
+            # Carry forward initial timestamp from feed
+            myevent['shtime1'] = e['shtime1']
             # Timestamp the assembled event in milliseconds since epoch
-            myevent['shtime'] = time.time()*1000
+            myevent['shtime2'] = time.time()*1000
             for x in range(0, len(e['columns'])):
                 myevent[e['columns'][x]]=p[x]
 
@@ -66,8 +68,8 @@ def handle_event(request):
 
             cache[e['name']].appendleft(myevent)
 
-            if e['name'] == 'tracer':
-                log.debug('Event Latency: %sms', myevent['shtime']-myevent['time'])
+            log.debug('Event Latency: %2.4sms',\
+                myevent['shtime2']-myevent['shtime1'])
 
     output = {'msg' : 'Event Received'}
     return web.Response(body=json.dumps(output).encode('utf-8'))
