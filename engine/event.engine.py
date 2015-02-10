@@ -68,7 +68,7 @@ def handle_info(request):
 
         output['cacheinfo'].append(cacheinfo)
 
-    return web.Response(body=json.dumps(output).encode('utf-8'))
+    return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
 
 @asyncio.coroutine
 def handle_event(request):
