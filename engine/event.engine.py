@@ -90,7 +90,7 @@ def handle_cache(request):
               'body': name + ' Sample Data',
               'events': []}
 
-    for i in range (0, 20):
+    for i in range (0, 50):
         try:
             output['events'].append(cache[name][i])
         except Exception:
@@ -115,7 +115,7 @@ def handle_isy(request):
                 i = i + 1
         except Exception:
             break
-        if i >= 20: break
+        if i >= 50: break
 
     return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
 
