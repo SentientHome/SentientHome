@@ -22,7 +22,7 @@ cache = defaultdict(deque)
 import logging as log
 log.info('Starting Sentient Home Event Engine')
 
-cache = defaultdict(list)
+cache = defaultdict(deque)
 
 @asyncio.coroutine
 def handle_info(request):
@@ -35,6 +35,37 @@ def handle_info(request):
         cacheinfo = dict()
         cacheinfo[c + '.maxlen'] = cache[c].maxlen
         cacheinfo[c + '.len'] = len(cache[c])
+
+        # Calculate event statistics
+        eventcount = 0
+        timenow = time.time() * 1000
+        events1sec = 0
+        events10sec = 0
+        events60sec = 0
+        events10min = 0
+        events1h = 0
+        for e in cache[c]:
+            eventcount = eventcount + 1
+            tdelta = timenow - e['shtime2']
+            if tdelta <= 1000:
+                events1sec = eventcount
+            if tdelta <= 10000:
+                events10sec = eventcount
+            if tdelta <= 60000:
+                events60sec = eventcount
+            if tdelta <= 600000:
+                events10min = eventcount
+            if tdelta <= 3600000:
+                events1h = eventcount
+            else:
+                break
+
+        cacheinfo[c + '.events1sec'] = events1sec
+        cacheinfo[c + '.events10sec'] = events10sec
+        cacheinfo[c + '.events60sec'] = events60sec
+        cacheinfo[c + '.events10min'] = events10min
+        cacheinfo[c + '.events1h'] = events1h
+
         output['cacheinfo'].append(cacheinfo)
 
     return web.Response(body=json.dumps(output).encode('utf-8'))
