@@ -24,12 +24,11 @@ count = 0
 while True:
     count += 1
 
-    # time in milliseconds since epoch
-    tm = time.time()*1000
     event = [{
         'name': 'tracer', # Time Series Name
         'columns': ['time', 'count'], # Keys
-        'points': [[tm, count]] # Data points
+        # time in milliseconds since epoch
+        'points': [[time.time()*1000, count]] # Data points
     }]
 
     log.debug('Event data: %s', event)
