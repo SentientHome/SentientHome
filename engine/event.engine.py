@@ -28,11 +28,14 @@ cache = defaultdict(list)
 def handle_info(request):
     # TODO: Output generic engine statistics
     output = {'msg' : 'SentientHome Event Engine',
-              'body': 'I`m alive!'}
+              'body': 'I`m alive!',
+              'cacheinfo': []}
 
     for c in cache:
-        log.debug('%s Max Cache Entries: %s', c, cache[c].maxlen)
-        log.debug('%s Cache Entries: %s', c, len(cache[c]))
+        cacheinfo = dict()
+        cacheinfo[c + '.maxlen'] = cache[c].maxlen
+        cacheinfo[c + '.len'] = len(cache[c])
+        output['cacheinfo'].append(cacheinfo)
 
     return web.Response(body=json.dumps(output).encode('utf-8'))
 
