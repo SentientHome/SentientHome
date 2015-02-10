@@ -10,6 +10,7 @@ import time
 import os
 from collections import deque
 import pickle
+import copy
 
 class shEventHandler:
     'SentientHome event handler'
@@ -52,10 +53,17 @@ class shEventHandler:
                 log.debug("Checkpoint file data type now: %s",  type(self._events))
 
     def postEvent(self, event, dedupe=False):
+
+        # Timestamp the event - only apply to events heading to event engine
+        timestamp = time.time()*1000
+
+        # Engage deduping logic if required
         if dedupe == True:
             if self._dedupe == True:
                 if event in self._events:
                     log.debug('Duplicate event: %.25s...', event[0]['points'])
+
+                    # Nothing left to do here. The very same event was already sent
                     return
                 else:
                     self._events_modified = True
@@ -79,10 +87,17 @@ class shEventHandler:
                                 self._config.event_store_path_safe)
                 pass
 
+        # Need a true copy of the event or we would be messing with the cache
+        event_for_engine = copy.deepcopy(event)
+        # Apply the timestamp to all events heading to the event engine
+        for e in event_for_engine:
+            e['shtime1']=timestamp
+
         # Now post the same event into our event engine if active
         if self._config.event_engine_active == 1:
             try:
-                r = requests.post(self._config.event_engine_path, data=json.dumps(event))
+                r = requests.post(self._config.event_engine_path,\
+                            data=json.dumps(event_for_engine))
                 if r.status_code == 200:
                     log.info('Event engine response: %s', r)
                 else:
