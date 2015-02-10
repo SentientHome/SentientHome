@@ -25,10 +25,17 @@ log.info('Starting Sentient Home Event Engine')
 cache = defaultdict(deque)
 
 @asyncio.coroutine
-def handle_info(request):
-    # TODO: Output generic engine statistics
+def handle_default(request):
     output = {'msg' : 'SentientHome Event Engine',
-              'body': 'I`m alive!',
+              'body': 'I`m alive!'}
+
+    return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
+
+
+@asyncio.coroutine
+def handle_cacheinfo(request):
+    output = {'msg' : 'SentientHome Event Engine',
+              'body': 'Cache Statistics',
               'cacheinfo': []}
 
     for c in cache:
@@ -41,7 +48,7 @@ def handle_info(request):
         timenow = time.time() * 1000
         events1sec = 0
         events10sec = 0
-        events60sec = 0
+        events1min = 0
         events10min = 0
         events1h = 0
         for e in cache[c]:
@@ -52,7 +59,7 @@ def handle_info(request):
             if tdelta <= 10000:
                 events10sec = eventcount
             if tdelta <= 60000:
-                events60sec = eventcount
+                events1min = eventcount
             if tdelta <= 600000:
                 events10min = eventcount
             if tdelta <= 3600000:
@@ -62,13 +69,56 @@ def handle_info(request):
 
         cacheinfo[c + '.events1sec'] = events1sec
         cacheinfo[c + '.events10sec'] = events10sec
-        cacheinfo[c + '.events60sec'] = events60sec
+        cacheinfo[c + '.events10secrate'] = events10sec/10
+        cacheinfo[c + '.events1min'] = events1min
+        cacheinfo[c + '.events1minrate'] = events1min/60
         cacheinfo[c + '.events10min'] = events10min
+        cacheinfo[c + '.events10minrate'] = events10min/600
         cacheinfo[c + '.events1h'] = events1h
+        cacheinfo[c + '.events1hrate'] = events1h/3600
 
         output['cacheinfo'].append(cacheinfo)
 
     return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
+
+@asyncio.coroutine
+def handle_cache(request):
+
+    name = request.match_info.get('name', 'tracer')
+
+    output = {'msg' : 'SentientHome Event Engine',
+              'body': name + ' Sample Data',
+              'events': []}
+
+    for i in range (0, 20):
+        try:
+            output['events'].append(cache[name][i])
+        except Exception:
+            break
+
+    return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
+
+@asyncio.coroutine
+def handle_isy(request):
+
+    name = request.match_info.get('name', 'ST')
+
+    output = {'msg' : 'SentientHome Event Engine',
+              'body': 'isy/' + name + ' Sample Data',
+              'events': []}
+
+    i = 0
+    for e in cache['isy']:
+        try:
+            if e['Event.control'] == name:
+                output['events'].append(e)
+                i = i + 1
+        except Exception:
+            break
+        if i >= 20: break
+
+    return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
+
 
 @asyncio.coroutine
 def handle_event(request):
@@ -102,7 +152,7 @@ def handle_event(request):
 
             cache[e['name']].appendleft(myevent)
 
-            log.debug('Event Latency: %2.4sms',\
+            log.info('Event Latency: %2.4sms',\
                 myevent['shtime2']-myevent['shtime1'])
 
     output = {'msg' : 'Event Received'}
@@ -115,8 +165,10 @@ def init(loop):
     epath = config.get('sentienthome', 'event_path')
 
     app = web.Application(loop=loop, logger=None)
-    app.router.add_route('GET', '/', handle_info)
-    app.router.add_route('GET', '/info', handle_info)
+    app.router.add_route('GET', '/', handle_default)
+    app.router.add_route('GET', '/cacheinfo', handle_cacheinfo)
+    app.router.add_route('GET', '/cache/{name}', handle_cache)
+    app.router.add_route('GET', '/cache/isy/{name}', handle_isy)
     app.router.add_route('POST', epath, handle_event)
 
     handler = app.make_handler()
