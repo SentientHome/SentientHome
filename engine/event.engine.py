@@ -99,7 +99,7 @@ def handle_cache(request):
     return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
 
 @asyncio.coroutine
-def handle_isy(request):
+def handle_isycontrol(request):
 
     name = request.match_info.get('name', 'ST')
 
@@ -119,6 +119,21 @@ def handle_isy(request):
 
     return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
 
+@asyncio.coroutine
+def handle_isycontrolinfo(request):
+
+    output = {'msg' : 'SentientHome Event Engine',
+              'body': 'ISY Control Info Data in Cache'}
+    output['control'] = defaultdict(int)
+    try:
+        # Count events by control type
+        for event in cache['isy']:
+                output['control'][event['Event.control']] +=1
+
+    except Exception as e:
+        log.error('Exception: %s', e)
+
+    return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
 
 @asyncio.coroutine
 def handle_event(request):
@@ -168,7 +183,8 @@ def init(loop):
     app.router.add_route('GET', '/', handle_default)
     app.router.add_route('GET', '/cacheinfo', handle_cacheinfo)
     app.router.add_route('GET', '/cache/{name}', handle_cache)
-    app.router.add_route('GET', '/cache/isy/{name}', handle_isy)
+    app.router.add_route('GET', '/cache/isy/control/{name}', handle_isycontrol)
+    app.router.add_route('GET', '/cache/isy/controlinfo', handle_isycontrolinfo)
     app.router.add_route('POST', epath, handle_event)
 
     handler = app.make_handler()
