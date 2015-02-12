@@ -17,123 +17,15 @@ import json
 import time
 from collections import defaultdict, deque
 
+# Restful/JSON interface API for event engine
+from restinterface import RestInterface
+
 cache = defaultdict(deque)
 
 import logging as log
 log.info('Starting Sentient Home Event Engine')
 
 cache = defaultdict(deque)
-
-@asyncio.coroutine
-def handle_default(request):
-    output = {'msg' : 'SentientHome Event Engine',
-              'body': 'I`m alive!'}
-
-    return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
-
-
-@asyncio.coroutine
-def handle_cacheinfo(request):
-    output = {'msg' : 'SentientHome Event Engine',
-              'body': 'Cache Statistics',
-              'cacheinfo': []}
-
-    for c in cache:
-        cacheinfo = dict()
-        cacheinfo[c + '.maxlen'] = cache[c].maxlen
-        cacheinfo[c + '.len'] = len(cache[c])
-
-        # Calculate event statistics
-        eventcount = 0
-        timenow = time.time() * 1000
-        events1sec = 0
-        events10sec = 0
-        events1min = 0
-        events10min = 0
-        events1h = 0
-        for e in cache[c]:
-            eventcount = eventcount + 1
-            tdelta = timenow - e['shtime2']
-            if tdelta <= 1000:
-                events1sec = eventcount
-            if tdelta <= 10000:
-                events10sec = eventcount
-            if tdelta <= 60000:
-                events1min = eventcount
-            if tdelta <= 600000:
-                events10min = eventcount
-            if tdelta <= 3600000:
-                events1h = eventcount
-            else:
-                break
-
-        cacheinfo[c + '.events1sec'] = events1sec
-        cacheinfo[c + '.events10sec'] = events10sec
-        cacheinfo[c + '.events10secrate'] = events10sec/10
-        cacheinfo[c + '.events1min'] = events1min
-        cacheinfo[c + '.events1minrate'] = events1min/60
-        cacheinfo[c + '.events10min'] = events10min
-        cacheinfo[c + '.events10minrate'] = events10min/600
-        cacheinfo[c + '.events1h'] = events1h
-        cacheinfo[c + '.events1hrate'] = events1h/3600
-
-        output['cacheinfo'].append(cacheinfo)
-
-    return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
-
-@asyncio.coroutine
-def handle_cache(request):
-
-    name = request.match_info.get('name', 'tracer')
-
-    output = {'msg' : 'SentientHome Event Engine',
-              'body': name + ' Sample Data',
-              'events': []}
-
-    for i in range (0, 50):
-        try:
-            output['events'].append(cache[name][i])
-        except Exception:
-            break
-
-    return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
-
-@asyncio.coroutine
-def handle_isycontrol(request):
-
-    name = request.match_info.get('name', 'ST')
-
-    output = {'msg' : 'SentientHome Event Engine',
-              'body': 'isy/' + name + ' Sample Data',
-              'events': []}
-
-    i = 0
-    for e in cache['isy']:
-        try:
-            if e['Event.control'] == name:
-                output['events'].append(e)
-                i = i + 1
-        except Exception:
-            break
-        if i >= 50: break
-
-    return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
-
-@asyncio.coroutine
-def handle_isycontrolinfo(request):
-
-    output = {'msg' : 'SentientHome Event Engine',
-              'body': 'ISY Control Info Data in Cache'}
-    output['control'] = defaultdict(int)
-    try:
-        # Count events by control type
-        for event in cache['isy']:
-                output['control'][event['Event.control']] +=1
-
-    except Exception as e:
-        log.error('Exception: %s', e)
-
-    return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
 
 @asyncio.coroutine
 def handle_event(request):
@@ -148,7 +40,7 @@ def handle_event(request):
         # Initialize event cache if it does not exist yet
         if not cache[e['name']]:
             # TODO: Lookup cache size from config
-            cache[e['name']] = deque(maxlen=500)
+            cache[e['name']] = deque(maxlen=5000)
 
         for p in e['points']:
             if len(e['columns']) != len(p):
@@ -180,18 +72,18 @@ def init(loop):
     epath = config.get('sentienthome', 'event_path')
 
     app = web.Application(loop=loop, logger=None)
-    app.router.add_route('GET', '/', handle_default)
-    app.router.add_route('GET', '/cacheinfo', handle_cacheinfo)
-    app.router.add_route('GET', '/cache/{name}', handle_cache)
-    app.router.add_route('GET', '/cache/isy/control/{name}', handle_isycontrol)
-    app.router.add_route('GET', '/cache/isy/controlinfo', handle_isycontrolinfo)
+
+    # Handle incoming events
     app.router.add_route('POST', epath, handle_event)
+
+    # Register and implement all other RESTful interfaces
+    interface = RestInterface(config, app, cache);
 
     handler = app.make_handler()
 
     srv = yield from loop.create_server(handler, eaddr, eport)
     log.info("Event Engine started at http://%s:%s", eaddr, eport)
-    return app, srv, handler
+    return app, srv, handler, interface
 
 @asyncio.coroutine
 def finish(app, srv, handler):
@@ -204,7 +96,7 @@ def finish(app, srv, handler):
 
 
 loop = asyncio.get_event_loop()
-app, srv, handler = loop.run_until_complete(init(loop))
+app, srv, handler, interface = loop.run_until_complete(init(loop))
 
 try:
     loop.run_forever()
