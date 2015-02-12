@@ -17,13 +17,13 @@ import json
 import time
 from collections import defaultdict, deque
 
-class RestInterface:
+class shRestInterface:
     'SentientHome event engine restful interfaces'
 
-    def __init__(self, config, app, cache ):
+    def __init__(self, config, app, memory):
         self._config = config
         self._app = app
-        self._cache = cache
+        self._memory = memory
 
         self._app.router.add_route('GET', '/', self.handle_default)
         self._app.router.add_route('GET', '/cacheinfo', self.handle_cacheinfo)
@@ -52,7 +52,7 @@ class RestInterface:
 
             for i in range (0, 50):
                 try:
-                    output['events'].append(self._cache[name][i])
+                    output['events'].append(self._memory.eventmemory[name][i])
                 except Exception:
                     break
         except Exception as e:
@@ -67,10 +67,10 @@ class RestInterface:
                       'body': 'Cache Statistics',
                       'cacheinfo': []}
 
-            for c in self._cache:
+            for c in self._memory.eventmemory:
                 cacheinfo = dict()
-                cacheinfo[c + '.maxlen'] = self._cache[c].maxlen
-                cacheinfo[c + '.len'] = len(self._cache[c])
+                cacheinfo[c + '.maxlen'] = self._memory.eventmemory[c].maxlen
+                cacheinfo[c + '.len'] = len(self._memory.eventmemory[c])
 
                 # Calculate event statistics
                 eventcount = 0
@@ -80,7 +80,7 @@ class RestInterface:
                 events1min = 0
                 events10min = 0
                 events1h = 0
-                for e in self._cache[c]:
+                for e in self._memory.eventmemory[c]:
                     eventcount = eventcount + 1
                     tdelta = timenow - e['shtime2']
                     if tdelta <= 1000:
@@ -123,7 +123,7 @@ class RestInterface:
                       'events': []}
 
             i = 0
-            for e in self._cache['isy']:
+            for e in self._memory.eventmemory['isy']:
                 try:
                     if e['Event.control'] == name:
                         output['events'].append(e)
@@ -144,7 +144,7 @@ class RestInterface:
                       'body': 'ISY Control Info Data in Cache'}
             output['control'] = defaultdict(int)
             # Count events by control type
-            for event in self._cache['isy']:
+            for event in self._memory.eventmemory['isy']:
                 output['control'][event['Event.control']] +=1
 
         except Exception as e:
