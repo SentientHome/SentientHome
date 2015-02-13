@@ -16,6 +16,7 @@ from aiohttp import web
 import json
 import time
 from collections import defaultdict, deque
+from concurrent.futures import ThreadPoolExecutor
 
 # Restful/JSON interface API for event engine
 from restinterface import shRestInterface
@@ -79,7 +80,7 @@ def init(loop):
     # Handle incoming events
     app.router.add_route('POST', epath, handle_event)
 
-    memory = shMemoryManager(config, app)
+    memory = shMemoryManager(config, app, loop)
 
     # Register and implement all other RESTful interfaces
     interface = shRestInterface(config, app, memory);
@@ -88,6 +89,10 @@ def init(loop):
 
     srv = yield from loop.create_server(handler, eaddr, eport)
     log.info("Event Engine started at http://%s:%s", eaddr, eport)
+
+    # Setup automatic persitance handler
+    #loop.call_later(10, memory.checkpoint, loop)
+
     return app, srv, handler, memory, interface
 
 @asyncio.coroutine
@@ -97,11 +102,19 @@ def finish(app, srv, handler, memory):
     srv.close()
     yield from handler.finish_connections()
     yield from srv.wait_closed()
+
+    memory.checkpoint()
     log.info('Good Bye!')
+
+@asyncio.coroutine
+def checkpoint(loop, thread, memory):
+    yield from loop.run_in_executor(thread, memory.checkpoint)
 
 
 loop = asyncio.get_event_loop()
 app, srv, handler, memory, interface = loop.run_until_complete(init(loop))
+
+thread = ThreadPoolExecutor(2) # Create a ThreadPool with 2 threads
 
 try:
     loop.run_forever()

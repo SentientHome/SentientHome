@@ -16,14 +16,47 @@ from aiohttp import web
 import json
 import time
 from collections import defaultdict, deque
+import pickle
+from copy import deepcopy
 
 class shMemoryManager:
     'SentientHome event engine memory manager'
 
-    def __init__(self, config, app):
+    def __init__(self, config, app, loop):
         self._config = config
         self._app = app
+        self._loop = loop
         self._eventmemory = defaultdict(deque)
+
+        # Assemble a filename for the physical checkpoint
+        self._checkpoint_filename = os.path.join(\
+                self._config.get('sentienthome', 'checkpoint_path'),\
+                self._config.origin_filename + '.p')
+
+        # See if we can restore the event memory from a previsous checkpoint
+        try:
+            with open(self._checkpoint_filename, 'rb') as f:
+                # The protocol version used is detected automatically, so we do not
+                # have to specify it.
+                self._eventmemory = pickle.load(f)
+        except (OSError, EOFError) as e:
+            log.warning('Unable to read checkpoint file: %s', self._checkpoint_filename)
+            pass
+
+    def checkpoint(self):
+        # persist memory manager to disk
+        log.debug('Checkpoint memory manager: %s', self._checkpoint_filename)
+
+        # Need a true copy of the in-memory structure for asyncronous IO to disk
+        temp = deepcopy(self._eventmemory)
+
+        try:
+            with open(self._checkpoint_filename, 'wb') as f:
+                # Pickle the event memory using the highest protocol available.
+                pickle.dump(temp, f, pickle.HIGHEST_PROTOCOL)
+        except OSError:
+            log.warning('Unable to write checkpoint file: %s', self._checkpoint_filename)
+            pass
 
     @property
     def eventmemory(self):
