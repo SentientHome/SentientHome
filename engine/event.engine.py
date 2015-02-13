@@ -90,9 +90,6 @@ def init(loop):
     srv = yield from loop.create_server(handler, eaddr, eport)
     log.info("Event Engine started at http://%s:%s", eaddr, eport)
 
-    # Setup automatic persitance handler
-    #loop.call_later(10, memory.checkpoint, loop)
-
     return app, srv, handler, memory, interface
 
 @asyncio.coroutine
@@ -103,18 +100,28 @@ def finish(app, srv, handler, memory):
     yield from handler.finish_connections()
     yield from srv.wait_closed()
 
+    # Perform final inline checkpoint as we are shutting down after this
     memory.checkpoint()
     log.info('Good Bye!')
 
 @asyncio.coroutine
 def checkpoint(loop, thread, memory):
-    yield from loop.run_in_executor(thread, memory.checkpoint)
+    try:
+        while(True):
+            yield from loop.run_in_executor(thread, memory.checkpoint)
+            # TODO: Need to make the checkpoints configurable
+            yield from asyncio.sleep(60)
+    except Exception:
+        return
 
 
 loop = asyncio.get_event_loop()
 app, srv, handler, memory, interface = loop.run_until_complete(init(loop))
 
-thread = ThreadPoolExecutor(2) # Create a ThreadPool with 2 threads
+# Create a ThreadPool with 2 threads
+thread = ThreadPoolExecutor(2)
+# Create a task to perform ongoing checkpoints
+loop.create_task(checkpoint(loop, thread, memory))
 
 try:
     loop.run_forever()
