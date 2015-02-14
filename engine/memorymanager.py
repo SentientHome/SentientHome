@@ -19,6 +19,7 @@ from collections import defaultdict, deque
 import pickle
 from copy import deepcopy
 
+
 class shMemoryManager:
     'SentientHome event engine memory manager'
 
@@ -30,7 +31,7 @@ class shMemoryManager:
 
         # Assemble a filename for the physical checkpoint
         self._checkpoint_filename = os.path.join(\
-                self._config.get('sentienthome', 'checkpoint_path'),\
+                os.path.expanduser(self._config.get('sentienthome', 'data_path')),\
                 self._config.origin_filename + '.p')
 
         # See if we can restore the event memory from a previsous checkpoint
@@ -47,8 +48,13 @@ class shMemoryManager:
         # persist memory manager to disk
         log.debug('Checkpoint memory manager: %s', self._checkpoint_filename)
 
+        # Measure time spent on checkpointing
+        time1 = time.monotonic()*1000
+
         # Need a true copy of the in-memory structure for asyncronous IO to disk
         temp = deepcopy(self._eventmemory)
+
+        time2 = time.monotonic()*1000
 
         try:
             with open(self._checkpoint_filename, 'wb') as f:
@@ -57,6 +63,12 @@ class shMemoryManager:
         except OSError:
             log.warning('Unable to write checkpoint file: %s', self._checkpoint_filename)
             pass
+
+        time3 = time.monotonic()*1000
+
+        log.debug('Time to deepcopy(): %4.2sms', (time2 - time1))
+        log.debug('Time to pickle(): %4.2sms', time3 - time2)
+        log.debug('Total time to checkpoint(): %4.2sms', time3 - time1)
 
     @property
     def eventmemory(self):
