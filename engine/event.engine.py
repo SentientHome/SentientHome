@@ -125,5 +125,5 @@ loop.create_task(checkpoint(loop, thread, memory))
 
 try:
     loop.run_forever()
-except KeyboardInterrupt:
+except (KeyboardInterrupt, SystemExit):
     loop.run_until_complete(finish(app, srv, handler, memory))
