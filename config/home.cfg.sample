@@ -17,7 +17,10 @@ event_port             = 8080
 event_path             = /event
 
 ; setup tracer events - used to schedule and detect missing events
-tracer_interval        = 5
+tracer_interval        = 10
+
+; data directory to persist caches and memory structures
+data_path              = ~/SentientHome/data
 
 [supervisord]
 supervisord_config     = /etc/supervisord.conf

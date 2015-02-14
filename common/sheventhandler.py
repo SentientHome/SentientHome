@@ -34,7 +34,7 @@ class shEventHandler:
             self._events_modified = False
             # Assemble a filename for the physical checkpoint
             self._checkpoint_filename = os.path.join(\
-                    self._config.get('sentienthome', 'checkpoint_path'),\
+                    os.path.expanduser(self._config.get('sentienthome', 'data_path')),\
                     self._config.origin_filename + '.p')
             # See if we can restore the event cache from a previsous checkpoint
             try:
