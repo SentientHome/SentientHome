@@ -27,7 +27,7 @@ class shConfig:
         # Lets store who is using this module - used for filenames
         (self._origin_pathname, self._origin_filename) = os.path.split(inspect.stack()[-1][1])
 
-        log.debug('Origin: %s', self._origin_filename)
+        log.debug('Module: %s', self._origin_filename)
 
 
     def _readConfig(self):
