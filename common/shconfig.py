@@ -4,12 +4,15 @@ __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
 __license__   = 'Apache License, Version 2.0'
 
 import os
+import sys
+import signal
 import time
 from configparser import ConfigParser
 import logging as log
 import inspect
 
 log.basicConfig(format='%(asctime)s %(module)s %(levelname)s: %(message)s')
+
 
 class shConfig:
     'SentientHome minimalistic configuration automation'
@@ -26,6 +29,10 @@ class shConfig:
 
         # Lets store who is using this module - used for filenames
         (self._origin_pathname, self._origin_filename) = os.path.split(inspect.stack()[-1][1])
+
+        # Setup a signal handler for common shutdown signals
+        for sig in [signal.SIGTERM, signal.SIGHUP, signal.SIGQUIT]:
+            signal.signal(sig, self._sigHandler)
 
         log.debug('Module: %s', self._origin_filename)
 
@@ -67,6 +74,11 @@ class shConfig:
         # Record time stamp of latest config update
         self._config_last_time = time.time()
 
+    @staticmethod
+    def _sigHandler(signum=None, frame=None):
+        # Make sure we get a chance to gracefully exit our apps
+        log.Warning('Shutdown signale %s received. Closing down...', signum)
+        sys.exit(0)
 
     def reloadModifiedConfig(self):
         # Limit reload to once ever 10s+
