@@ -37,15 +37,23 @@ def handle_event(request):
         #
         for e in event:
             log.debug('Event Type: %s', e['name'], )
-            # Initialize event cache if it does not exist yet
-            if not memory.eventmemory[e['name']]:
+
+            # Initialize raw event cache if it does not exist yet
+            if not memory.eventmemory['raw'][e['name']]:
                 # TODO: Lookup cache size from config
-                memory.eventmemory[e['name']] = deque(maxlen=5000)
+                memory.eventmemory['raw'][e['name']] = deque(maxlen=5000)
+
+            # Initialize state event cache if it does not exist yet
+            if not memory.eventmemory['state'][e['name']]:
+                memory.eventmemory['state'][e['name']] = defaultdict(deque)
 
             for p in e['points']:
+                # Perform a simple sanity check
                 if len(e['columns']) != len(p):
                     log.error('Number of Columns %s mismatches number of Points %s',\
                                 len(e['columns']), len(p))
+
+                # Populate raw event memory
                 myevent = dict()
 
                 # Carry forward initial timestamp from feed
@@ -57,10 +65,45 @@ def handle_event(request):
 
                 log.debug('myevent: %s', myevent)
 
-                memory.eventmemory[e['name']].appendleft(myevent)
+                memory.eventmemory['raw'][e['name']].appendleft(myevent)
 
+                # Populate state memory
+                state = dict()
+                state['time'] = e['shtime1']
+
+                # Temporarily built isy status cache in here
+                # TODO: Move into a plugin
+
+                try:
+                    if e['name'] == 'isy':
+                        # Initialize state event cache if it does not exist yet
+                        if not memory.eventmemory['state'][e['name']][myevent['Event.node']]:
+                            memory.eventmemory['state'][e['name']][myevent['Event.node']] = deque(maxlen=100)
+
+                        state['control'] = myevent['Event.control']
+                        state['action'] = myevent['Event.action']
+
+
+                        if state['control'] in ['DON', 'DFON', 'DOF', 'DFOF', 'ST', 'OL', 'RR', 'BMAN', 'SMAN']:
+                            log.debug('==============================')
+                            log.debug('Node: %s Data: %s', myevent['Event.node'], state)
+                            log.debug('==============================')
+                            memory.eventmemory['state'][e['name']][myevent['Event.node']].appendleft(state)
+                except Exception as e:
+                    log.Error('Error appending state: %s', e)
+
+                # Fire event engine
+                yield from fire(myevent, memory)
+
+                time3 = time.time()*1000
+
+                # Report event latency
                 log.info('Event Latency: %2.4sms',\
                     myevent['shtime2']-myevent['shtime1'])
+
+                log.info('Event Processing Latency: %2.4sms',\
+                    time3-myevent['shtime1'])
+
 
         output = {'msg' : 'Event Received'}
     except Exception as e:
@@ -107,10 +150,18 @@ def finish(app, srv, handler, memory):
 @asyncio.coroutine
 def checkpoint(loop, thread, memory):
     try:
+        # TODO: Replace while loop with scheduled tasks...
         while(True):
             yield from loop.run_in_executor(thread, memory.checkpoint)
             # TODO: Need to make the checkpoints configurable
             yield from asyncio.sleep(60)
+    except Exception:
+        return
+
+@asyncio.coroutine
+def fire(event, memory):
+    try:
+        log.debug('Firing event rules for: %s', event)
     except Exception:
         return
 
