@@ -27,7 +27,12 @@ class shMemoryManager:
         self._config = config
         self._app = app
         self._loop = loop
-        self._eventmemory = defaultdict(deque)
+        self._eventmemory = defaultdict(defaultdict)
+        self._eventmemory['raw'] = defaultdict(deque)
+        self._eventmemory['state'] = defaultdict(defaultdict)
+        # TODO: Look up length from config
+        self._eventmemory['action'] = deque(maxlen=5000)
+
 
         # Assemble a filename for the physical checkpoint
         self._checkpoint_filename = os.path.join(\

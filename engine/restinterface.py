@@ -52,7 +52,7 @@ class shRestInterface:
 
             for i in range (0, 50):
                 try:
-                    output['events'].append(self._memory.eventmemory[name][i])
+                    output['events'].append(self._memory.eventmemory['raw'][name][i])
                 except Exception:
                     break
         except Exception as e:
@@ -69,8 +69,8 @@ class shRestInterface:
 
             for c in self._memory.eventmemory:
                 cacheinfo = dict()
-                cacheinfo[c + '.maxlen'] = self._memory.eventmemory[c].maxlen
-                cacheinfo[c + '.len'] = len(self._memory.eventmemory[c])
+                cacheinfo[c + '.maxlen'] = self._memory.eventmemory['raw'][c].maxlen
+                cacheinfo[c + '.len'] = len(self._memory.eventmemory['raw'][c])
 
                 # Calculate event statistics
                 eventcount = 0
@@ -80,7 +80,7 @@ class shRestInterface:
                 events1min = 0
                 events10min = 0
                 events1h = 0
-                for e in self._memory.eventmemory[c]:
+                for e in self._memory.eventmemory['raw'][c]:
                     eventcount = eventcount + 1
                     tdelta = timenow - e['shtime2']
                     if tdelta <= 1000:
@@ -123,7 +123,7 @@ class shRestInterface:
                       'events': []}
 
             i = 0
-            for e in self._memory.eventmemory['isy']:
+            for e in self._memory.eventmemory['raw']['isy']:
                 try:
                     if e['Event.control'] == name:
                         output['events'].append(e)
@@ -144,7 +144,7 @@ class shRestInterface:
                       'body': 'ISY Control Info Data in Cache'}
             output['control'] = defaultdict(int)
             # Count events by control type
-            for event in self._memory.eventmemory['isy']:
+            for event in self._memory.eventmemory['raw']['isy']:
                 output['control'][event['Event.control']] +=1
 
         except Exception as e:
