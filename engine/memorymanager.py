@@ -51,8 +51,10 @@ class shMemoryManager:
         # Measure time spent on checkpointing
         time1 = time.monotonic()*1000
 
-        # Need a true copy of the in-memory structure for asyncronous IO to disk
-        temp = deepcopy(self._eventmemory)
+        # Might need a true copy of the in-memory structure for asyncronous IO to disk
+        # temp = deepcopy(self._eventmemory)
+        # For now do without a dep copy to save a lot of time
+        temp = self._eventmemory
 
         time2 = time.monotonic()*1000
 
@@ -66,7 +68,7 @@ class shMemoryManager:
 
         time3 = time.monotonic()*1000
 
-        log.debug('Time to deepcopy(): %4.2sms', (time2 - time1))
+        log.debug('Time to copy(): %4.2sms', (time2 - time1))
         log.debug('Time to pickle(): %4.2sms', time3 - time2)
         log.debug('Total time to checkpoint(): %4.2sms', time3 - time1)
 
