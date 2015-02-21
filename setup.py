@@ -22,16 +22,8 @@ if 0 != os.system('npm install iniparser'):
 
 print('Installing Python3 dependencies')
 
-if 0 != os.system('pip3 install requests'):
-    print('Error installing python3 requests package. Exiting...')
-    quit()
-
-if 0 != os.system('pip3 install asyncio'):
-    print('Error installing python3 asyncio package. Exiting...')
-    quit()
-
-if 0 != os.system('pip3 install aiohttp'):
-    print('Error installing python3 aiohttp package. Exiting...')
+if 0 != os.system('pip install -r dependencies.txt'):
+    print('Error installing python3 dependencies. Exiting...')
     quit()
 
 print('Finished installing dependencies.')
