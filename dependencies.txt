@@ -1,0 +1,4 @@
+aiohttp==0.14.4
+asyncio==3.4.2
+cement==2.4.0
+requests==2.5.1
