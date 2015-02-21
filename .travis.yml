@@ -7,5 +7,6 @@ script:
   - python common/shconfig.py
   - python common/sheventhandler.py
   - python common/shutil.py
+  - python common/shregistry.py
   - python engine/restinterface.py
   - python engine/memorymanager.py
