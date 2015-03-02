@@ -48,16 +48,19 @@ IoT Technologies in Use
 
 These are some of the main technologies and components of the Home Automation project:
 
+    Autelis - Pool Controller for Pentair Easytouch systems
+    Google Finance - Realtime financials for stocks, indices and currencies
     INSTEON - Smart switches and dimmers, motion/water/power sensors
     ISY994 - Universal Devices INSTEON controller platform
-    Rainforest Eagle - Realtime Smartgrid Power Sensor
-    NEST - Thermostats and Smoke Detectors
+    NEST - Thermostats and Smoke Detectors (TBD)
     Netatmo - Personal Climate and Weather modules.
-    Sonos - Amplifiers and Speakers
-    Philips Hue - Smart controlable lighting
-    Autelis - Pool Controller for Pentair Easytouch systems
-    SmartThings - Hub to integrate Cloud and local services
-    Wireless Sensor Tags - Temp/Humidity and motion sensors
+    Philips Hue - Smart controlable lighting (TBD)
+    Rainforest Eagle - Realtime Smartgrid Power Sensor
+    Sonos - Amplifiers and Speakers (TBD)
+    SMA Webbox - Realtime metrics for SMA PV Solar systems
+    SmartThings - Hub to integrate Cloud and local services (TBD)
+    USGS - Realtime geological data feeds
+    Wireless Sensor Tags - Temp/Humidity and motion sensors (TBD)
 
 License
 -------
