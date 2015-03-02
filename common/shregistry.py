@@ -19,12 +19,13 @@ __license__   = 'Apache License, Version 2.0'
 
 shRegistry = {
     'autelis'  : {'name': 'autelis',  'class': 'Pool',       'desc': 'Autelis Pool Controller', 'tags': ['Pool', 'Autelis', 'Pentair']},
-    'eagle'    : {'name': 'eagle',    'class': 'Power',      'desc': 'Rainforest Eagle Gateway', 'tags':['Rinaforest', 'Eagle', 'Power', 'Electricity']},
+    'eagle'    : {'name': 'eagle',    'class': 'Power',      'desc': 'Rainforest Eagle Gateway', 'tags':['Rainforest', 'Eagle', 'Power', 'Electricity']},
     'gfinance' : {'name': 'gfinance', 'class': 'Finance',    'desc': 'Google Finance', 'tags': ['Google', 'Finance', 'Stock', 'Currency', 'Index']},
     'isy'      : {'name': 'isy',      'class': 'Automation', 'desc': 'ISY994 Home Automation Controller', 'tags':['ISY', 'Insteon', 'X10']},
     'nesttherm': {'name': 'nesttherm','class': 'Climate',    'desc': 'Nest Thermostat', 'tags':['Nest', 'Thermostat']},
     'nestfire' : {'name': 'nestfire', 'class': 'Protection', 'desc': 'Nest Fire & CO Alarm', 'tags':['Nest', 'Protect', 'Fire Alarm', 'CO Alarm']},
     'netatmo'  : {'name': 'netatmo',  'class': 'Climate',    'desc': 'Netatmo Climate Station', 'tags':['Climate', 'Indoor', 'Outdoor']},
+    'smawebbox': {'name': 'smawebbox','class': 'Power',      'desc': 'SMA Sunny Webbox', 'tags':['SMA', 'Sunny', 'Webbox', 'Power', 'Electricity', 'Solar']},
     'twitter'  : {'name': 'twitter',  'class': 'Social',     'desc': 'Twitter Feed', 'tags':['Twitter', 'Social', 'Tweet']},
     'usgsquake': {'name': 'usgsquake','class': 'Geological', 'desc': 'USGS Earthquakes', 'tags':['USGS', 'Earthquake']},
     'zillow'   : {'name': 'zillow',   'class': 'Finance',    'desc': 'Zillow Home Valuation', 'tags':['Zillow', 'House', 'Home', 'Value', 'Fiance']},
