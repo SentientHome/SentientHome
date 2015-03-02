@@ -30,6 +30,7 @@ class shRestInterface:
         self._app.router.add_route('GET', '/cache/{name}', self.handle_samplecache)
         self._app.router.add_route('GET', '/cache/isy/control/{name}', self.handle_isycontrol)
         self._app.router.add_route('GET', '/cache/isy/controlinfo', self.handle_isycontrolinfo)
+        self._app.router.add_route('GET', '/cache/isy/state/{node}', self.handle_isystate)
 
     @asyncio.coroutine
     def handle_default(self, request):
@@ -147,6 +148,29 @@ class shRestInterface:
             for event in self._memory.eventmemory['raw']['isy']:
                 output['control'][event['Event.control']] +=1
 
+        except Exception as e:
+            log.error('Exception: %s', e)
+
+        return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
+
+    @asyncio.coroutine
+    def handle_isystate(self, request):
+
+        try:
+            node = request.match_info.get('node')
+
+            output = {'msg' : 'SentientHome Event Engine',
+                      'body': 'isy/[' + node + '] State Data',
+                      'state': []}
+
+            i = 0
+            for e in self._memory.eventmemory['state']['isy'][node]:
+                try:
+                    output['state'].append(e)
+                    i = i + 1
+                except Exception:
+                    break
+                if i >= 50: break
         except Exception as e:
             log.error('Exception: %s', e)
 

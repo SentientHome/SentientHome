@@ -83,8 +83,10 @@ def handle_event(request):
                         state['control'] = myevent['Event.control']
                         state['action'] = myevent['Event.action']
 
+                        actions = ['DON', 'DFON', 'DOF', 'DFOF', 'ST', 'OL', \
+                                   'RR', 'BMAN', 'SMAN', 'DIM', 'BRT']
 
-                        if state['control'] in ['DON', 'DFON', 'DOF', 'DFOF', 'ST', 'OL', 'RR', 'BMAN', 'SMAN']:
+                        if state['control'] in actions:
                             log.debug('==============================')
                             log.debug('Node: %s Data: %s', myevent['Event.node'], state)
                             log.debug('==============================')
@@ -93,7 +95,7 @@ def handle_event(request):
                     log.Error('Error appending state: %s', e)
 
                 # Fire event engine
-                yield from fire(myevent, memory)
+                yield from fire(e['name'], myevent, state, memory)
 
                 time3 = time.time()*1000
 
@@ -154,14 +156,23 @@ def checkpoint(loop, thread, memory):
         while(True):
             yield from loop.run_in_executor(thread, memory.checkpoint)
             # TODO: Need to make the checkpoints configurable
-            yield from asyncio.sleep(60)
+            yield from asyncio.sleep(120)
     except Exception:
         return
 
 @asyncio.coroutine
-def fire(event, memory):
+def fire(etype, event, state, memory):
     try:
-        log.debug('Firing event rules for: %s', event)
+        log.debug('Firing event rules for: %s: %s, %s', etype, event, state)
+
+        if etype == 'isy' and  event['Event.node'] == '24 0 93 1':
+            log.debug('!!!!!!!!!!FOUNTAIN!!!!!!!!!!!')
+        if etype == 'isy' and  event['Event.node'] == '29 14 86 1':
+            log.debug('!!!!!!!!!!LIVING - WINDOW - OUTLET!!!!!!!!!!!')
+        if etype == 'isy' and state['control'] == 'DON':
+            log.debug('Node: %s TURNED ON!!!!!!!!!!!!!!!!', node)
+        if etype == 'isy' and state['control'] == 'ST':
+            log.debug('Node: %s SET TARGET!!!!!!!!!!!!!!!', node)
     except Exception:
         return
 
