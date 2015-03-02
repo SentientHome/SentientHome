@@ -22,7 +22,7 @@ if 0 != os.system('npm install iniparser'):
 
 print('Installing Python3 dependencies')
 
-if 0 != os.system('pip install -r dependencies.txt'):
+if 0 != os.system('pip3 install -r dependencies.txt'):
     print('Error installing python3 dependencies. Exiting...')
     quit()
 
