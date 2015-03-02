@@ -20,7 +20,6 @@ class shConfig:
     def __init__(self, config_path, name=None):
         self._name = name
 
-        self._config = ConfigParser()
         self._config_path = os.path.expanduser(config_path)
 
         self._logger = log.getLogger()
@@ -38,6 +37,8 @@ class shConfig:
 
 
     def _readConfig(self):
+        self._config = ConfigParser()
+
         try:
             log.info('Reading SentientHome configuration from: %s', self._config_path)
             self._config.read(self._config_path)
