@@ -62,24 +62,32 @@ redirect_stderr=true
 ;command=/usr/local/bin/logstash -f %(ENV_HOME)s/influx/logstash.conf
 ;environment=HOME="/var/root"
 
-[program:SentientHome.feed.home.eagle.py]
-command=%(ENV_HOME)s/SentientHome/feed/feed.home.eagle.py
-redirect_stderr=true
-
-[program:SentientHome.feed.home.isy.py]
-command=%(ENV_HOME)s/SentientHome/feed/feed.home.isy.py
-redirect_stderr=true
-
 [program:SentientHome.feed.home.autelis.py]
 command=%(ENV_HOME)s/SentientHome/feed/feed.home.autelis.py
+redirect_stderr=true
+
+[program:SentientHome.feed.home.eagle.py]
+command=%(ENV_HOME)s/SentientHome/feed/feed.home.eagle.py
 redirect_stderr=true
 
 [program:SentientHome.feed.home.finance.py]
 command=%(ENV_HOME)s/SentientHome/feed/feed.home.finance.py
 redirect_stderr=true
 
+[program:SentientHome.feed.home.isy.py]
+command=%(ENV_HOME)s/SentientHome/feed/feed.home.isy.py
+redirect_stderr=true
+
 [program:SentientHome.feed.home.netatmo.py]
 command=%(ENV_HOME)s/SentientHome/feed/feed.home.netatmo.py
+redirect_stderr=true
+
+[program:SentientHome.feed.home.sma.webbox.py]
+command=%(ENV_HOME)s/SentientHome/feed/feed.home.sma.webbox.py
+redirect_stderr=true
+
+[program:SentientHome.feed.home.usgs.earthquake.py]
+command=%(ENV_HOME)s/SentientHome/feed/feed.home.usgs.earthquake.py
 redirect_stderr=true
 
 [program:SentientHome.feed.home.zillow.py]
