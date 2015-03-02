@@ -166,7 +166,7 @@ class shEventHandler:
             except Exception:
                 retries += 1
 
-                log.warn('Cannot GET from %s. Attempt %n of %n',\
+                log.warn('Cannot GET from %s. Attempt %s of %s',\
                          self._config.name, retries, self._config.retries)
 
                 if retries >= self._config.retries:
@@ -180,16 +180,16 @@ class shEventHandler:
                 continue
 
     # RESTful helper to handle retries
-    def post(self, url, auth=None, data=None):
+    def post(self, url, auth=None, data=None, headers=None):
         retries = 0
 
         while True:
             try:
-                return requests.post(url, auth=auth, data=data)
+                return requests.post(url, auth=auth, data=data, headers=headers)
             except Exception:
                 retries += 1
 
-                log.warn('Cannot POST to %s. Attempt %n of %n',\
+                log.warn('Cannot POST to %s. Attempt %s of %s',\
                          self._config.name, retries, self._config.retries)
 
                 if retries >= self._config.retries:
