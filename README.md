@@ -48,6 +48,7 @@ IoT Technologies in Use
 
 These are some of the main technologies and components of the Home Automation project:
 
+    APC UPS - APC (Schneider Electric) UPS Network Managment Card 2 SNMP 
     Autelis - Pool Controller for Pentair Easytouch systems
     Google Finance - Realtime financials for stocks, indices and currencies
     INSTEON - Smart switches and dimmers, motion/water/power sensors
