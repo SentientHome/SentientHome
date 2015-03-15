@@ -62,6 +62,10 @@ redirect_stderr=true
 ;command=/usr/local/bin/logstash -f %(ENV_HOME)s/influx/logstash.conf
 ;environment=HOME="/var/root"
 
+[program:SentientHome.feed.home.apcups.py]
+command=%(ENV_HOME)s/SentientHome/feed/feed.home.apcups.py
+redirect_stderr=true
+
 [program:SentientHome.feed.home.autelis.py]
 command=%(ENV_HOME)s/SentientHome/feed/feed.home.autelis.py
 redirect_stderr=true
