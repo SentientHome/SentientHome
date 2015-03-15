@@ -26,4 +26,10 @@ if 0 != os.system('pip3 install -r dependencies.txt'):
     print('Error installing python3 dependencies. Exiting...')
     quit()
 
+print('Create data directory')
+
+if 0 != os.system('mkdir data'):
+    print('Error creating local data directory. Exiting...')
+    quit()
+
 print('Finished installing dependencies.')
