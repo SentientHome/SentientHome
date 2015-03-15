@@ -42,6 +42,10 @@ influx_pass            = yourpassword
 eagle_addr             = youreaglehost
 eagle_poll_interval    = 5
 
+[apcups]
+apcups_addr            = yourupshost
+apcups_poll_interval   = 5
+
 [autelis]
 autelis_addr           = yourautelishost
 autelis_user           = youruser
@@ -74,6 +78,13 @@ finance_stock_list     = AAPL,ORCL,MSFT,IBM,TDC,EBAY,AMZN,SHLD,CSCO,HPQ,EMC,VMW,
 sma_webbox_addr         = yoursmawebboxhost
 ;sma_webbox_pass         = yourpassword
 sma_webbox_poll_interval = 5
+; For optional simplified system efficiency calculation
+;sma_webbox_total_panels = 84  ; e.g. two inverters 42 panels each
+;sma_webbox_panel_rating = 260 ; e.g. Canadian Solar CS6P-260
+; In case of mixed installations use the weighted average of the panel population
+; e.g 10 panels @260 + 20 panels @245 = (10*260+20*245)/30 = 250
+; This is only a simplified just in time 'efficiency' KPI to measure the system
+; over time. It does not take solar irradiation or any other factors into account
 
 [usgs_quake]
 usgs_quake_addr         = earthquake.usgs.gov

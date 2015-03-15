@@ -18,6 +18,7 @@ __license__   = 'Apache License, Version 2.0'
 # of the project
 
 shRegistry = {
+    'apcups'   : {'name': 'apcups',   'class': 'Power',      'desc': 'APC UPS', 'tags': ['APC', 'Schneider Electric', 'UPS']},
     'autelis'  : {'name': 'autelis',  'class': 'Pool',       'desc': 'Autelis Pool Controller', 'tags': ['Pool', 'Autelis', 'Pentair']},
     'eagle'    : {'name': 'eagle',    'class': 'Power',      'desc': 'Rainforest Eagle Gateway', 'tags':['Rainforest', 'Eagle', 'Power', 'Electricity']},
     'gfinance' : {'name': 'gfinance', 'class': 'Finance',    'desc': 'Google Finance', 'tags': ['Google', 'Finance', 'Stock', 'Currency', 'Index']},
