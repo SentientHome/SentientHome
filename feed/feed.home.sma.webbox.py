@@ -64,12 +64,28 @@ while True:
 
         result = json.loads(r.text)
 
-        # Assmble dynamic 'list' of values as a dict
+        # Assmble dynamic dict of values
         data = dict()
         for i in result['result']['overview']:
             try:
                 # Normalize to W or Wh
                 data[i['name']] = float(i['value'])*units[i['unit']]
+
+                # Perform optinal simplified efficency calculation
+                if i['name'] == 'GriPwr':
+                    try:
+                        data['shSolarEff'] = data[i['name']] /\
+                            (config.get('sma_webbox', 'sma_webbox_total_panels')\
+                            * config.get('sma_webbox', 'sma_webbox_panel_rating'))
+                        log.debug('Solar System Efficency: %s%', data['shSolarEff']*100)
+
+                        data['shPanelPwr'] = data[i['name']] /\
+                            (config.get('sma_webbox', 'sma_webbox_total_panels'))
+                        log.debug('Solar Power per Panel: %sW', data['shPanelPwr'])
+                    except:
+                        # Skip if optional settings are not set
+                        pass
+
             except ValueError:
                 # Skip none numeric portions of the result
                 pass
