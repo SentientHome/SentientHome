@@ -28,6 +28,7 @@ shRegistry = {
     'netatmo'  : {'name': 'netatmo',  'class': 'Climate',    'desc': 'Netatmo Climate Station', 'tags':['Climate', 'Indoor', 'Outdoor']},
     'smawebbox': {'name': 'smawebbox','class': 'Power',      'desc': 'SMA Sunny Webbox', 'tags':['SMA', 'Sunny', 'Webbox', 'Power', 'Electricity', 'Solar']},
     'twitter'  : {'name': 'twitter',  'class': 'Social',     'desc': 'Twitter Feed', 'tags':['Twitter', 'Social', 'Tweet']},
+    'ubnt.mfi' : {'name': 'ubnt.mfi', 'class': 'Automation', 'desc': 'Ubiquiti mFi', 'tags':['Ubiquiti', 'ubnt', 'Unifi', 'mFi']},
     'usgsquake': {'name': 'usgsquake','class': 'Geological', 'desc': 'USGS Earthquakes', 'tags':['USGS', 'Earthquake']},
     'zillow'   : {'name': 'zillow',   'class': 'Finance',    'desc': 'Zillow Home Valuation', 'tags':['Zillow', 'House', 'Home', 'Value', 'Fiance']},
 

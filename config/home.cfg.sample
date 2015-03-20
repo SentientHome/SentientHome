@@ -86,6 +86,13 @@ sma_webbox_poll_interval = 5
 ; This is only a simplified just in time 'efficiency' KPI to measure the system
 ; over time. It does not take solar irradiation or any other factors into account
 
+[ubnt_mfi]
+ubnt_mfi_addr           = yourmfihost
+ubnt_mfi_user           = youruser
+ubnt_mfi_pass           = yourpassword
+ubnt_mfi_verify_ssl     = 0 ; 1 to verify the https certificate, 0 to ignore
+ubnt_mfi_poll_interval  = 5 ; amount of seconds between polls - duplicates are auto removed
+
 [usgs_quake]
 usgs_quake_addr         = earthquake.usgs.gov
 ; init path is for first poll at startup

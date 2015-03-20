@@ -90,6 +90,10 @@ redirect_stderr=true
 command=%(ENV_HOME)s/SentientHome/feed/feed.home.sma.webbox.py
 redirect_stderr=true
 
+[program:SentientHome.feed.home.ubnt.mfi.py]
+command=%(ENV_HOME)s/SentientHome/feed/feed.home.ubnt.mfi.py
+redirect_stderr=true
+
 [program:SentientHome.feed.home.usgs.earthquake.py]
 command=%(ENV_HOME)s/SentientHome/feed/feed.home.usgs.earthquake.py
 redirect_stderr=true
