@@ -132,6 +132,20 @@ class shConfig:
             else:
                 raise
 
+    def getboolean(self, section, setting, default=''):
+        try:
+            s = self._config.getint(section, setting)
+            log.debug('Config section: %s setting: %s default: %s set to: %s',
+                        section, setting, default, s)
+            return bool(s)
+        except Exception:
+            if default != '':
+                log.debug('Config section: %s setting: %s default: %s',
+                        section, setting, default)
+                return default
+            else:
+                raise
+
     def _setEventStore(self):
         self._event_store     = self.get('sentienthome', 'event_store', 'INFLUXDB')
 
