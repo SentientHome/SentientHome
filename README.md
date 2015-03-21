@@ -69,6 +69,9 @@ These are some of the main technologies and components of the Home Automation pr
     Sonos - Amplifiers and Speakers (TBD)
     SMA Webbox - Realtime metrics for SMA PV Solar systems
     SmartThings - Hub to integrate Cloud and local services (TBD)
+    Ubiquiti mFi - Ubiquity mFi sensors and devices
+    Ubiquiti Unifi - Ubiquiti Unifi LAN/WAN equipment (TBD)
+    Ubiquiti Unifi Video - Ubiquiti Unifi Video equipment (TBD)
     USGS - Realtime geological data feeds
     Wireless Sensor Tags - Temp/Humidity and motion sensors (TBD)
 
