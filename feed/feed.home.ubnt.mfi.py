@@ -35,29 +35,33 @@ r = session.post('https://' + config.get('ubnt_mfi', 'ubnt_mfi_addr') +\
                   verify=config.getboolean('ubnt_mfi', 'ubnt_mfi_verify_ssl'))
 
 while True:
-    # Get all sensors and their most current data
-    # We can do this 10x per second if needed to drive down latency
-    # This is just the polling part, we then auto dedupe the data to only
-    # emit changed sensor values to the engine and event store
-    r = session.get('https://' + config.get('ubnt_mfi', 'ubnt_mfi_addr') +\
-                    '/api/v1.0/list/sensors',\
-                    verify=config.getboolean('ubnt_mfi', 'ubnt_mfi_verify_ssl'))
+    try:
+        # Get all sensors and their most current data
+        # We can do this 10x per second if needed to drive down latency
+        # This is just the polling part, we then auto dedupe the data to only
+        # emit changed sensor values to the engine and event store
+        r = session.get('https://' + config.get('ubnt_mfi', 'ubnt_mfi_addr') +\
+                        '/api/v1.0/list/sensors',\
+                        verify=config.getboolean('ubnt_mfi', 'ubnt_mfi_verify_ssl'))
 
-    data = json.loads(r.text)
+        data = json.loads(r.text)
 
-    for sensor in data['data']:
-        event = [{
-            'name': shRegistry['ubnt.mfi']['name'] + '.sensor', # Time Series Name
-            'columns': list(sensor.keys()), # Keys
-            'points': [list(sensor.values())] # Data points
-        }]
+        for sensor in data['data']:
+            event = [{
+                'name': shRegistry['ubnt.mfi']['name'] + '.sensor', # Time Series Name
+                'columns': list(sensor.keys()), # Keys
+                'points': [list(sensor.values())] # Data points
+            }]
 
-        log.debug('Event: %s', event)
-        # dedupe automatically ignores events we have processed before
-        # This is where the dedupe magic happens. The event handler has deduping
-        # built in and keeps an in-memory cache of events of the past 24h for that
-        # In this case only changed sensor data points will get emitted and stored
-        handler.postEvent(event, dedupe=True)
+            log.debug('Event: %s', event)
+            # dedupe automatically ignores events we have processed before
+            # This is where the dedupe magic happens. The event handler has deduping
+            # built in and keeps an in-memory cache of events of the past 24h for that
+            # In this case only changed sensor data points will get emitted and stored
+            handler.postEvent(event, dedupe=True)
+    except Exception as e:
+        log.error('Error: %s', e)
+        pass
 
     # We reset the poll interval in case the configuration has changed
     handler.sleep(config.getfloat('ubnt_mfi', 'ubnt_mfi_poll_interval', 5))
