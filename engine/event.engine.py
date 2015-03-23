@@ -200,6 +200,8 @@ def fire(etype, event, state, memory):
                     # Then schedule wakeup at a later time
                     yield from asyncio.sleep(900)
                     well_pump.on()
+                    yield from asyncio.sleep(2)
+                    well_pump.on()
 
 
     except Exception:
