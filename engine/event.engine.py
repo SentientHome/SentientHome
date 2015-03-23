@@ -23,6 +23,11 @@ from restinterface import shRestInterface
 # In memory data manager for processing and persitance
 from memorymanager import shMemoryManager
 
+# ISY helper
+sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/../dependencies/ISYlib-python')
+from ISY.IsyClass import Isy
+
+
 import logging as log
 log.info('Starting Sentient Home Event Engine')
 
@@ -165,14 +170,38 @@ def fire(etype, event, state, memory):
     try:
         log.debug('Firing event rules for: %s: %s, %s', etype, event, state)
 
+        # TODO: The logic below is a temporary test and to be placed into
+        # event engine plugins onve the kinks are worked out.
+
         if etype == 'isy' and  event['Event.node'] == '24 0 93 1':
             log.debug('!!!!!!!!!!FOUNTAIN!!!!!!!!!!!')
-        if etype == 'isy' and  event['Event.node'] == '29 14 86 1':
+        elif etype == 'isy' and  event['Event.node'] == '29 14 86 1':
             log.debug('!!!!!!!!!!LIVING - WINDOW - OUTLET!!!!!!!!!!!')
-        if etype == 'isy' and state['control'] == 'DON':
+        elif etype == 'isy' and state['control'] == 'DON':
             log.debug('Node: %s TURNED ON!!!!!!!!!!!!!!!!', node)
-        if etype == 'isy' and state['control'] == 'ST':
+        elif etype == 'isy' and state['control'] == 'ST':
             log.debug('Node: %s SET TARGET!!!!!!!!!!!!!!!', node)
+        # Test mFi Sensor rule
+        if etype == 'ubnt.mfi.sensor' and event['label'] == 'Well.Well.Pump':
+            if event['amps'] < 20 and event['amps'] > 15:
+                # Turn off the well pump for set amount of time
+                log.info('!!!!!!!! WELL PUMP SAVER ACTION !!!!!!!!!')
+
+                myIsy = Isy(addr=config.get('isy', 'isy_addr'),\
+                            userl=config.get('isy', 'isy_user'),\
+                            userp=config.get('isy', 'isy_pass'))
+                # First put pump to sleep
+                well_pump = myIsy.get_node("Well - Well Pump")
+                if well_pump:
+                    well_pump.off()
+                    yield from asyncio.sleep(2)
+                    well_pump.off()
+
+                    # Then schedule wakeup at a later time
+                    yield from asyncio.sleep(900)
+                    well_pump.on()
+
+
     except Exception:
         return
 
