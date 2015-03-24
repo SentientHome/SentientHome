@@ -181,9 +181,10 @@ def fire(etype, event, state, memory):
             log.debug('Node: %s TURNED ON!!!!!!!!!!!!!!!!', node)
         elif etype == 'isy' and state['control'] == 'ST':
             log.debug('Node: %s SET TARGET!!!!!!!!!!!!!!!', node)
+            
         # Test mFi Sensor rule
         if etype == 'ubnt.mfi.sensor' and event['label'] == 'Well.Well.Pump':
-            if event['amps'] < 20 and event['amps'] > 15:
+            if event['amps'] < 21 and event['amps'] > 15:
                 # Turn off the well pump for set amount of time
                 log.info('!!!!!!!! WELL PUMP SAVER ACTION !!!!!!!!!')
 
