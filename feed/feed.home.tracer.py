@@ -10,6 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 # Sentient Home configuration
 from common.shconfig import shConfig
 from common.sheventhandler import shEventHandler
+from common.shregistry import shRegistry
 
 import logging as log
 import time
@@ -25,8 +26,8 @@ while True:
     count += 1
 
     event = [{
-        'name': 'tracer', # Time Series Name
-        'columns': ['time', 'count'], # Keys
+        'name': shRegistry['tracer']['name'], # Time Series Name
+        'columns': ['tracertime', 'count'], # Keys
         # time in milliseconds since epoch
         'points': [[time.time()*1000, count]] # Data points
     }]

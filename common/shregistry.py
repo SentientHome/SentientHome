@@ -33,8 +33,8 @@ shRegistry = {
     'zillow'   : {'name': 'zillow',   'class': 'Finance',    'desc': 'Zillow Home Valuation', 'tags':['Zillow', 'House', 'Home', 'Value', 'Fiance']},
 
     # Sentient Home Internal Event Types
-    'tracer'   : {'name': 'tracer',   'class': 'Internal',   'name': 'Sentient Home Periodic Tracer', 'tags': ['Sentient Home', 'Tracer']},
-    'loadtest' : {'name': 'loadtest', 'class': 'Internal',   'name': 'Sentient Home Load Test Event Generator', 'tags': ['Sentient Home', 'Test']},
+    'tracer'   : {'name': 'tracer',   'class': 'Internal',   'desc': 'Sentient Home Periodic Tracer', 'tags': ['Sentient Home', 'Tracer']},
+    'loadtest' : {'name': 'loadtest', 'class': 'Internal',   'desc': 'Sentient Home Load Test Event Generator', 'tags': ['Sentient Home', 'Test']},
 }
 
 #
