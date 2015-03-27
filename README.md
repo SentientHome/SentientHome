@@ -7,7 +7,7 @@ SentientHome
 
 This is currently work in progress for a Sentient Home Automation project I am working on. It is still in its infancy and has not been packaged for easy deployment.
 
-![Sentient Home Sample Dashboard](https://raw.githubusercontent.com/fxstein/SentientHome/master/samples/Home.Dashboard.Small.png)
+[![Sentient Home Sample Dashboard](https://raw.githubusercontent.com/fxstein/SentientHome/master/samples/Home.Dashboard.Small.png)](https://raw.githubusercontent.com/fxstein/SentientHome/master/samples/Home.Dashboard.png)
 
 The project is primarily based on python.
 
