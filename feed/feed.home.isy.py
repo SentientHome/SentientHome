@@ -25,7 +25,7 @@ handler = shEventHandler(config)
 # Realtime event feeder
 def eventFeed(*arg):
 
-    # Flatten dict and turned ebeded structure into dot notation
+    # Flatten dict and turn embedded structure into dot notation
     data = flatten_dict(arg[0])
 
     event = [{
