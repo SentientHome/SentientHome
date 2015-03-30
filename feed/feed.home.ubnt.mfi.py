@@ -11,6 +11,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 from common.shconfig import shConfig
 from common.sheventhandler import shEventHandler
 from common.shregistry import shRegistry
+from common.shutil import CtoF
 
 import logging as log
 import requests
@@ -47,6 +48,15 @@ while True:
         data = json.loads(r.text)
 
         for sensor in data['data']:
+
+            # If there is a temerature reading also create a Farenheit version
+            # We have to do this since InfluxDB and/or Grafana cant do the most
+            # simplistic math...
+            try:
+                sensor['temperatureF'] = CtoF(sensor['temperature'])
+            except:
+                pass
+
             event = [{
                 'name': shRegistry['ubnt.mfi']['name'] + '.sensor', # Time Series Name
                 'columns': list(sensor.keys()), # Keys
