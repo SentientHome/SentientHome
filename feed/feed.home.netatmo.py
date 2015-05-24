@@ -16,7 +16,7 @@ from dependencies.netatmo import lnetatmo
 import logging as log
 
 config = shConfig('~/.config/home/home.cfg', name='Netatmo Climate Data')
-handler = shEventHandler(config, config.getfloat('autelis', 'netatmo_poll_interval', 10))
+handler = shEventHandler(config, config.getfloat('netatmo', 'netatmo_poll_interval', 10))
 
 netatmo_unique = config.getint('netatmo', 'netatmo_unique', 1)
 
