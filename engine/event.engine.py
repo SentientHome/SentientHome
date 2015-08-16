@@ -11,22 +11,22 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 from common.shconfig import shConfig
 config = shConfig('~/.config/home/home.cfg')
 
-import asyncio
+import asyncio, json, time
 from aiohttp import web
-import json
-import time
 from collections import defaultdict, deque
 from concurrent.futures import ThreadPoolExecutor
+
+# Cement Framework
+from cement.core import foundation
 
 # Restful/JSON interface API for event engine
 from restinterface import shRestInterface
 # In memory data manager for processing and persitance
 from memorymanager import shMemoryManager
 
-# ISY helper
+# TODO: Needs o move into plugin: ISY helper
 sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/../dependencies/ISYlib-python')
 from ISY.IsyClass import Isy
-
 
 import logging as log
 log.info('Starting Sentient Home Event Engine')
@@ -99,8 +99,11 @@ def handle_event(request):
                 except Exception as e:
                     log.Error('Error appending state: %s', e)
 
-                # Fire event engine
-                yield from fire(e['name'], myevent, state, memory)
+                # Create a task to fire event rule
+                # This allows us to quickly get back to the service call while
+                # taking all the time we need to process the event async
+                loop = asyncio.get_event_loop()
+                loop.create_task(fire(e['name'], myevent, state, memory))
 
                 time3 = time.time()*1000
 
@@ -125,25 +128,25 @@ def init(loop):
     eport = config.get('sentienthome', 'event_port')
     epath = config.get('sentienthome', 'event_path')
 
-    app = web.Application(loop=loop, logger=None)
+    webapp = web.Application(loop=loop, logger=None)
 
     # Handle incoming events
-    app.router.add_route('POST', epath, handle_event)
+    webapp.router.add_route('POST', epath, handle_event)
 
     memory = shMemoryManager(config, app, loop)
 
     # Register and implement all other RESTful interfaces
-    interface = shRestInterface(config, app, memory);
+    interface = shRestInterface(config, webapp, memory);
 
-    handler = app.make_handler()
+    handler = webapp.make_handler()
 
     srv = yield from loop.create_server(handler, eaddr, eport)
     log.info("Event Engine started at http://%s:%s", eaddr, eport)
 
-    return app, srv, handler, memory, interface
+    return webapp, srv, handler, memory
 
 @asyncio.coroutine
-def finish(app, srv, handler, memory):
+def finish(webapp, srv, handler, memory):
     log.info('Shuting down Event Engine...')
     yield from asyncio.sleep(0.1)
     srv.close()
@@ -181,7 +184,14 @@ def fire(etype, event, state, memory):
             log.debug('Node: %s TURNED ON!!!!!!!!!!!!!!!!', node)
         elif etype == 'isy' and state['control'] == 'ST':
             log.debug('Node: %s SET TARGET!!!!!!!!!!!!!!!', node)
-            
+
+        if etype == 'ubnt.mfi.sensor':
+            # Slow test workload for async task
+            log.debug('mFi Sensor event: %s', event)
+            log.debug('Pause for 10 sec')
+            yield from asyncio.sleep(10)
+            log.debug('Back from sleep')
+
         # Test mFi Sensor rule
         if etype == 'ubnt.mfi.sensor' and event['label'] == 'Well.Well.Pump':
             if event['amps'] < 21 and event['amps'] > 15:
@@ -208,9 +218,14 @@ def fire(etype, event, state, memory):
     except Exception:
         return
 
+# Before we go into the async portion of the engine lets boot up the cement
+# framework in order to enable command line parsing provided by it.
+app = foundation.CementApp('shEventEngine')
+app.setup()
+app.run()
 
 loop = asyncio.get_event_loop()
-app, srv, handler, memory, interface = loop.run_until_complete(init(loop))
+webapp, srv, handler, memory = loop.run_until_complete(init(loop))
 
 # Create a ThreadPool with 2 threads
 thread = ThreadPoolExecutor(2)
@@ -220,4 +235,5 @@ loop.create_task(checkpoint(loop, thread, memory))
 try:
     loop.run_forever()
 except (KeyboardInterrupt, SystemExit):
-    loop.run_until_complete(finish(app, srv, handler, memory))
+    loop.run_until_complete(finish(webapp, srv, handler, memory))
+    app.close()
