@@ -1,5 +1,5 @@
-aiohttp==0.14.4
-asyncio==3.4.2
-cement==2.4.0
-requests==2.5.1
+aiohttp==0.17.2
+asyncio==3.4.3
+cement==2.6.2
+requests==2.7.0
 pysnmp==4.2.5
