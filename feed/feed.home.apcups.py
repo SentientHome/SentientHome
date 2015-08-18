@@ -7,8 +7,8 @@ __license__   = 'Apache License, Version 2.0'
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 
-# Sentient Home configuration
-from common.shconfig import shConfig
+# Sentient Home Application
+from common.shapp import shApp
 from common.sheventhandler import shEventHandler
 from common.shutil import numerify, CtoF
 from common.shregistry import shRegistry
@@ -18,10 +18,13 @@ import time
 
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 
-# Feed APC UPS data
+# Default settings
+from cement.utils.misc import init_defaults
 
-config = shConfig('~/.config/home/home.cfg', name='SentientHome APC UPS Feed')
-handler = shEventHandler(config, config.getfloat('apcups', 'apcups_poll_interval', 10))
+defaults = init_defaults('apcups', 'apcups')
+defaults['apcups']['apcups_poll_interval'] = 10.0
+
+# Feed APC UPS data
 
 # Map intersting OIDs to names and descriptions for human readability
 # Dont want to carry a multi megabyte MIB file for just a few values
@@ -43,64 +46,69 @@ oids = {
     '1.3.6.1.4.1.318.1.1.1.7.2.4.0': { 'name': 'lasttestdate', 'desc': 'Last Test Date'},
 }
 
-cmdGen = cmdgen.CommandGenerator()
+with shApp('apcups', config_defaults=defaults) as app:
+    app.run()
 
-errorIndication, errorStatus, errorIndex, varBinds = cmdGen.getCmd(
-    cmdgen.CommunityData('public'),
-    cmdgen.UdpTransportTarget((config.get('apcups', 'apcups_addr'), 161)),
-    cmdgen.MibVariable('SNMPv2-MIB', 'sysDescr', 0),
-    lookupNames=True, lookupValues=True
-)
+    handler = shEventHandler(app, 'apcups_poll_interval')
 
-# Check for errors and print out results
-if errorIndication:
-    log.error(errorIndication)
-elif errorStatus:
-    log.error(errorStatus)
-else:
-    for name, val in varBinds:
-        log.info('%s = %s' % (name.prettyPrint(), val.prettyPrint()))
-
-data = dict()
-
-while True:
+    cmdGen = cmdgen.CommandGenerator()
 
     errorIndication, errorStatus, errorIndex, varBinds = cmdGen.getCmd(
         cmdgen.CommunityData('public'),
-        cmdgen.UdpTransportTarget((config.get('apcups', 'apcups_addr'), 161)),\
-                                        *oids
+        cmdgen.UdpTransportTarget((app.config.get('apcups', 'apcups_addr'), 161)),
+        cmdgen.MibVariable('SNMPv2-MIB', 'sysDescr', 0),
+        lookupNames=True, lookupValues=True
     )
 
-    # Check for errors and assemble results
+    # Check for errors and print out results
     if errorIndication:
-        log.error(errorIndication)
+        app.log.error(errorIndication)
     elif errorStatus:
-        log.error(errorStatus)
+        app.log.error(errorStatus)
     else:
         for name, val in varBinds:
-            log.debug('%s = %s (%s)' % (name, val, oids[str(name)]['desc']))
-            if oids[str(name)]['name'] == 'runtime':
-                # Convert runtime into seconds
-                # Out of all metrics this one is in ms instead of s
-                # but all the voltages and current and load metrics dont have
-                # fractions?!
-                data[oids[str(name)]['name']] = int(numerify(str(val))/100)
-            elif oids[str(name)]['name'] == 'battemp':
-                data[oids[str(name)]['name']] = numerify(str(val))
-                # Also provide temp in F
-                data['battempf'] = CtoF(data[oids[str(name)]['name']])
-            else:
-                data[oids[str(name)]['name']] = numerify(str(val))
+            app.log.info('%s = %s' % (name.prettyPrint(), val.prettyPrint()))
 
-        event = [{
-            'name': shRegistry['apcups']['name'], # Time Series Name
-            'columns': list(data.keys()), # Keys
-            'points': [list(data.values())] # Data points
-        }]
+    data = dict()
 
-        log.debug('Event data: %s', event)
+    while True:
 
-        handler.postEvent(event)
+        errorIndication, errorStatus, errorIndex, varBinds = cmdGen.getCmd(
+            cmdgen.CommunityData('public'),
+            cmdgen.UdpTransportTarget((app.config.get('apcups', 'apcups_addr'), 161)),\
+                                            *oids
+        )
 
-    # We reset the poll interval in case the configuration has changed
-    handler.sleep(config.getfloat('apcups', 'apcups_poll_interval', 10))
+        # Check for errors and assemble results
+        if errorIndication:
+            app.log.error(errorIndication)
+        elif errorStatus:
+            app.log.error(errorStatus)
+        else:
+            for name, val in varBinds:
+                app.log.debug('%s = %s (%s)' % (name, val, oids[str(name)]['desc']))
+                if oids[str(name)]['name'] == 'runtime':
+                    # Convert runtime into seconds
+                    # Out of all metrics this one is in ms instead of s
+                    # but all the voltages and current and load metrics dont have
+                    # fractions?!
+                    data[oids[str(name)]['name']] = int(numerify(str(val))/100)
+                elif oids[str(name)]['name'] == 'battemp':
+                    data[oids[str(name)]['name']] = numerify(str(val))
+                    # Also provide temp in F
+                    data['battempf'] = CtoF(data[oids[str(name)]['name']])
+                else:
+                    data[oids[str(name)]['name']] = numerify(str(val))
+
+            event = [{
+                'name': shRegistry['apcups']['name'], # Time Series Name
+                'columns': list(data.keys()), # Keys
+                'points': [list(data.values())] # Data points
+            }]
+
+            app.log.debug('Event data: %s', event)
+
+            handler.postEvent(event)
+
+        # We reset the poll interval in case the configuration has changed
+        handler.sleep()
