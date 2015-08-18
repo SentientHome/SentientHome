@@ -39,6 +39,7 @@ class shApp(CementApp):
         (self._origin_pathname, self._origin_filename) = os.path.split(inspect.stack()[-1][1])
 
         self._retries = (int)(self.config.get('sentienthome', 'retries'))
+        self._retry_intervall = (float)(self.config.get('sentienthome', 'retry_intervall'))
 
         # Setup event store and event engine configurations
         self._setEventStore()
@@ -69,13 +70,13 @@ class shApp(CementApp):
             # safe event store path without password
             # can be used for reporting and general debugging
             self._event_store_path_safe =\
-                        self._event_store_addr + ":" + \
-                        self._event_store_port + "/db/" + \
-                        self._event_store_db + "/series?time_precision=s&u=" + \
+                        self._event_store_addr + ':' + \
+                        self._event_store_port + '/db/' + \
+                        self._event_store_db + '/series?time_precision=s&u=' + \
                         self._event_store_user
             # complete event store path with full authentication
             self._event_store_path = self._event_store_path_safe +\
-                                "&p=" + self._event_store_pass
+                                '&p=' + self._event_store_pass
         else:
             self.log.critical('Unsupported event store: %s' % self._event_store)
 
@@ -92,7 +93,7 @@ class shApp(CementApp):
         self._event_engine_addr   = config.get('sentienthome', 'event_addr')
         self._event_engine_port   = config.get('sentienthome', 'event_port')
         self._event_engine_path_safe = \
-                        self._event_engine_addr + ":" + \
+                        self._event_engine_addr + ':' + \
                         self._event_engine_port + \
                         config.get('sentienthome', 'event_path')
 

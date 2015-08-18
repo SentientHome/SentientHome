@@ -82,11 +82,10 @@ class shEventHandler:
             try:
                 r = self.post(self._app.event_store_path, data=json.dumps(event))
                 self._app.log.info('Event store response: %s' % r)
-            except Exception:
-                # Report a problem but keep going...
-                self._app.log.error('Exception posting data to event store: %s' %
+            except Exception as e:
+                self._app.log.fatal(e)
+                self._app.log.fatal('Exception posting data to event store: %s' %
                                         self._app.event_store_path_safe)
-                pass
                 exit(1)
 
         # Need a true copy of the event or we would be messing with the cache
@@ -101,11 +100,10 @@ class shEventHandler:
                 r = self.post(self._app.event_engine_path,\
                             data=json.dumps(event_for_engine))
                 self._app.log.info('Event engine response: %s' % r)
-            except Exception:
-                # Report a problem but keep going...
-                self._app.log.error('Exception posting data to event engine: %s' %
+            except Exception as e:
+                self._app.log.fatal(e)
+                self._app.log.fatal('Exception posting data to event engine: %s' %
                                         self._app.event_engine_path_safe)
-                pass
                 exit(1)
 
     def checkPoint(self, write=False):
@@ -130,7 +128,7 @@ class shEventHandler:
         self._poll_interval = (int)(self._app.config.get(self._app._meta.label,
                                                          self._interval_key))
         if sleeptime == None:
-            stime = elf._poll_interval
+            stime = self._poll_interval
         else:
             stime = sleeptime
 
@@ -168,21 +166,22 @@ class shEventHandler:
             try:
                 r = requests.get(url, auth=auth)
                 if r.status_code != 200:
-                    raise ConnectionError('Invalid status code: %s', r.status_code)
+                    raise ConnectionError('Invalid status code: %s' % r.status_code)
                 return r
-            except Exception:
+            except Exception as e:
                 retries += 1
 
+                self._app.log.warn(e)
                 self._app.log.warn('Cannot GET from %s. Attempt %s of %s' %
                             (url, retries, self._app.retries))
 
                 if retries >= self._app.retries:
-                    self._app.log.Error('Cannot GET from to %s. Exiting...' %
+                    self._app.log.error('Cannot GET from to %s. Exiting...' %
                               url)
                     raise
 
                 # Wait until we retry
-                self.sleep(2)
+                self.sleep(self._app._retry_intervall)
                 continue
 
     # RESTful helper to handle retries
@@ -193,21 +192,22 @@ class shEventHandler:
             try:
                 r = requests.post(url, auth=auth, data=data, headers=headers)
                 if r.status_code != 200:
-                    raise ConnectionError('Invalid status code: %s', r.status_code)
+                    raise ConnectionError('Invalid status code: %s' % r.status_code)
                 return r
-            except Exception:
+            except Exception as e:
                 retries += 1
 
+                self._app.log.warn(e)
                 self._app.log.warn('Cannot POST to %s. Attempt %s of %s' %
                             (url, retries, self._app.retries))
 
                 if retries >= self._app.retries:
-                    self._app.log.Error('Cannot POST to %s. Exiting...' %
+                    self._app.log.error('Cannot POST to %s. Exiting...' %
                                             url)
                     raise
 
                 # Wait until we retry
-                self.sleep(2)
+                self.sleep(self._app._retry_intervall)
                 continue
 
 #

@@ -93,7 +93,7 @@ def handle_event(request):
                             app.log.debug('==============================')
                             memory.eventmemory['state'][e['name']][myevent['Event.node']].appendleft(state)
                 except Exception as e:
-                    app.log.Error('Error appending state: %s' % e)
+                    app.log.error('Error appending state: %s' % e)
 
                 # Create a task to fire event rule
                 # This allows us to quickly get back to the service call while
@@ -107,20 +107,20 @@ def handle_event(request):
                 app.log.info('Event Latency: %2.4sms' %
                     (myevent['shtime2']-myevent['shtime1']))
 
-                log.info('Event Processing Latency: %2.4sms' %
-                    time3-myevent['shtime1'])
+                app.log.info('Event Processing Latency: %2.4sms' %
+                    (time3-myevent['shtime1']))
 
 
         output = {'msg' : 'Event Received'}
     except Exception as e:
-        app.log.Error('Event Error: %s' % e)
+        app.log.error('Event Error: %s' % e)
         output = {'msg' : 'Event Error; Event Rejected'}
 
     return web.Response(body=json.dumps(output).encode('utf-8'))
 
 @asyncio.coroutine
 def init(loop):
-    eaddr = app.config.get('sentienthome', 'event_addr')
+    eaddr = app.config.get('sentienthome', 'event_addr').replace('http://', '')
     eport = app.config.get('sentienthome', 'event_port')
     epath = app.config.get('sentienthome', 'event_path')
 
@@ -213,20 +213,22 @@ def fire(etype, event, state, memory):
     except Exception:
         return
 
-with shApp('shEventEngine') as app:
-    app.run()
+app = shApp('shEventEngine')
+app.setup()
+app.run()
 
-    app.log.info('Starting Sentient Home Event Engine')
+app.log.info('Starting Sentient Home Event Engine')
 
-    loop = asyncio.get_event_loop()
-    webapp, srv, handler, memory = loop.run_until_complete(init(loop))
+loop = asyncio.get_event_loop()
+webapp, srv, handler, memory = loop.run_until_complete(init(loop))
 
-    # Create a ThreadPool with 2 threads
-    thread = ThreadPoolExecutor(2)
-    # Create a task to perform ongoing checkpoints
-    loop.create_task(checkpoint(loop, thread, memory))
+# Create a ThreadPool with 2 threads
+thread = ThreadPoolExecutor(2)
+# Create a task to perform ongoing checkpoints
+loop.create_task(checkpoint(loop, thread, memory))
 
-    try:
-        loop.run_forever()
-    except (KeyboardInterrupt, SystemExit):
-        loop.run_until_complete(finish(webapp, srv, handler, memory))
+try:
+    loop.run_forever()
+except (KeyboardInterrupt, SystemExit):
+    loop.run_until_complete(finish(webapp, srv, handler, memory))
+    app.close()
