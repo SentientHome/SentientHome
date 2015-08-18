@@ -7,9 +7,6 @@ __license__   = 'Apache License, Version 2.0'
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 
-# Sentient Home configuration
-from common.shconfig import shConfig
-
 import logging as log
 import asyncio
 from aiohttp import web
@@ -20,24 +17,24 @@ from collections import defaultdict, deque
 class shRestInterface:
     'SentientHome event engine restful interfaces'
 
-    def __init__(self, config, app, memory):
-        self._config = config
-        self._app = app
+    def __init__(self, app, webapp, memory):
+        self._app    = app
+        self._webapp = webapp
         self._memory = memory
 
-        self._app.router.add_route('GET', '/', self.handle_default)
-        self._app.router.add_route('GET', '/cacheinfo', self.handle_cacheinfo)
-        self._app.router.add_route('GET', '/cache/{name}', self.handle_samplecache)
-        self._app.router.add_route('GET', '/cache/isy/control/{name}', self.handle_isycontrol)
-        self._app.router.add_route('GET', '/cache/isy/controlinfo', self.handle_isycontrolinfo)
-        self._app.router.add_route('GET', '/cache/isy/state/{node}', self.handle_isystate)
+        self._webapp.router.add_route('GET', '/', self.handle_default)
+        self._webapp.router.add_route('GET', '/cacheinfo', self.handle_cacheinfo)
+        self._webapp.router.add_route('GET', '/cache/{name}', self.handle_samplecache)
+        self._webapp.router.add_route('GET', '/cache/isy/control/{name}', self.handle_isycontrol)
+        self._webapp.router.add_route('GET', '/cache/isy/controlinfo', self.handle_isycontrolinfo)
+        self._webapp.router.add_route('GET', '/cache/isy/state/{node}', self.handle_isystate)
 
     @asyncio.coroutine
     def handle_default(self, request):
         output = {'msg' : 'SentientHome Event Engine',
                   'body': 'I`m alive!'}
 
-        log.debug('Response: %s', output)
+        self._app.log.debug('Response: %s' % output)
 
         return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
 
@@ -57,7 +54,7 @@ class shRestInterface:
                 except Exception:
                     break
         except Exception as e:
-            log.error('Exception: %s', e)
+            self._app.log.error('Exception: %s' % e)
 
         return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
 
@@ -109,7 +106,7 @@ class shRestInterface:
 
                 output['cacheinfo'].append(cacheinfo)
         except Exception as e:
-            log.error('Exception: %s', e)
+            self._app.log.error('Exception: %s' % e)
 
         return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
 
@@ -133,7 +130,7 @@ class shRestInterface:
                     break
                 if i >= 50: break
         except Exception as e:
-            log.error('Exception: %s', e)
+            self._app.log.error('Exception: %s' % e)
 
         return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
 
@@ -149,7 +146,7 @@ class shRestInterface:
                 output['control'][event['Event.control']] +=1
 
         except Exception as e:
-            log.error('Exception: %s', e)
+            self._app.log.error('Exception: %s' % e)
 
         return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
 
@@ -172,7 +169,7 @@ class shRestInterface:
                     break
                 if i >= 50: break
         except Exception as e:
-            log.error('Exception: %s', e)
+            self._app.log.error('Exception: %s' % e)
 
         return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
 

@@ -15,12 +15,14 @@ import copy
 class shEventHandler:
     'SentientHome event handler'
 
-    def __init__(self, config, poll_interval=10, dedupe=False):
-        self._config = config
+    def __init__(self, app, interval_key, dedupe=False):
+        self._app = app
 
-        log.info('Starting feed for %s', self._config.name)
+        self._app.log.info('Starting feed for %s' % self._app._meta.label)
 
-        self._poll_interval = poll_interval
+        self._interval_key = interval_key
+        self._poll_interval = (int)(self._app.config.get(self._app._meta.label,
+                                                         self._interval_key))
         # See if we need to enable deduping logic
         self._dedupe = dedupe
 
@@ -34,8 +36,8 @@ class shEventHandler:
             self._events_modified = False
             # Assemble a filename for the physical checkpoint
             self._checkpoint_filename = os.path.join(\
-                    os.path.expanduser(self._config.get('sentienthome', 'data_path')),\
-                    self._config.origin_filename + '.p')
+                    os.path.expanduser(self.app.config.get('sentienthome', 'data_path')),\
+                    self._app.origin_filename + '.p')
             # See if we can restore the event cache from a previsous checkpoint
             try:
                 with open(self._checkpoint_filename, 'rb') as f:
@@ -43,14 +45,17 @@ class shEventHandler:
                     # have to specify it.
                     self._events = pickle.load(f)
             except (OSError, EOFError) as e:
-                log.warning('Unable to read checkpoint file: %s', self._checkpoint_filename)
+                self._app.log.warning('Unable to read checkpoint file: %s' %
+                                        self._checkpoint_filename)
                 pass
             # Fianlly check if the current class version uses the same datatype
             if type(self._events) != type(deque(maxlen=self._events_maxlen)):
                 # This is only a checkpoint: truncate, dont bother converting
-                log.debug("Checkpoint file data type was: %s",  type(self._events))
+                self._app.log.debug("Checkpoint file data type was: %s" %
+                                        type(self._events))
                 self._events = deque(maxlen=self._events_maxlen)
-                log.debug("Checkpoint file data type now: %s",  type(self._events))
+                self._app.log.debug("Checkpoint file data type now: %s" %
+                                        type(self._events))
 
     def postEvent(self, event, dedupe=False):
 
@@ -61,7 +66,8 @@ class shEventHandler:
         if dedupe == True:
             if self._dedupe == True:
                 if event in self._events:
-                    log.debug('Duplicate event: %.25s...', event[0]['points'])
+                    self._app.log.debug('Duplicate event: %.25s...' %
+                                            event[0]['points'])
 
                     # Nothing left to do here. The very same event was already sent
                     return
@@ -69,23 +75,19 @@ class shEventHandler:
                     self._events_modified = True
                     self._events.appendleft(event)
             else:
-                log.warning('Eventhandler dedupe logic not inititalized. Ignoring dedupe.')
+                self._app.log.warning('Eventhandler dedupe logic not inititalized. Ignoring dedupe.')
 
         # First deposit the event data into our event store
-        if self._config.event_store_active == 1:
+        if self._app.event_store_active == 1:
             try:
-                r = requests.post(self._config.event_store_path, data=json.dumps(event))
-                if r.status_code == 200:
-                    log.info('Event store response: %s', r)
-                else:
-                    log.warn('Event store response: %s', r)
-                    log.warn('Event rejected by %s', self._config.event_store_path_safe)
-                    log.warn('Event data: %s', event)
+                r = self.post(self._app.event_store_path, data=json.dumps(event))
+                self._app.log.info('Event store response: %s' % r)
             except Exception:
                 # Report a problem but keep going...
-                log.error('Exception posting data to event store: %s',\
-                                self._config.event_store_path_safe)
+                self._app.log.error('Exception posting data to event store: %s' %
+                                        self._app.event_store_path_safe)
                 pass
+                exit(1)
 
         # Need a true copy of the event or we would be messing with the cache
         event_for_engine = copy.deepcopy(event)
@@ -94,21 +96,17 @@ class shEventHandler:
             e['shtime1']=timestamp
 
         # Now post the same event into our event engine if active
-        if self._config.event_engine_active == 1:
+        if self._app.event_engine_active == 1:
             try:
-                r = requests.post(self._config.event_engine_path,\
+                r = self.post(self._app.event_engine_path,\
                             data=json.dumps(event_for_engine))
-                if r.status_code == 200:
-                    log.info('Event engine response: %s', r)
-                else:
-                    log.warn('Event engine response: %s', r)
-                    log.warn('Event rejected by %s', self._config.event_engine_path_safe)
-                    log.warn('Event data: %s', event)
+                self._app.log.info('Event engine response: %s' % r)
             except Exception:
                 # Report a problem but keep going...
-                log.error('Exception posting data to event engine: %s',\
-                                self._config.event_engine_path_safe)
+                self._app.log.error('Exception posting data to event engine: %s' %
+                                        self._app.event_engine_path_safe)
                 pass
+                exit(1)
 
     def checkPoint(self, write=False):
         if self._dedupe == True and write == True and self._events_modified == True:
@@ -118,7 +116,8 @@ class shEventHandler:
                     # Pickle the 'data' dictionary using the highest protocol available.
                     pickle.dump(self._events, f, pickle.HIGHEST_PROTOCOL)
             except OSError:
-                log.warning('Unable to write checkpoint file: %s', self._checkpoint_filename)
+                self._app.log.warning('Unable to write checkpoint file: %s' %
+                                            self._checkpoint_filename)
                 pass
 
             # Now that we have written the checkpoint file reset modified flag
@@ -126,35 +125,40 @@ class shEventHandler:
 
         self._checkpoint = time.clock()
 
-    def sleep(self, poll_interval=''):
+    def sleep(self, sleeptime = None):
         # Update poll_interval if supplied
-        if poll_interval != '': self._poll_interval = poll_interval
+        self._poll_interval = (int)(self._app.config.get(self._app._meta.label,
+                                                         self._interval_key))
+        if sleeptime == None:
+            stime = elf._poll_interval
+        else:
+            stime = sleeptime
 
         if self._dedupe == True:
-            log.debug('Event Cache Count: %s', len(self._events))
-            log.debug('Event Cache Max Size: %s', self._events.maxlen)
+            self._app.log.debug('Event Cache Count: %s' % len(self._events))
+            self._app.log.debug('Event Cache Max Size: %s' % self._events.maxlen)
 
         prior_checkpoint = self._checkpoint
         self.checkPoint(write=True)
 
         # Put processing to sleep until next polling interval
-        if self._poll_interval >= 0:
+        if stime >= 0:
             # Logic to true up the poll intervall time for time lost processing
-            time_to_sleep = self._poll_interval -\
+            time_to_sleep = stime -\
                             (time.clock() -\
                             prior_checkpoint)
             # Enforce minimum of .1 sec and avoid negative
             if time_to_sleep < .1: time_to_sleep = .1
 
-            log.debug('Time to sleep: %fs', time_to_sleep)
+            self._app.log.debug('Time to sleep: %fs' % time_to_sleep)
             time.sleep(time_to_sleep)
         else:
-            log.warn('No poll intervall defined. Nothing to sleep.')
+            self._app.log.warn('No poll intervall or sleep time defined. Nothing to sleep.')
 
         self.checkPoint()
 
         # Leverage end of donwtime to check for updated config file
-        self._config.reloadModifiedConfig()
+#        self._config.reloadModifiedConfig()
 
     # RESTful helper to handle retries
     def get(self, url, auth=None):
@@ -162,21 +166,23 @@ class shEventHandler:
 
         while True:
             try:
-                return requests.get(url, auth=auth)
+                r = requests.get(url, auth=auth)
+                if r.status_code != 200:
+                    raise ConnectionError('Invalid status code: %s', r.status_code)
+                return r
             except Exception:
                 retries += 1
 
-                log.warn('Cannot GET from %s. Attempt %s of %s',\
-                         self._config.name, retries, self._config.retries)
+                self._app.log.warn('Cannot GET from %s. Attempt %s of %s' %
+                            (url, retries, self._app.retries))
 
-                if retries >= self._config.retries:
-                    log.Error('Cannot GET from to %s. Exiting...',\
-                              self._config.name)
+                if retries >= self._app.retries:
+                    self._app.log.Error('Cannot GET from to %s. Exiting...' %
+                              url)
                     raise
 
-                # Wait for the next poll intervall until we retry
-                # also allows for configuration to get updated
-                self.sleep()
+                # Wait until we retry
+                self.sleep(2)
                 continue
 
     # RESTful helper to handle retries
@@ -185,26 +191,24 @@ class shEventHandler:
 
         while True:
             try:
-                return requests.post(url, auth=auth, data=data, headers=headers)
+                r = requests.post(url, auth=auth, data=data, headers=headers)
+                if r.status_code != 200:
+                    raise ConnectionError('Invalid status code: %s', r.status_code)
+                return r
             except Exception:
                 retries += 1
 
-                log.warn('Cannot POST to %s. Attempt %s of %s',\
-                         self._config.name, retries, self._config.retries)
+                self._app.log.warn('Cannot POST to %s. Attempt %s of %s' %
+                            (url, retries, self._app.retries))
 
-                if retries >= self._config.retries:
-                    log.Error('Cannot POST to %s. Exiting...',\
-                              self._config.name)
+                if retries >= self._app.retries:
+                    self._app.log.Error('Cannot POST to %s. Exiting...' %
+                                            url)
                     raise
 
-                # Wait for the next poll intervall until we retry
-                # also allows for configuration to get updated
-                self.sleep()
+                # Wait until we retry
+                self.sleep(2)
                 continue
-
-    @property
-    def config(self):
-        return self._config
 
 #
 # Do nothing
