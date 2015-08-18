@@ -10,3 +10,5 @@ script:
   - python common/shregistry.py
   - python engine/restinterface.py
   - python engine/memorymanager.py
+  - python feed/feed.home.tracer.py --help
+  - python feed/feed.home.apcups.py --help
