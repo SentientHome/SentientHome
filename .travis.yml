@@ -4,7 +4,7 @@ python:
 install:
   - python setup.py
 script:
-  - python common/shconfig.py
+  - python common/shapp.py
   - python common/sheventhandler.py
   - python common/shutil.py
   - python common/shregistry.py
