@@ -10,6 +10,20 @@ from cement.core.foundation import CementApp
 from cement.ext.ext_colorlog import ColorLogHandler
 from cement.utils.misc import init_defaults
 
+# Define defaults for app class
+shdefaults = init_defaults('sentienthome')
+# Number of retries for e.g. RESTful calls if status <>200
+shdefaults['sentienthome']['retries'] = 10
+# Number of seconds to pause before retrying
+shdefaults['sentienthome']['retry_intervall'] = 2
+
+# The following defaults are not practical for most situations but
+# help with simply syntax validation in automated testing
+# Do not send events to an event store by default
+shdefaults['sentienthome']['event_store'] = 'DEVNULL'
+# Do not send events to an event engine by default
+shdefaults['sentienthome']['event_engine'] = 'OFF'
+
 COLORS = {
     'DEBUG':    'cyan',
     'INFO':     'green',
@@ -22,7 +36,9 @@ class shApp(CementApp):
     class Meta:
         config_files = ['~/.config/sentienthome/sentienthome.conf']
         extensions = ['colorlog']
+        config_defaults = shdefaults
         arguments_override_config = True
+
 # TODO: reload_config is currently not supported as of Cement 2.6 due to the
 # fact that pyinotify does not support OSX. Opened an issue with Cement to see
 # if the python watchdog extension could be used instead. Disabling for now to
