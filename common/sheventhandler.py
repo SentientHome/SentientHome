@@ -86,7 +86,7 @@ class shEventHandler:
                 self._app.log.fatal(e)
                 self._app.log.fatal('Exception posting data to event store: %s' %
                                         self._app.event_store_path_safe)
-                exit(1)
+                self._app.close(1)
 
         # Need a true copy of the event or we would be messing with the cache
         event_for_engine = copy.deepcopy(event)
@@ -104,7 +104,7 @@ class shEventHandler:
                 self._app.log.fatal(e)
                 self._app.log.fatal('Exception posting data to event engine: %s' %
                                         self._app.event_engine_path_safe)
-                exit(1)
+                self._app.close(1)
 
     def checkPoint(self, write=False):
         if self._dedupe == True and write == True and self._events_modified == True:

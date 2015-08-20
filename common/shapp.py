@@ -5,24 +5,25 @@ __license__   = 'Apache License, Version 2.0'
 
 import os
 import inspect
+import configparser
 
 from cement.core.foundation import CementApp
 from cement.ext.ext_colorlog import ColorLogHandler
 from cement.utils.misc import init_defaults
 
 # Define defaults for app class
-shdefaults = init_defaults('sentienthome')
+shdefaults = init_defaults('SentientHome', 'SentientHome')
 # Number of retries for e.g. RESTful calls if status <>200
-shdefaults['sentienthome']['retries'] = 10
+shdefaults['SentientHome']['retries'] = 10
 # Number of seconds to pause before retrying
-shdefaults['sentienthome']['retry_intervall'] = 2
+shdefaults['SentientHome']['retry_intervall'] = 2
 
 # The following defaults are not practical for most situations but
 # help with simply syntax validation in automated testing
 # Do not send events to an event store by default
-shdefaults['sentienthome']['event_store'] = 'DEVNULL'
+shdefaults['SentientHome']['event_store'] = 'DEVNULL'
 # Do not send events to an event engine by default
-shdefaults['sentienthome']['event_engine'] = 'OFF'
+shdefaults['SentientHome']['event_engine'] = 'OFF'
 
 COLORS = {
     'DEBUG':    'cyan',
@@ -51,11 +52,18 @@ class shApp(CementApp):
         # always run core setup first
         super(shApp, self).setup()
 
+        # Merge in global SentientHome default values
+        self.config.merge(shdefaults)
+
         # Lets store who is using this module - used for filenames
         (self._origin_pathname, self._origin_filename) = os.path.split(inspect.stack()[-1][1])
 
-        self._retries = (int)(self.config.get('sentienthome', 'retries'))
-        self._retry_intervall = (float)(self.config.get('sentienthome', 'retry_intervall'))
+        try:
+            self._retries = (int)(self.config.get('SentientHome', 'retries'))
+            self._retry_intervall = (float)(self.config.get('SentientHome', 'retry_intervall'))
+        except configparser.Error as e:
+            self.log.fatal('Missing configuration setting: %s' % e)
+            self.close(1)
 
         # Setup event store and event engine configurations
         self._setEventStore()
@@ -63,61 +71,70 @@ class shApp(CementApp):
 
 
     def _setEventStore(self):
-        config = self.config
-        self._event_store     = config.get('sentienthome', 'event_store')
+        try:
+            config = self.config
+            self._event_store     = config.get('SentientHome', 'event_store')
 
-        if self._event_store=='DEVNULL':
-            self._event_store_active    = 0
-            self._event_store_addr      = None
-            self._event_store_port      = None
-            self._event_store_db        = None
-            self._event_store_user      = None
-            self._event_store_pass      = None
-            self._event_store_path_safe = None
-            self._event_store_path      = None
-        elif self._event_store=='INFLUXDB':
-            self._event_store_active    = 1
-            self._event_store_addr      = config.get('influxdb', 'influx_addr')
-            self._event_store_port      = config.get('influxdb', 'influx_port')
-            self._event_store_db        = config.get('influxdb', 'influx_db')
-            self._event_store_user      = config.get('influxdb', 'influx_user')
-            self._event_store_pass      = config.get('influxdb', 'influx_pass')
+            if self._event_store=='DEVNULL':
+                self._event_store_active    = 0
+                self._event_store_addr      = None
+                self._event_store_port      = None
+                self._event_store_db        = None
+                self._event_store_user      = None
+                self._event_store_pass      = None
+                self._event_store_path_safe = None
+                self._event_store_path      = None
+            elif self._event_store=='INFLUXDB':
+                self._event_store_active    = 1
+                self._event_store_addr      = config.get('influxdb', 'influx_addr')
+                self._event_store_port      = config.get('influxdb', 'influx_port')
+                self._event_store_db        = config.get('influxdb', 'influx_db')
+                self._event_store_user      = config.get('influxdb', 'influx_user')
+                self._event_store_pass      = config.get('influxdb', 'influx_pass')
 
-            # safe event store path without password
-            # can be used for reporting and general debugging
-            self._event_store_path_safe =\
-                        self._event_store_addr + ':' + \
-                        self._event_store_port + '/db/' + \
-                        self._event_store_db + '/series?time_precision=s&u=' + \
-                        self._event_store_user
-            # complete event store path with full authentication
-            self._event_store_path = self._event_store_path_safe +\
-                                '&p=' + self._event_store_pass
-        else:
-            self.log.critical('Unsupported event store: %s' % self._event_store)
+                # safe event store path without password
+                # can be used for reporting and general debugging
+                self._event_store_path_safe =\
+                            self._event_store_addr + ':' + \
+                            self._event_store_port + '/db/' + \
+                            self._event_store_db + '/series?time_precision=s&u=' + \
+                            self._event_store_user
+                # complete event store path with full authentication
+                self._event_store_path = self._event_store_path_safe +\
+                                    '&p=' + self._event_store_pass
+            else:
+                self.log.fatal('Unsupported event store: %s' % self._event_store)
+                self.close(1)
 
-        self.log.debug('Event store @: %s' % self._event_store_path_safe)
+            self.log.debug('Event store @: %s' % self._event_store_path_safe)
+            pass
+        except configparser.Error as e:
+            self.log.fatal('Missing configuration setting: %s' % e)
+            self.close(1)
 
     def _setEventEngine(self):
-        config = self.config
+        try:
+            config = self.config
 
-        if config.get('sentienthome', 'event_engine' ) == 'ON':
-            self._event_engine_active = 1
-        else:
-            self._event_engine_active = 0
+            if config.get('SentientHome', 'event_engine' ) == 'ON':
+                self._event_engine_active = 1
+            else:
+                self._event_engine_active = 0
 
-        self._event_engine_addr   = config.get('sentienthome', 'event_addr')
-        self._event_engine_port   = config.get('sentienthome', 'event_port')
-        self._event_engine_path_safe = \
-                        self._event_engine_addr + ':' + \
-                        self._event_engine_port + \
-                        config.get('sentienthome', 'event_path')
+            self._event_engine_addr   = config.get('SentientHome', 'event_addr')
+            self._event_engine_port   = config.get('SentientHome', 'event_port')
+            self._event_engine_path_safe = \
+                            self._event_engine_addr + ':' + \
+                            self._event_engine_port + \
+                            config.get('SentientHome', 'event_path')
 
-        # TODO: Add authentication to event engine
-        self._event_engine_path = self._event_engine_path_safe
+            # TODO: Add authentication to event engine
+            self._event_engine_path = self._event_engine_path_safe
 
-        if self._event_engine_active == 1:
             self.log.debug('Event engine @: %s' % self._event_engine_path_safe)
+        except configparser.Error as e:
+            self.log.fatal('Missing configuration setting: %s' % e)
+            self.close(1)
 
     @property
     def retries(self):

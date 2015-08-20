@@ -7,10 +7,8 @@ __license__   = 'Apache License, Version 2.0'
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 
-import asyncio
+import asyncio, json, time, configparser
 from aiohttp import web
-import json
-import time
 from collections import defaultdict, deque
 import pickle
 from copy import deepcopy
@@ -30,9 +28,13 @@ class shMemoryManager:
 
 
         # Assemble a filename for the physical checkpoint
-        self._checkpoint_filename = os.path.join(\
-                os.path.expanduser(self._app.config.get('sentienthome', 'data_path')),\
-                self._app.origin_filename + '.p')
+        try:
+            self._checkpoint_filename = os.path.join(\
+                    os.path.expanduser(self._app.config.get('SentientHome', 'data_path')),\
+                    self._app.origin_filename + '.p')
+        except configparser.Error as e:
+            self._app.log.fatal('Missing configuration setting: %s' % e)
+            self._app.close(1)
 
         # See if we can restore the event memory from a previsous checkpoint
         try:
