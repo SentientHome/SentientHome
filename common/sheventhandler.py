@@ -21,8 +21,9 @@ class shEventHandler:
         self._app.log.info('Starting feed for %s' % self._app._meta.label)
 
         self._interval_key = interval_key
-        self._poll_interval = (int)(self._app.config.get(self._app._meta.label,
-                                                         self._interval_key))
+        self._poll_interval = self._app.config.getfloat(self._app._meta.label,\
+                                                        self._interval_key,\
+                                                        fallback=10)
         # See if we need to enable deduping logic
         self._dedupe = dedupe
 
@@ -31,7 +32,23 @@ class shEventHandler:
         # If we are require to dedupe re-read the checkpoint file
         if self._dedupe==True:
             # Empty event cache - Needed to dedup incoming events if we have processed them
-            self._events_maxlen = (int)(86400 / self._poll_interval)
+
+            self._events_maxlen = self._app.config.getfloat(self._app._meta.label,\
+                                                            'events_max_len',
+                                                            fallback=None)
+
+            if self._events_maxlen == None:
+                self._events_maxlen = self.app.config.getint('SentientHome',\
+                                                            'events_max_len',
+                                                            fallback=10000)
+
+                events_per_day = (int)(86400 / self._poll_interval)
+                if events_per_day < self._events_maxlen:
+                    self._events_maxlen = events_per_day
+
+            self._app.log.debug('Maximum Dedup Buffer Length: %s' %
+                                    self._events_maxlen)
+
             self._events = deque(maxlen=self._events_maxlen)
             self._events_modified = False
             # Assemble a filename for the physical checkpoint
@@ -125,8 +142,9 @@ class shEventHandler:
 
     def sleep(self, sleeptime = None):
         # Update poll_interval if supplied
-        self._poll_interval = (int)(self._app.config.get(self._app._meta.label,
-                                                         self._interval_key))
+        self._poll_interval = self._app.config.getfloat(self._app._meta.label,
+                                                        self._interval_key,
+                                                        fallback=10)
         if sleeptime == None:
             stime = self._poll_interval
         else:

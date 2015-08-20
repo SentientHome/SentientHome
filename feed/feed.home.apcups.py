@@ -53,12 +53,16 @@ with shApp('apcups', config_defaults=defaults) as app:
 
     cmdGen = cmdgen.CommandGenerator()
 
-    errorIndication, errorStatus, errorIndex, varBinds = cmdGen.getCmd(
-        cmdgen.CommunityData('public'),
-        cmdgen.UdpTransportTarget((app.config.get('apcups', 'apcups_addr'), 161)),
-        cmdgen.MibVariable('SNMPv2-MIB', 'sysDescr', 0),
-        lookupNames=True, lookupValues=True
-    )
+    try:
+        errorIndication, errorStatus, errorIndex, varBinds = cmdGen.getCmd(
+            cmdgen.CommunityData('public'),
+            cmdgen.UdpTransportTarget((app.config.get('apcups', 'apcups_addr'), 161)),
+            cmdgen.MibVariable('SNMPv2-MIB', 'sysDescr', 0),
+            lookupNames=True, lookupValues=True
+        )
+    except configparser.Error as e:
+        app.log.fatal('Missing configuration setting: %s' % e)
+        app.close(1)
 
     # Check for errors and print out results
     if errorIndication:
@@ -73,11 +77,15 @@ with shApp('apcups', config_defaults=defaults) as app:
 
     while True:
 
-        errorIndication, errorStatus, errorIndex, varBinds = cmdGen.getCmd(
-            cmdgen.CommunityData('public'),
-            cmdgen.UdpTransportTarget((app.config.get('apcups', 'apcups_addr'), 161)),\
-                                            *oids
-        )
+        try:
+            errorIndication, errorStatus, errorIndex, varBinds = cmdGen.getCmd(
+                cmdgen.CommunityData('public'),
+                cmdgen.UdpTransportTarget((app.config.get('apcups', 'apcups_addr'), 161)),\
+                                                *oids
+            )
+        except configparser.Error as e:
+            app.log.fatal('Missing configuration setting: %s' % e)
+            app.close(1)
 
         # Check for errors and assemble results
         if errorIndication:

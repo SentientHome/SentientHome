@@ -8,37 +8,42 @@ import inspect
 import configparser
 
 from cement.core.foundation import CementApp
+from cement.core import handler
+from cement.core.interface import Interface, Attribute
 from cement.ext.ext_colorlog import ColorLogHandler
-from cement.utils.misc import init_defaults
-
-# Define defaults for app class
-shdefaults = init_defaults('SentientHome', 'SentientHome')
-# Number of retries for e.g. RESTful calls if status <>200
-shdefaults['SentientHome']['retries'] = 10
-# Number of seconds to pause before retrying
-shdefaults['SentientHome']['retry_intervall'] = 2
-
-# The following defaults are not practical for most situations but
-# help with simply syntax validation in automated testing
-# Do not send events to an event store by default
-shdefaults['SentientHome']['event_store'] = 'DEVNULL'
-# Do not send events to an event engine by default
-shdefaults['SentientHome']['event_engine'] = 'OFF'
 
 COLORS = {
     'DEBUG':    'cyan',
     'INFO':     'green',
     'WARNING':  'yellow',
     'ERROR':    'red',
-    'CRITICAL': 'red,bg_white',
+    'CRITICAL': 'white,bg_red',
 }
+
+# class shInterface(Interface):
+#     class IMeta:
+#         label = 'shInterface'
+#
+#     # Must be provided by the implementation
+#     Meta = Attribute('Handler Meta-data')
+#
+#
+# class shHandler(handler.CementBaseHandler):
+#     class Meta:
+#         interface = shInterface
+#         label = 'shHandler'
+# #        description = 'This handler implements the default shInterface'
+#         config_defaults = shdefaults
 
 class shApp(CementApp):
     class Meta:
         config_files = ['~/.config/sentienthome/sentienthome.conf']
         extensions = ['colorlog']
-        config_defaults = shdefaults
         arguments_override_config = True
+#        handlers = [shHandler]
+
+#        define_handlers = [shInterface]
+
 
 # TODO: reload_config is currently not supported as of Cement 2.6 due to the
 # fact that pyinotify does not support OSX. Opened an issue with Cement to see
@@ -52,15 +57,15 @@ class shApp(CementApp):
         # always run core setup first
         super(shApp, self).setup()
 
-        # Merge in global SentientHome default values
-        self.config.merge(shdefaults)
-
         # Lets store who is using this module - used for filenames
         (self._origin_pathname, self._origin_filename) = os.path.split(inspect.stack()[-1][1])
 
         try:
-            self._retries = (int)(self.config.get('SentientHome', 'retries'))
-            self._retry_intervall = (float)(self.config.get('SentientHome', 'retry_intervall'))
+            self._retries = self.config.getint('SentientHome', 'retries',\
+                                                fallback=10)
+            self._retry_intervall = self.config.getfloat('SentientHome',\
+                                                         'retry_intervall',\
+                                                          fallback=2)
         except configparser.Error as e:
             self.log.fatal('Missing configuration setting: %s' % e)
             self.close(1)
@@ -73,17 +78,19 @@ class shApp(CementApp):
     def _setEventStore(self):
         try:
             config = self.config
-            self._event_store     = config.get('SentientHome', 'event_store')
+            self._event_store     = config.get('SentientHome', 'event_store',\
+                                                fallback='OFF')
 
-            if self._event_store=='DEVNULL':
+            self._event_store_addr      = None
+            self._event_store_port      = None
+            self._event_store_db        = None
+            self._event_store_user      = None
+            self._event_store_pass      = None
+            self._event_store_path_safe = None
+            self._event_store_path      = None
+
+            if self._event_store=='OFF':
                 self._event_store_active    = 0
-                self._event_store_addr      = None
-                self._event_store_port      = None
-                self._event_store_db        = None
-                self._event_store_user      = None
-                self._event_store_pass      = None
-                self._event_store_path_safe = None
-                self._event_store_path      = None
             elif self._event_store=='INFLUXDB':
                 self._event_store_active    = 1
                 self._event_store_addr      = config.get('influxdb', 'influx_addr')
@@ -116,20 +123,24 @@ class shApp(CementApp):
         try:
             config = self.config
 
-            if config.get('SentientHome', 'event_engine' ) == 'ON':
+            self._event_engine_addr         = None
+            self._event_engine_port         = None
+            self._event_engine_path_safe    = None
+            self._event_engine_path         = None
+
+            if config.get('SentientHome', 'event_engine', fallback='OFF' ) == 'ON':
                 self._event_engine_active = 1
+                self._event_engine_addr   = config.get('SentientHome', 'event_addr')
+                self._event_engine_port   = config.get('SentientHome', 'event_port')
+                self._event_engine_path_safe = \
+                                self._event_engine_addr + ':' + \
+                                self._event_engine_port + \
+                                config.get('SentientHome', 'event_path')
+
+                # TODO: Add authentication to event engine
+                self._event_engine_path = self._event_engine_path_safe
             else:
                 self._event_engine_active = 0
-
-            self._event_engine_addr   = config.get('SentientHome', 'event_addr')
-            self._event_engine_port   = config.get('SentientHome', 'event_port')
-            self._event_engine_path_safe = \
-                            self._event_engine_addr + ':' + \
-                            self._event_engine_port + \
-                            config.get('SentientHome', 'event_path')
-
-            # TODO: Add authentication to event engine
-            self._event_engine_path = self._event_engine_path_safe
 
             self.log.debug('Event engine @: %s' % self._event_engine_path_safe)
         except configparser.Error as e:
