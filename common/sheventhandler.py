@@ -15,7 +15,7 @@ import copy
 class shEventHandler:
     'SentientHome event handler'
 
-    def __init__(self, app, interval_key, dedupe=False):
+    def __init__(self, app, interval_key='poll_interval', dedupe=False):
         self._app = app
 
         self._app.log.info('Starting feed for %s' % self._app._meta.label)

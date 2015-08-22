@@ -49,7 +49,7 @@ oids = {
 with shApp('apcups', config_defaults=defaults) as app:
     app.run()
 
-    handler = shEventHandler(app, 'apcups_poll_interval')
+    handler = shEventHandler(app)
 
     try:
         cmdGen = cmdgen.CommandGenerator()

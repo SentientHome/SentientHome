@@ -18,14 +18,14 @@ import time
 from cement.utils.misc import init_defaults
 
 defaults = init_defaults('shTracer', 'shTracer')
-defaults['shTracer']['tracer_interval'] = 10.0
+defaults['shTracer']['poll_interval'] = 10.0
 
 # Simple tracer that 'fires' events on a predefined interval
 
 with shApp('shTracer', config_defaults=defaults) as app:
     app.run()
 
-    handler = shEventHandler(app, 'tracer_interval')
+    handler = shEventHandler(app)
     # Simple Tracer counter
     count = 0
 
