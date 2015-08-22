@@ -7,8 +7,8 @@ __license__   = 'Apache License, Version 2.0'
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 
-# Sentient Home configuration
-from common.shconfig import shConfig
+# Sentient Home Application
+from common.shapp import shApp
 from common.sheventhandler import shEventHandler
 
 import logging as log
@@ -16,19 +16,19 @@ import time
 
 # Simple loadtest that 'fires' events as fast as possible
 
-config = shConfig('~/.config/home/home.cfg', name='SentientHome LoadTest')
-handler = shEventHandler(config, 10)
+with shApp('loadtest') as app:
+    app.run()
+    handler = shEventHandler(app)
 
-count = 0
+    count = 0
 
-while True:
-    count += 1
+    while True:
+        count += 1
 
-    event = [{
-        'name': 'loadtest', # Time Series Name
-        'columns': ['count'], # Keys
-        # time in milliseconds since epoch
-        'points': [[count]] # Data points
-    }]
+        event = [{
+            'name': 'loadtest', # Time Series Name
+            'columns': ['count'], # Keys
+            'points': [[count]] # Data points
+        }]
 
-    handler.postEvent(event)
+        handler.postEvent(event)
