@@ -11,9 +11,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 from common.shapp import shApp
 from common.sheventhandler import shEventHandler
 
-import logging as log
-import time
-
 # Simple loadtest that 'fires' events as fast as possible
 
 with shApp('loadtest') as app:
