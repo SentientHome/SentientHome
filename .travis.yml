@@ -16,3 +16,4 @@ script:
   - python feed/feed.home.eagle.py --help
   - python feed/feed.home.finance.py --help
   - python feed/feed.home.isy.py --help
+  - python feed/feed.home.loadtest.py --help
