@@ -120,13 +120,9 @@ def handle_event(request):
 
 @asyncio.coroutine
 def init(loop):
-    try:
-        eaddr = app.config.get('SentientHome', 'event_addr').replace('http://', '')
-        eport = app.config.get('SentientHome', 'event_port')
-        epath = app.config.get('SentientHome', 'event_path')
-    except configparser.Error as e:
-        app.log.fatal('Missing configuration setting: %s' % e)
-        app.close(1)
+    eaddr = app.config.get('SentientHome', 'event_addr').replace('http://', '')
+    eport = app.config.get('SentientHome', 'event_port')
+    epath = app.config.get('SentientHome', 'event_path')
 
     webapp = web.Application(loop=loop, logger=None)
 
