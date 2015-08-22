@@ -14,3 +14,4 @@ script:
   - python feed/feed.home.apcups.py --help
   - python feed/feed.home.autelis.py --help
   - python feed/feed.home.eagle.py --help
+  - python feed/feed.home.finance.py --help
