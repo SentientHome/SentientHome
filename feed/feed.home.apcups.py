@@ -22,7 +22,7 @@ from pysnmp.entity.rfc3413.oneliner import cmdgen
 from cement.utils.misc import init_defaults
 
 defaults = init_defaults('apcups', 'apcups')
-defaults['apcups']['apcups_poll_interval'] = 10.0
+defaults['apcups']['poll_interval'] = 10.0
 
 # Feed APC UPS data
 
