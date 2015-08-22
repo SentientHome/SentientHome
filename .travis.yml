@@ -12,3 +12,4 @@ script:
   - python engine/memorymanager.py
   - python feed/feed.home.tracer.py --help
   - python feed/feed.home.apcups.py --help
+  - python feed/feed.home.autelis.py --help
