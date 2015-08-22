@@ -21,9 +21,9 @@ class shEventHandler:
         self._app.log.info('Starting feed for %s' % self._app._meta.label)
 
         self._interval_key = interval_key
-        self._poll_interval = self._app.config.getfloat(self._app._meta.label,\
+        self._poll_interval = (float)(self._app.config.get(self._app._meta.label,\
                                                         self._interval_key,\
-                                                        fallback=10)
+                                                        fallback=10.0))
         # See if we need to enable deduping logic
         self._dedupe = dedupe
 
@@ -33,20 +33,20 @@ class shEventHandler:
         if self._dedupe==True:
             # Empty event cache - Needed to dedup incoming events if we have processed them
 
-            self._events_maxlen = self._app.config.getfloat(self._app._meta.label,\
+            self._events_maxlen = (int)(self._app.config.get(self._app._meta.label,\
                                                             'events_max_len',
-                                                            fallback=None)
+                                                            fallback=-1))
 
-            if self._events_maxlen == None:
-                self._events_maxlen = self.app.config.getint('SentientHome',\
+            if self._events_maxlen == -1:
+                self._events_maxlen = (int)(self.app.config.get('SentientHome',\
                                                             'events_max_len',
-                                                            fallback=10000)
+                                                            fallback=10000))
 
                 events_per_day = (int)(86400 / self._poll_interval)
                 if events_per_day < self._events_maxlen:
                     self._events_maxlen = events_per_day
 
-            self._app.log.debug('Maximum Dedup Buffer Length: %s' %
+            self._app.log.debug('Maximum Dedupe Buffer Length: %s' %
                                     self._events_maxlen)
 
             self._events = deque(maxlen=self._events_maxlen)
@@ -142,9 +142,9 @@ class shEventHandler:
 
     def sleep(self, sleeptime = None):
         # Update poll_interval if supplied
-        self._poll_interval = self._app.config.getfloat(self._app._meta.label,
+        self._poll_interval = (float)(self._app.config.get(self._app._meta.label,
                                                         self._interval_key,
-                                                        fallback=10)
+                                                        fallback=10.0))
         if sleeptime == None:
             stime = self._poll_interval
         else:
@@ -196,7 +196,7 @@ class shEventHandler:
                 if retries >= self._app.retries:
                     self._app.log.error('Cannot GET from to %s. Exiting...' %
                               url)
-                    raise
+                    raise e
 
                 # Wait until we retry
                 self.sleep(self._app._retry_intervall)
@@ -222,7 +222,7 @@ class shEventHandler:
                 if retries >= self._app.retries:
                     self._app.log.error('Cannot POST to %s. Exiting...' %
                                             url)
-                    raise
+                    raise e
 
                 # Wait until we retry
                 self.sleep(self._app._retry_intervall)
