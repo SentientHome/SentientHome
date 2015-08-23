@@ -7,8 +7,8 @@ __license__   = 'Apache License, Version 2.0'
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 
-# Sentient Home configuration
-from common.shconfig import shConfig
+# Sentient Home Application
+from common.shapp import shApp
 from common.shutil import flatten_dict
 from common.sheventhandler import shEventHandler
 
@@ -16,11 +16,11 @@ from common.sheventhandler import shEventHandler
 sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/../dependencies/ISYlib-python')
 from ISY.IsyEvent import ISYEvent
 
-import logging as log
+app = shApp('isy')
+app.setup()
+app.run()
 
-config = shConfig('~/.config/home/home.cfg', name='Universal Devices ISY994')
-handler = shEventHandler(config)
-
+handler = shEventHandler(app)
 
 # Realtime event feeder
 def eventFeed(*arg):
@@ -34,12 +34,9 @@ def eventFeed(*arg):
         'points': [ list(data.values()) ]
     }]
 
-    log.debug('Event data: %s', event)
+    app.log.debug('Event data: %s' % event)
 
     handler.postEvent(event)
-
-    # Reload config if modified - self limited to once every 10s+
-    config.reloadModifiedConfig()
 
 # Setup ISY socket listener
 # Be aware: Even though we are able to update the config at runtime
@@ -50,19 +47,20 @@ retries = 0
 
 while True:
     try:
-        server.subscribe(addr=config.get('isy', 'isy_addr'),\
-                         userl=config.get('isy', 'isy_user'),\
-                         userp=config.get('isy', 'isy_pass'))
+        server.subscribe(addr=app.config.get('isy', 'isy_addr'),\
+                         userl=app.config.get('isy', 'isy_user'),\
+                         userp=app.config.get('isy', 'isy_pass'))
         break
-    except Exception:
+    except Exception as e:
         retries += 1
 
-        log.warn('Cannot connect to ISY. Attempt %n of %n',\
+        app.log.warn(e)
+        app.log.warn('Cannot connect to ISY. Attempt %n of %n',\
                         retries, config.retries)
 
         if retries >= config.retries:
-            log.Error('Unable to connect to ISY. Exiting...')
-            raise
+            log.Fatal('Unable to connect to ISY. Exiting...')
+            app.close(1)
 
         # Wait for the next poll intervall until we retry
         # also allows for configuration to get updated
@@ -73,7 +71,8 @@ while True:
 server.set_process_func(eventFeed, "")
 
 try:
-    print('Use Control-C to exit')
     server.events_loop()   #no return
 except KeyboardInterrupt:
-    log.info('Exiting...')
+    app.log.info('Exiting...')
+
+app.close()
