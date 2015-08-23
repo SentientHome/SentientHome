@@ -7,21 +7,14 @@ __license__   = 'Apache License, Version 2.0'
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 
-# Sentient Home configuration
-from common.shconfig import shConfig
+# Sentient Home Application
+from common.shapp import shApp
 from common.shutil import xml_to_dict
 from common.sheventhandler import shEventHandler
 from common.shregistry import shRegistry
 
-import logging as log
 import json
 import hashlib
-
-config = shConfig('~/.config/home/home.cfg',\
-                    name='SMA Sunny Webbox Data Feed')
-handler = shEventHandler(config,\
-                         config.getfloat('sma_webbox', 'sma_webbox_poll_interval',\
-                         30))
 
 units = {
     'W':    1,
@@ -39,28 +32,37 @@ rpcrequest = {
     'format':   'JSON',
 }
 
+# Default settings
+from cement.utils.misc import init_defaults
 
-while True:
-    # First check if there is a new password in the config
-    try:
-        passwd = config.get('sma_webbox', 'sma_webbox_pass')
-    except:
-        passwd = None
-        pass
+defaults = init_defaults('sma_webbox', 'sma_webbox')
+defaults['sma_webbox']['poll_interval'] = 30.0
 
-    if passwd != None:
-        rpcrequest['passwd'] = hashlib.md5(passwd.encode('utf-8')).hexdigest()
-    else:
-        # If there is no password make sure we delete pior one
-        rpcrequest.pop('passwd', None)
+with shApp('sma_webbox', config_defaults=defaults) as app:
+    app.run()
 
-    try:
-        log.debug('RPC request: %s', json.dumps(rpcrequest))
+    handler = shEventHandler(app)
 
-        r = handler.post('http://' + config.get('sma_webbox', 'sma_webbox_addr') +\
-                             '/rpc', data='RPC=' + json.dumps(rpcrequest))
+    while True:
+        # First check if there is a new password in the config
+        try:
+            passwd = app.config.get('sma_webbox', 'sma_webbox_pass')
+        except:
+            passwd = None
+            pass
 
-        log.debug('RPC response: %s', r.text)
+        if passwd != None:
+            rpcrequest['passwd'] = hashlib.md5(passwd.encode('utf-8')).hexdigest()
+        else:
+            # If there is no password make sure we delete pior one
+            rpcrequest.pop('passwd', None)
+
+        app.log.debug('RPC request: %s' % json.dumps(rpcrequest))
+
+        r = handler.post(app.config.get('sma_webbox', 'sma_webbox_addr') +\
+                         '/rpc', data='RPC=' + json.dumps(rpcrequest))
+
+        app.log.debug('RPC response: %s' % r.text)
 
         result = json.loads(r.text)
 
@@ -77,11 +79,11 @@ while True:
                         data['shSolarEff'] = data[i['name']] /\
                             (config.get('sma_webbox', 'sma_webbox_total_panels')\
                             * config.get('sma_webbox', 'sma_webbox_panel_rating'))
-                        log.debug('Solar System Efficency: %s%', data['shSolarEff']*100)
+                        app.log.debug('Solar System Efficency: %s%' % (data['shSolarEff']*100))
 
                         data['shPanelPwr'] = data[i['name']] /\
                             (config.get('sma_webbox', 'sma_webbox_total_panels'))
-                        log.debug('Solar Power per Panel: %sW', data['shPanelPwr'])
+                        app.log.debug('Solar Power per Panel: %sW' % data['shPanelPwr'])
                     except:
                         # Skip if optional settings are not set
                         pass
@@ -96,12 +98,8 @@ while True:
             'points':  [ list(data.values()) ] # Data points
         }]
 
-        log.debug('Event data: %s', event)
+        app.log.debug('Event data: %s' % event)
 
         handler.postEvent(event)
-    except Exception as e:
-        log.error('Error: %s', e)
-        pass
 
-    # We reset the poll interval in case the configuration has changed
-    handler.sleep(config.getfloat('sma_webbox', 'sma_webbox_poll_interval', 30))
+        handler.sleep()
