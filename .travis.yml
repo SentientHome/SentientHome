@@ -21,3 +21,4 @@ script:
   - python feed/feed.home.sma.webbox.py --help
   - python feed/feed.home.ubnt.mfi.py --help
   - python feed/feed.home.usgs.earthquake.py --help
+  - python feed/feed.home.zillow.py --help
