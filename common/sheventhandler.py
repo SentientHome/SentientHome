@@ -38,7 +38,7 @@ class shEventHandler:
                                                             fallback=-1))
 
             if self._events_maxlen == -1:
-                self._events_maxlen = (int)(self.app.config.get('SentientHome',\
+                self._events_maxlen = (int)(self._app.config.get('SentientHome',\
                                                             'events_max_len',
                                                             fallback=10000))
 
@@ -53,7 +53,7 @@ class shEventHandler:
             self._events_modified = False
             # Assemble a filename for the physical checkpoint
             self._checkpoint_filename = os.path.join(\
-                    os.path.expanduser(self.app.config.get('sentienthome', 'data_path')),\
+                    os.path.expanduser(self._app.config.get('SentientHome', 'data_path')),\
                     self._app.origin_filename + '.p')
             # See if we can restore the event cache from a previsous checkpoint
             try:
