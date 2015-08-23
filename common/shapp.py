@@ -56,7 +56,7 @@ class shApp(CementApp):
         (self._origin_pathname, self._origin_filename) = os.path.split(inspect.stack()[-1][1])
 
         self._retries = (int)(self.config.get('SentientHome', 'retries', fallback=10))
-        self._retry_intervall = (float)(self.config.get('SentientHome',\
+        self._retry_interval = (float)(self.config.get('SentientHome',\
                                                      'retry_interval',\
                                                       fallback=2))
 
@@ -132,6 +132,10 @@ class shApp(CementApp):
     @property
     def retries(self):
         return self._retries
+
+    @property
+    def retry_interval(self):
+        return self._retry_interval
 
     @property
     def event_store(self):
