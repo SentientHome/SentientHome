@@ -7,51 +7,58 @@ __license__   = 'Apache License, Version 2.0'
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 
-# Sentient Home configuration
-from common.shconfig import shConfig
+# Sentient Home Application
+from common.shapp import shApp
 from common.shutil import xml_to_dict
 from common.sheventhandler import shEventHandler
 
-import logging as log
 import locale
 
-config = shConfig('~/.config/home/home.cfg', name='Zillow Home Data')
-handler = shEventHandler(config, config.getfloat('zillow', 'zillow_poll_interval', 3600))
+# Default settings
+from cement.utils.misc import init_defaults
 
-# set locale so we can easily strip the komma in the zindexValue
-locale.setlocale( locale.LC_ALL, 'en_US' )
+defaults = init_defaults('zillow', 'zillow')
+defaults['zillow']['poll_interval'] = 3600.0
 
-while True:
-    r = handler.get('http://' + config.get('zillow', 'zillow_addr') + ":" +\
-                                config.get('zillow', 'zillow_port') +\
-                                config.get('zillow', 'zillow_path') + "?zws-id=" +\
-                                config.get('zillow', 'zillow_zws_id') + "&zpid=" +\
-                                config.get('zillow', 'zillow_zpid'))
-    log.debug('Fetch data: %s', r.text)
+with shApp('zillow', config_defaults=defaults) as app:
+    app.run()
 
-    data = xml_to_dict(r.text)
-    # Data Structure Documentation: http://www.zillow.com/howto/api/APIOverview.htm
+    handler = shEventHandler(app)
 
-    property_data = data['{http://www.zillow.com/static/xsd/Zestimate.xsd}zestimate']['response']['zestimate']
-    local_data = data['{http://www.zillow.com/static/xsd/Zestimate.xsd}zestimate']['response']['localRealEstate']
+    # set locale so we can easily strip the komma in the zindexValue
+    locale.setlocale( locale.LC_ALL, 'en_US' )
 
-    event = [{
-        'name': 'zillow',
-        'columns': ['valuation', '30daychange', 'rangehigh', 'rangelow', 'percentile', 'last-updated',
-                    'region', 'regiontype', 'zindexValue'],
-        'points': [[ property_data['amount'], property_data['valueChange'],
-                     property_data['valuationRange']['high'],
-                     property_data['valuationRange']['low'],
-                     property_data['percentile'],
-                     property_data['last-updated'],
-                     local_data['region']['@name'],
-                     local_data['region']['@type'],
-                     local_data['region']['zindexValue']
-                  ]]
-    }]
+    while True:
+        r = handler.get(app.config.get('zillow', 'zillow_addr') + ":" +\
+                        app.config.get('zillow', 'zillow_port') +\
+                        app.config.get('zillow', 'zillow_path') + "?zws-id=" +\
+                        app.config.get('zillow', 'zillow_zws_id') + "&zpid=" +\
+                        app.config.get('zillow', 'zillow_zpid'))
+        app.log.debug('Fetch data: %s' % r.text)
 
-    log.debug('Event data: %s', event)
+        data = xml_to_dict(r.text)
+        # Data Structure Documentation: http://www.zillow.com/howto/api/APIOverview.htm
 
-    handler.postEvent(event)
+        property_data = data['{http://www.zillow.com/static/xsd/Zestimate.xsd}zestimate']['response']['zestimate']
+        local_data = data['{http://www.zillow.com/static/xsd/Zestimate.xsd}zestimate']['response']['localRealEstate']
 
-    handler.sleep(config.getfloat('zillow', 'zillow_poll_interval', 3600))
+        event = [{
+            'name': 'zillow',
+            'columns': ['valuation', '30daychange', 'rangehigh', 'rangelow', 'percentile', 'last-updated',
+                        'region', 'regiontype', 'zindexValue'],
+            'points': [[ property_data['amount'], property_data['valueChange'],
+                         property_data['valuationRange']['high'],
+                         property_data['valuationRange']['low'],
+                         property_data['percentile'],
+                         property_data['last-updated'],
+                         local_data['region']['@name'],
+                         local_data['region']['@type'],
+                         local_data['region']['zindexValue']
+                      ]]
+        }]
+
+        app.log.debug('Event data: %s' % event)
+
+        handler.postEvent(event)
+
+        handler.sleep()
