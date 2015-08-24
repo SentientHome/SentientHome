@@ -10,7 +10,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 # Sentient Home Application
 from common.shapp import shApp
 from common.sheventhandler import shEventHandler
-from common.shregistry import shRegistry
 from common.shutil import CtoF
 
 import requests
@@ -94,7 +93,7 @@ with shApp('ubnt_mfi', config_defaults=defaults) as app:
                 pass
 
             event = [{
-                'name': shRegistry['ubnt.mfi']['name'] + '.sensor', # Time Series Name
+                'name': 'ubnt.mfi.sensor', # Time Series Name
                 'columns': list(sensor.keys()), # Keys
                 'points': [list(sensor.values())] # Data points
             }]

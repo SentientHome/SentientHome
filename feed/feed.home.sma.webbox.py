@@ -11,7 +11,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 from common.shapp import shApp
 from common.shutil import xml_to_dict
 from common.sheventhandler import shEventHandler
-from common.shregistry import shRegistry
 
 import json
 import hashlib
@@ -93,7 +92,7 @@ with shApp('sma_webbox', config_defaults=defaults) as app:
                 pass
 
         event = [{
-            'name':    shRegistry['smawebbox']['name'], # Time Series Name
+            'name':    'smawebbox', # Time Series Name
             'columns': list(data.keys()), # Keys
             'points':  [ list(data.values()) ] # Data points
         }]

@@ -11,7 +11,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 from common.shapp import shApp
 from common.shutil import xml_to_dict
 from common.sheventhandler import shEventHandler
-from common.shregistry import shRegistry
 
 # Default settings
 from cement.utils.misc import init_defaults
@@ -46,7 +45,7 @@ with shApp('autelis', config_defaults=defaults) as app:
                        list(data['response']['temp'].items()))
 
         event = [{
-            'name':    shRegistry['autelis']['name'], # Time Series Name
+            'name':    'autelis', # Time Series Name
             'columns': list(alldata.keys()), # Keys
             'points':  [ list(alldata.values()) ] # Data points
         }]

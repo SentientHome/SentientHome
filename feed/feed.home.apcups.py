@@ -11,7 +11,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 from common.shapp import shApp
 from common.sheventhandler import shEventHandler
 from common.shutil import numerify, CtoF
-from common.shregistry import shRegistry
 
 import logging as log
 import time
@@ -108,7 +107,7 @@ with shApp('apcups', config_defaults=defaults) as app:
                     data[oids[str(name)]['name']] = numerify(str(val))
 
             event = [{
-                'name': shRegistry['apcups']['name'], # Time Series Name
+                'name': 'apcups', # Time Series Name
                 'columns': list(data.keys()), # Keys
                 'points': [list(data.values())] # Data points
             }]
