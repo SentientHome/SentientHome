@@ -3,7 +3,7 @@ python:
   - "3.4"
 install:
   - python setup.py
-  - pip install flake8 . --use-mirrors
+  - pip install flake8
 before_script:
   - "flake8 --show-source --builtins=_ common engine feed plugins"
 script:
