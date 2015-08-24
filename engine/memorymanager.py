@@ -42,8 +42,9 @@ class shMemoryManager:
                 # The protocol version used is detected automatically, so we do not
                 # have to specify it.
                 self._eventmemory = pickle.load(f)
-        except (OSError, EOFError) as e:
-            self._app.log.warning('Unable to read checkpoint file: %s' %
+        except (OSError, EOFError, FileNotFoundError) as e:
+            self._app.log.warn(e)
+            self._app.log.warn('Unable to read checkpoint file: %s' %
                                     self._checkpoint_filename)
             pass
 

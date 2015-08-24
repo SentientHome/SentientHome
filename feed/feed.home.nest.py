@@ -11,7 +11,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 # Sentient Home Application
 from common.shapp import shApp
 from common.sheventhandler import shEventHandler
-from common.shutil import CtoF, m2toft2
+from common.shutil import CtoF, m2toft2, boolify, boolify2int
 
 from nest import Nest
 
@@ -26,7 +26,7 @@ defaults['nest']['poll_interval'] = 60.0
 with shApp('nest', config_defaults=defaults) as app:
     app.run()
 
-    handler = shEventHandler(app)
+    handler = shEventHandler(app, dedupe=True)
 
     nest = Nest(app.config.get('nest', 'nest_user'),\
                 app.config.get('nest', 'nest_pass'),\
@@ -39,52 +39,112 @@ with shApp('nest', config_defaults=defaults) as app:
         while True:
             try:
                 for structure in nest.structures:
-                    print ('Structure   : %s' % structure.name)
-                    print (' ZIP        : %s' % structure.postal_code)
-                    print (' Country    : %s' % structure.country_code)
-                    print (' dr_reminder_enabled            : %s' % structure.dr_reminder_enabled)
-                    print (' emergency_contact_description  : %s' % structure.emergency_contact_description)
-                    print (' emergency_contact_type         : %s' % structure.emergency_contact_type)
-                    print (' enhanced_auto_away_enabled     : %s' % structure.enhanced_auto_away_enabled)
-                    print (' eta_preconditioning_active     : %s' % structure.eta_preconditioning_active)
-                    print (' house_type                     : %s' % structure.house_type)
-                    print (' hvac_safety_shutoff_enabled    : %s' % structure.hvac_safety_shutoff_enabled)
-                    print (' num_thermostats                : %s' % structure.num_thermostats)
-                    print (' measurement_scale              : %s' % structure.measurement_scale)
-                    print (' renovation_date                : %s' % structure.renovation_date)
-                    print (' structure_area                 : %0.0fm2 %0.0fft2' % (structure.structure_area,m2toft2(structure.structure_area)))
+                    event = [{
+                        'name': 'nest_structure',
+                        'columns': ['name',
+                                    'postal_code',
+                                    'country_code',
+                                    'house_type',
+                                    'renovation_date',
+                                    'structure_area_m2',
+                                    'structure_area_ft2',
+                                    'num_thermostats',
+                                    'measurement_scale',
+                                    'emergency_contact_description',
+                                    'emergency_contact_type',
+                                    'emergency_contact_phone',
+                                    'dr_reminder_enabled',
+                                    'enhanced_auto_away_enabled',
+                                    'eta_preconditioning_active',
+                                    'hvac_safety_shutoff_enabled',
+                                    'away' ],
+                        'points': [[structure.name,
+                                    structure.postal_code,
+                                    structure.country_code,
+                                    structure.house_type,
+                                    structure.renovation_date,
+                                    (int)('%0.0f' % structure.structure_area),
+                                    (int)('%0.0f' % m2toft2(structure.structure_area)),
+                                    structure.num_thermostats,
+                                    structure.measurement_scale,
+                                    structure.emergency_contact_description,
+                                    structure.emergency_contact_type,
+                                    structure.emergency_contact_phone,
+                                    boolify2int(structure.dr_reminder_enabled),
+                                    boolify2int(structure.enhanced_auto_away_enabled),
+                                    boolify2int(structure.eta_preconditioning_active),
+                                    boolify2int(structure.hvac_safety_shutoff_enabled),
+                                    boolify2int(structure.away) ]]
+                    }]
 
-                    print ('    Away    : %s' % structure.away)
-                    print ('    Devices :')
+                    app.log.debug('Event data: %s' % event)
+
+                    handler.postEvent(event, dedupe=True)
 
                     for device in structure.devices:
-                        print ('        Name : %s' % device.name)
-                        print ('        Where: %s' % device.where)
-                        print ('            Mode     : %s' % device.mode)
-                        print ('            Fan      : %s' % device.fan)
-                        print ('            Temp     : %0.0fC %0.0fF' % (device.temperature, CtoF(device.temperature)))
-                        print ('            Humidity : %0.0f%%' % (device.humidity))
-                        print ('            Target   : %0.0fC %0.0fF' % (device.target, CtoF(device.target)))
-                        print ('            Away Heat: %0.0fC %0.0fF' % (device.away_temperature[0], CtoF(device.away_temperature[0])))
-                        print ('            Away Cool: %0.0fC %0.0fF' % (device.away_temperature[1], CtoF(device.away_temperature[1])))
+                        event = [{
+                            'name': 'nest_device',
+                            'columns': ['name',
+                                        'where',
+                                        'mode',
+                                        'fan',
+                                        'temperature_C',
+                                        'temperature_F',
+                                        'humidity',
+                                        'target_C',
+                                        'target_F',
+                                        'away_low_C',
+                                        'away_low_F',
+                                        'away_high_C',
+                                        'away_high_F',
+                                        'hvac_ac_state',
+                                        'hvac_cool_x2_state',
+                                        'hvac_heater_state',
+                                        'hvac_aux_heater_state',
+                                        'hvac_heat_x2_state',
+                                        'hvac_heat_x3_state',
+                                        'hvac_alt_heat_state',
+                                        'hvac_alt_heat_x2_state',
+                                        'hvac_emer_heat_state',
+                                        'online',
+                                        'last_ip',
+                                        'local_ip',
+                                        'last_connection',
+                                        'error_code',
+                                        'battery_level' ],
+                            'points': [[device.name,
+                                        device.where,
+                                        device.mode,
+                                        boolify2int(device.fan),
+                                        (float)('%0.1f' % device.temperature),
+                                        (float)('%0.1f' % CtoF(device.temperature)),
+                                        device.humidity,
+                                        (float)('%0.1f' % device.target),
+                                        (float)('%0.1f' % CtoF(device.target)),
+                                        (float)('%0.1f' % device.away_temperature[0]),
+                                        (float)('%0.1f' % CtoF(device.away_temperature[0])),
+                                        (float)('%0.1f' % device.away_temperature[1]),
+                                        (float)('%0.1f' % CtoF(device.away_temperature[1])),
+                                        boolify2int(device.hvac_ac_state),
+                                        boolify2int(device.hvac_cool_x2_state),
+                                        boolify2int(device.hvac_heater_state),
+                                        boolify2int(device.hvac_aux_heater_state),
+                                        boolify2int(device.hvac_heat_x2_state),
+                                        boolify2int(device.hvac_heat_x3_state),
+                                        boolify2int(device.hvac_alt_heat_state),
+                                        boolify2int(device.hvac_alt_heat_x2_state),
+                                        boolify2int(device.hvac_emer_heat_state),
+                                        boolify2int(device.online),
+                                        device.last_ip,
+                                        device.local_ip,
+                                        device.last_connection,
+                                        device.error_code,
+                                        device.battery_level ]]
+                        }]
 
-                        print ('            hvac_ac_state         : %s' % device.hvac_ac_state)
-                        print ('            hvac_cool_x2_state    : %s' % device.hvac_cool_x2_state)
-                        print ('            hvac_heater_state     : %s' % device.hvac_heater_state)
-                        print ('            hvac_aux_heater_state : %s' % device.hvac_aux_heater_state)
-                        print ('            hvac_heat_x2_state    : %s' % device.hvac_heat_x2_state)
-                        print ('            hvac_heat_x3_state    : %s' % device.hvac_heat_x3_state)
-                        print ('            hvac_alt_heat_state   : %s' % device.hvac_alt_heat_state)
-                        print ('            hvac_alt_heat_x2_state: %s' % device.hvac_alt_heat_x2_state)
-                        print ('            hvac_emer_heat_state  : %s' % device.hvac_emer_heat_state)
+                        app.log.debug('Event data: %s' % event)
 
-                        print ('            online                : %s' % device.online)
-                        print ('            last_ip               : %s' % device.last_ip)
-                        print ('            local_ip              : %s' % device.local_ip)
-                        print ('            last_connection       : %s' % device.last_connection)
-
-                        print ('            error_code            : %s' % device.error_code)
-                        print ('            battery_level         : %s' % device.battery_level)
+                        handler.postEvent(event, dedupe=True)
 
                 break
             except KeyError as k:
@@ -98,11 +158,9 @@ with shApp('nest', config_defaults=defaults) as app:
             except Exception as e:
                 retries += 1
 
-                # Something went wrong authorizing the connection to the Nest service
+                # Something went wrong communicating to the Nest service
                 app.log.warn('Exception communicaing with Nest. Attempt %s of %s' % (retries, app.retries))
                 app.log.warn(e)
-
-                raise
 
                 if retries >= app.retries:
                     app.log.fatal( 'Unable to connect to Nest. Exiting...' )
@@ -110,15 +168,5 @@ with shApp('nest', config_defaults=defaults) as app:
                     app.close(1)
 
                 handler.sleep(app.retry_interval)
-
-        event = [{
-            'name': 'nest',
-            'columns': [ 'XXXX', 'YYYY' ],
-            'points': [[ 1, 2 ]]
-        }]
-
-        app.log.debug('Event data: %s' % event)
-
-    #    handler.postEvent(event)
 
         handler.sleep()

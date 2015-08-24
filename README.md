@@ -63,7 +63,7 @@ These are some of the main technologies and components of the Home Automation pr
     Google Finance - Realtime financials for stocks, indices and currencies
     INSTEON - Smart switches and dimmers, motion/water/power sensors
     ISY994 - Universal Devices INSTEON controller platform
-    NEST - Thermostats and Smoke Detectors (TBD)
+    NEST - Thermostats and Smoke Detectors
     Netatmo - Personal Climate and Weather modules.
     Philips Hue - Smart controlable lighting (TBD)
     Rainforest Eagle - Realtime Smartgrid Power Sensor
