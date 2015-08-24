@@ -89,6 +89,21 @@ def mBtoiHg(p):
 def mmtoin(m):
   return m*0.03937
 
+# Conversion: square meter to square foot
+def m2toft2(a):
+  return a*10.764
+
+
+# Conversion: string to bool
+def boolify(s):
+    return (str)(s).lower() in['true', '1', 't', 'y', 'yes']
+
+
+# Conversion: string to bool to int
+def boolify2int(str):
+    return (int)(boolify(str))
+
+
 #
 # Do nothing
 # (syntax check)

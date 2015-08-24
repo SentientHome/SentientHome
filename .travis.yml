@@ -17,6 +17,7 @@ script:
   - python feed/feed.home.finance.py --help
   - python feed/feed.home.isy.py --help
   - python feed/feed.home.loadtest.py --help
+  - python feed/feed.home.nest.py --help
   - python feed/feed.home.netatmo.py --help
   - python feed/feed.home.sma.webbox.py --help
   - python feed/feed.home.ubnt.mfi.py --help
