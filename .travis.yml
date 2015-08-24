@@ -3,6 +3,9 @@ python:
   - "3.4"
 install:
   - python setup.py
+  - pip install flake8 . --use-mirrors
+before_script:
+  - "flake8 --show-source --builtins=_ common engine feed plugins"
 script:
   - python common/shapp.py
   - python common/sheventhandler.py
