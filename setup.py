@@ -32,4 +32,8 @@ if 0 != os.system('mkdir data'):
     print('Error creating local data directory. Exiting...')
     quit()
 
+if 0 != os.system('mkdir data/nest'):
+    print('Error creating local data directory. Exiting...')
+    quit()
+
 print('Finished installing dependencies.')

@@ -89,6 +89,10 @@ def mBtoiHg(p):
 def mmtoin(m):
   return m*0.03937
 
+# Conversion: square meter to square foot
+def m2toft2(a):
+  return a*10.764
+
 #
 # Do nothing
 # (syntax check)

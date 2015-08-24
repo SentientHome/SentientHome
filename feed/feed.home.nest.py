@@ -11,7 +11,9 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
 # Sentient Home Application
 from common.shapp import shApp
 from common.sheventhandler import shEventHandler
-from dependencies.nest_thermostat import Nest
+from common.shutil import CtoF, m2toft2
+
+from nest import Nest
 
 import json, collections
 
@@ -26,84 +28,88 @@ with shApp('nest', config_defaults=defaults) as app:
 
     handler = shEventHandler(app)
 
-    retries = 0
+    nest = Nest(app.config.get('nest', 'nest_user'),\
+                app.config.get('nest', 'nest_pass'),\
+                access_token_cache_file=os.path.expanduser(\
+                                app.config.get('nest', 'nest_cache')))
 
     while True:
-        try:
-            nest = Nest(app.config.get('nest', 'nest_user'),\
-                        app.config.get('nest', 'nest_pass'),\
-                        access_token_cache_file=os.path.expanduser(\
-                                        app.config.get('nest', 'nest_cache')))
-            break
-        except Exception:
-            retries += 1
+        retries = 0
 
-            # Something went wrong authorizing the connection to the NetAtmo service
-            app.log.warn( 'Cannot connect to Nest. Attemp %n of %n' % (i, app.retries()) )
+        while True:
+            try:
+                for structure in nest.structures:
+                    print ('Structure   : %s' % structure.name)
+                    print (' ZIP        : %s' % structure.postal_code)
+                    print (' Country    : %s' % structure.country_code)
+                    print (' dr_reminder_enabled            : %s' % structure.dr_reminder_enabled)
+                    print (' emergency_contact_description  : %s' % structure.emergency_contact_description)
+                    print (' emergency_contact_type         : %s' % structure.emergency_contact_type)
+                    print (' enhanced_auto_away_enabled     : %s' % structure.enhanced_auto_away_enabled)
+                    print (' eta_preconditioning_active     : %s' % structure.eta_preconditioning_active)
+                    print (' house_type                     : %s' % structure.house_type)
+                    print (' hvac_safety_shutoff_enabled    : %s' % structure.hvac_safety_shutoff_enabled)
+                    print (' num_thermostats                : %s' % structure.num_thermostats)
+                    print (' measurement_scale              : %s' % structure.measurement_scale)
+                    print (' renovation_date                : %s' % structure.renovation_date)
+                    print (' structure_area                 : %0.0fm2 %0.0fft2' % (structure.structure_area,m2toft2(structure.structure_area)))
 
-            if retries >= app.retries():
-                app.log.fatal( 'Unable to connect to Nest. Exiting...' )
-                app.close(1)
+                    print ('    Away    : %s' % structure.away)
+                    print ('    Devices :')
 
-            handler.sleep(app.retry_interval())
+                    for device in structure.devices:
+                        print ('        Name : %s' % device.name)
+                        print ('        Where: %s' % device.where)
+                        print ('            Mode     : %s' % device.mode)
+                        print ('            Fan      : %s' % device.fan)
+                        print ('            Temp     : %0.0fC %0.0fF' % (device.temperature, CtoF(device.temperature)))
+                        print ('            Humidity : %0.0f%%' % (device.humidity))
+                        print ('            Target   : %0.0fC %0.0fF' % (device.target, CtoF(device.target)))
+                        print ('            Away Heat: %0.0fC %0.0fF' % (device.away_temperature[0], CtoF(device.away_temperature[0])))
+                        print ('            Away Cool: %0.0fC %0.0fF' % (device.away_temperature[1], CtoF(device.away_temperature[1])))
 
-    app.log.info( 'Nest Connection established.')
+                        print ('            hvac_ac_state         : %s' % device.hvac_ac_state)
+                        print ('            hvac_cool_x2_state    : %s' % device.hvac_cool_x2_state)
+                        print ('            hvac_heater_state     : %s' % device.hvac_heater_state)
+                        print ('            hvac_aux_heater_state : %s' % device.hvac_aux_heater_state)
+                        print ('            hvac_heat_x2_state    : %s' % device.hvac_heat_x2_state)
+                        print ('            hvac_heat_x3_state    : %s' % device.hvac_heat_x3_state)
+                        print ('            hvac_alt_heat_state   : %s' % device.hvac_alt_heat_state)
+                        print ('            hvac_alt_heat_x2_state: %s' % device.hvac_alt_heat_x2_state)
+                        print ('            hvac_emer_heat_state  : %s' % device.hvac_emer_heat_state)
 
-    # Create list of indoor locations for devices
-    locations = collections.defaultdict(dict)
+                        print ('            online                : %s' % device.online)
+                        print ('            last_ip               : %s' % device.last_ip)
+                        print ('            local_ip              : %s' % device.local_ip)
+                        print ('            last_connection       : %s' % device.last_connection)
 
-    for structure in nest._status['where']:
-        for where in nest._status['where'][structure]['wheres']:
-            locations[structure][where['where_id']] = where['name']
+                        print ('            error_code            : %s' % device.error_code)
+                        print ('            battery_level         : %s' % device.battery_level)
 
-    print('Locations: ' + str(locations))
+                break
+            except KeyError as k:
+                app.log.fatal('Key error accessing Nest data. Exiting...')
+                app.log.fatal(k)
+                raise
+            except AttributeError as a:
+                app.log.fatal('Attribute error accessing Nest data. Exiting...')
+                app.log.fatal(a)
+                raise
+            except Exception as e:
+                retries += 1
 
-    # Now create list of devices
-    devices = collections.defaultdict(dict)
+                # Something went wrong authorizing the connection to the Nest service
+                app.log.warn('Exception communicaing with Nest. Attempt %s of %s' % (retries, app.retries))
+                app.log.warn(e)
 
-    for structure in nest._status['structure']:
-        for device in structure['devices']:
-            devices[device]=locations[structure][device['where_id']]['name']
+                raise
 
-    print('Deviced:  ' + str(devices))
+                if retries >= app.retries:
+                    app.log.fatal( 'Unable to connect to Nest. Exiting...' )
+                    app.log.fatal(e)
+                    app.close(1)
 
-
-    while True:
-        print ('=========================')
-    #    print json.dumps(nest._status)
-        print ('=========================')
-
-
-
-
-
-    #        for subkey in nest._status[key].keys():
-    #            print '----------------------------'
-    #            print 'SubKey  : ' + subkey + ' = ' + str(nest._status[key][subkey])
-    #            print 'Sub2keys: ' + str(nest._status[key][subkey].keys())
-
-    #            for sub2key in nest._status[key][subkey].keys():
-    #                print '++++++++++++++++++++++++++++'
-    #                print 'Sub2Key  : ' + sub2key + ' = ' + str(nest._status[key][subkey][sub2key])
-    #                try:
-    #                    print 'Sub3keys: ' + str(nest._status[key][subkey][sub2key].keys())
-    #                except Exception:
-    #                    continue
-
-    #    key = 'device'
-    #    subkey = '02AA01AC18140042'
-
-    #    print '----------------------------'
-    #    print 'SubKey  : ' + subkey + ' = ' + str(nest._status[key][subkey])
-    #    print 'Sub2keys: ' + str(nest._status[key][subkey].keys())
-
-    #    for sub2key in nest._status[key][subkey].keys():
-    #        print '++++++++++++++++++++++++++++'
-    #        print 'Sub2Key  : ' + sub2key + ' = ' + str(nest._status[key][subkey][sub2key])
-    #        try:
-    #            print 'Sub3keys: ' + str(nest._status[key][subkey][sub2key].keys())
-    #        except Exception:
-    #            continue
+                handler.sleep(app.retry_interval)
 
         event = [{
             'name': 'nest',
