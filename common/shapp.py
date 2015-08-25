@@ -1,17 +1,16 @@
 #!/usr/local/bin/python3 -u
-__author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
+__author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
-__license__   = 'Apache License, Version 2.0'
+__license__ = 'Apache License, Version 2.0'
 
 import os
 import inspect
 import configparser
 
 from cement.core.foundation import CementApp
-from cement.core import handler
-from cement.core.interface import Interface, Attribute
 from cement.ext.ext_colorlog import ColorLogHandler
 from cement.ext.ext_configparser import ConfigParserConfigHandler
+
 
 class shConfigHandler(ConfigParserConfigHandler):
     class Meta:
@@ -31,6 +30,7 @@ COLORS = {
     'ERROR':    'red',
     'CRITICAL': 'white,bg_red',
 }
+
 
 class shApp(CementApp):
     class Meta:
@@ -53,51 +53,53 @@ class shApp(CementApp):
         super(shApp, self).setup()
 
         # Lets store who is using this module - used for filenames
-        (self._origin_pathname, self._origin_filename) = os.path.split(inspect.stack()[-1][1])
+        (self._origin_pathname, self._origin_filename) =\
+            os.path.split(inspect.stack()[-1][1])
 
-        self._retries = (int)(self.config.get('SentientHome', 'retries', fallback=10))
-        self._retry_interval = (float)(self.config.get('SentientHome',\
-                                                     'retry_interval',\
-                                                      fallback=2))
+        self._retries = (int)(self.config.get('SentientHome',
+                                              'retries',
+                                              fallback=10))
+        self._retry_interval = (float)(self.config.get('SentientHome',
+                                                       'retry_interval',
+                                                       fallback=2))
 
         # Setup event store and event engine configurations
         self._setEventStore()
         self._setEventEngine()
 
-
     def _setEventStore(self):
         config = self.config
-        self._event_store     = config.get('SentientHome', 'event_store',\
-                                            fallback='OFF')
+        self._event_store = config.get('SentientHome', 'event_store',
+                                       fallback='OFF')
 
-        self._event_store_addr      = None
-        self._event_store_port      = None
-        self._event_store_db        = None
-        self._event_store_user      = None
-        self._event_store_pass      = None
+        self._event_store_addr = None
+        self._event_store_port = None
+        self._event_store_db = None
+        self._event_store_user = None
+        self._event_store_pass = None
         self._event_store_path_safe = None
-        self._event_store_path      = None
+        self._event_store_path = None
 
-        if self._event_store=='OFF':
-            self._event_store_active    = 0
-        elif self._event_store=='INFLUXDB':
-            self._event_store_active    = 1
-            self._event_store_addr      = config.get('influxdb', 'influx_addr')
-            self._event_store_port      = config.get('influxdb', 'influx_port')
-            self._event_store_db        = config.get('influxdb', 'influx_db')
-            self._event_store_user      = config.get('influxdb', 'influx_user')
-            self._event_store_pass      = config.get('influxdb', 'influx_pass')
+        if self._event_store == 'OFF':
+            self._event_store_active = 0
+        elif self._event_store == 'INFLUXDB':
+            self._event_store_active = 1
+            self._event_store_addr = config.get('influxdb', 'influx_addr')
+            self._event_store_port = config.get('influxdb', 'influx_port')
+            self._event_store_db = config.get('influxdb', 'influx_db')
+            self._event_store_user = config.get('influxdb', 'influx_user')
+            self._event_store_pass = config.get('influxdb', 'influx_pass')
 
             # safe event store path without password
             # can be used for reporting and general debugging
             self._event_store_path_safe =\
-                        self._event_store_addr + ':' + \
-                        self._event_store_port + '/db/' + \
-                        self._event_store_db + '/series?time_precision=s&u=' + \
-                        self._event_store_user
+                self._event_store_addr + ':' + \
+                self._event_store_port + '/db/' + \
+                self._event_store_db + '/series?time_precision=s&u=' + \
+                self._event_store_user
             # complete event store path with full authentication
             self._event_store_path = self._event_store_path_safe +\
-                                '&p=' + self._event_store_pass
+                '&p=' + self._event_store_pass
         else:
             self.log.fatal('Unsupported event store: %s' % self._event_store)
             self.close(1)
@@ -108,19 +110,19 @@ class shApp(CementApp):
     def _setEventEngine(self):
         config = self.config
 
-        self._event_engine_addr         = None
-        self._event_engine_port         = None
-        self._event_engine_path_safe    = None
-        self._event_engine_path         = None
+        self._event_engine_addr = None
+        self._event_engine_port = None
+        self._event_engine_path_safe = None
+        self._event_engine_path = None
 
-        if config.get('SentientHome', 'event_engine', fallback='OFF' ) == 'ON':
+        if config.get('SentientHome', 'event_engine', fallback='OFF') == 'ON':
             self._event_engine_active = 1
-            self._event_engine_addr   = config.get('SentientHome', 'event_addr')
-            self._event_engine_port   = config.get('SentientHome', 'event_port')
+            self._event_engine_addr = config.get('SentientHome', 'event_addr')
+            self._event_engine_port = config.get('SentientHome', 'event_port')
             self._event_engine_path_safe = \
-                            self._event_engine_addr + ':' + \
-                            self._event_engine_port + \
-                            config.get('SentientHome', 'event_path')
+                self._event_engine_addr + ':' + \
+                self._event_engine_port + \
+                config.get('SentientHome', 'event_path')
 
             # TODO: Add authentication to event engine
             self._event_engine_path = self._event_engine_path_safe

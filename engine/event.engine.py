@@ -1,19 +1,19 @@
 #!/usr/local/bin/python3 -u
-__author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
+__author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
-__license__   = 'Apache License, Version 2.0'
+__license__ = 'Apache License, Version 2.0'
 
 # Make sure we have access to SentientHome commons
-import os, sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 
-import asyncio, json, time, configparser
+import asyncio
+import json
+import time
 from aiohttp import web
 from collections import defaultdict, deque
 from concurrent.futures import ThreadPoolExecutor
-
-# Cement Framework
-from cement.core import foundation
 
 # Sentient Home Application
 from common.shapp import shApp
@@ -24,10 +24,12 @@ from restinterface import shRestInterface
 from memorymanager import shMemoryManager
 
 # TODO: Needs o move into plugin: ISY helper
-sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/../dependencies/ISYlib-python')
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
+                '/../dependencies/ISYlib-python')
 from ISY.IsyClass import Isy
 
-@asyncio.coroutine
+
+@asyncio.coroutine  # noqa TODO: Rewrite now that we are cement based
 def handle_event(request):
 
     try:
@@ -37,7 +39,7 @@ def handle_event(request):
         # Assemble individual events from incoming stream
         #
         for e in event:
-            app.log.debug('Event Type: %s' % e['name'] )
+            app.log.debug('Event Type: %s' % e['name'])
 
             # Initialize raw event cache if it does not exist yet
             if not memory.eventmemory['raw'][e['name']]:
@@ -51,8 +53,8 @@ def handle_event(request):
             for p in e['points']:
                 # Perform a simple sanity check
                 if len(e['columns']) != len(p):
-                    app.log.error('Number of Columns %s mismatches number of Points %s' %
-                                (len(e['columns']), len(p)))
+                    app.log.error('Number of Columns %s mismatches number of\
+                                  Points %s' % (len(e['columns']), len(p)))
 
                 # Populate raw event memory
                 myevent = dict()
@@ -62,7 +64,7 @@ def handle_event(request):
                 # Timestamp the assembled event in milliseconds since epoch
                 myevent['shtime2'] = time.time()*1000
                 for x in range(0, len(e['columns'])):
-                    myevent[e['columns'][x]]=p[x]
+                    myevent[e['columns'][x]] = p[x]
 
                 app.log.debug('myevent: %s' % myevent)
 
@@ -78,20 +80,24 @@ def handle_event(request):
                 try:
                     if e['name'] == 'isy':
                         # Initialize state event cache if it does not exist yet
-                        if not memory.eventmemory['state'][e['name']][myevent['Event.node']]:
-                            memory.eventmemory['state'][e['name']][myevent['Event.node']] = deque(maxlen=100)
+                        if not memory.eventmemory['state'][e['name']][
+                                myevent['Event.node']]:
+                            memory.eventmemory['state'][e['name']][
+                                myevent['Event.node']] = deque(maxlen=100)
 
                         state['control'] = myevent['Event.control']
                         state['action'] = myevent['Event.action']
 
-                        actions = ['DON', 'DFON', 'DOF', 'DFOF', 'ST', 'OL', \
+                        actions = ['DON', 'DFON', 'DOF', 'DFOF', 'ST', 'OL',
                                    'RR', 'BMAN', 'SMAN', 'DIM', 'BRT']
 
                         if state['control'] in actions:
                             app.log.debug('==============================')
-                            app.log.debug('Node: %s Data: %s' % (myevent['Event.node'], state))
+                            app.log.debug('Node: %s Data: %s' %
+                                          (myevent['Event.node'], state))
                             app.log.debug('==============================')
-                            memory.eventmemory['state'][e['name']][myevent['Event.node']].appendleft(state)
+                            memory.eventmemory['state'][e['name']]
+                            [myevent['Event.node']].appendleft(state)
                 except Exception as e:
                     app.log.error('Error appending state: %s' % e)
 
@@ -105,18 +111,18 @@ def handle_event(request):
 
                 # Report event latency
                 app.log.info('Event Latency: %2.4sms' %
-                    (myevent['shtime2']-myevent['shtime1']))
+                             (myevent['shtime2']-myevent['shtime1']))
 
                 app.log.info('Event Processing Latency: %2.4sms' %
-                    (time3-myevent['shtime1']))
+                             (time3-myevent['shtime1']))
 
-
-        output = {'msg' : 'Event Received'}
+        output = {'msg': 'Event Received'}
     except Exception as e:
         app.log.error('Event Error: %s' % e)
-        output = {'msg' : 'Event Error; Event Rejected'}
+        output = {'msg': 'Event Error; Event Rejected'}
 
     return web.Response(body=json.dumps(output).encode('utf-8'))
+
 
 @asyncio.coroutine
 def init(loop):
@@ -132,7 +138,8 @@ def init(loop):
     memory = shMemoryManager(app, loop)
 
     # Register and implement all other RESTful interfaces
-    interface = shRestInterface(app, webapp, memory);
+    # interface =
+    shRestInterface(app, webapp, memory)
 
     handler = webapp.make_handler()
 
@@ -140,6 +147,7 @@ def init(loop):
     app.log.info("Event Engine started at http://%s:%s" % (eaddr, eport))
 
     return webapp, srv, handler, memory
+
 
 @asyncio.coroutine
 def finish(webapp, srv, handler, memory):
@@ -153,6 +161,7 @@ def finish(webapp, srv, handler, memory):
     memory.checkpoint()
     app.log.info('Good Bye!')
 
+
 @asyncio.coroutine
 def checkpoint(loop, thread, memory):
     try:
@@ -164,22 +173,26 @@ def checkpoint(loop, thread, memory):
     except Exception:
         return
 
-@asyncio.coroutine
+
+@asyncio.coroutine  # noqa TODO: Rewrite now that we are cement based
 def fire(etype, event, state, memory):
     try:
-        app.log.debug('Firing event rules for: %s: %s, %s' %(etype, event, state))
+        app.log.debug('Firing event rules for: %s: %s, %s' %
+                      (etype, event, state))
 
         # TODO: The logic below is a temporary test and to be placed into
         # event engine plugins onve the kinks are worked out.
 
-        if etype == 'isy' and  event['Event.node'] == '24 0 93 1':
+        if etype == 'isy' and event['Event.node'] == '24 0 93 1':
             app.log.debug('!!!!!!!!!!FOUNTAIN!!!!!!!!!!!')
-        elif etype == 'isy' and  event['Event.node'] == '29 14 86 1':
+        elif etype == 'isy' and event['Event.node'] == '29 14 86 1':
             app.log.debug('!!!!!!!!!!LIVING - WINDOW - OUTLET!!!!!!!!!!!')
         elif etype == 'isy' and state['control'] == 'DON':
-            app.log.debug('Node: %s TURNED ON!!!!!!!!!!!!!!!!' % node)
+            app.log.debug('Node: %s TURNED ON!!!!!!!!!!!!!!!!' %
+                          event['Event.node'])
         elif etype == 'isy' and state['control'] == 'ST':
-            app.log.debug('Node: %s SET TARGET!!!!!!!!!!!!!!!' % node)
+            app.log.debug('Node: %s SET TARGET!!!!!!!!!!!!!!!' %
+                          event['Event.node'])
 
         if etype == 'ubnt.mfi.sensor':
             # Slow test workload for async task
@@ -194,9 +207,9 @@ def fire(etype, event, state, memory):
                 # Turn off the well pump for set amount of time
                 app.log.info('!!!!!!!! WELL PUMP SAVER ACTION !!!!!!!!!')
 
-                myIsy = Isy(addr=config.get('isy', 'isy_addr'),\
-                            userl=config.get('isy', 'isy_user'),\
-                            userp=config.get('isy', 'isy_pass'))
+                myIsy = Isy(addr=app.config.get('isy', 'isy_addr'),
+                            userl=app.config.get('isy', 'isy_user'),
+                            userp=app.config.get('isy', 'isy_pass'))
                 # First put pump to sleep
                 well_pump = myIsy.get_node("Well - Well Pump")
                 if well_pump:

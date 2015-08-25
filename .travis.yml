@@ -3,11 +3,13 @@ python:
   - "3.4"
 install:
   - python setup.py
+  - pip install flake8
+before_script:
+  - "flake8 --show-source --max-line-length=80 --statistics --builtins=_ common engine feed plugins"
 script:
   - python common/shapp.py
   - python common/sheventhandler.py
   - python common/shutil.py
-  - python common/shregistry.py
   - python engine/restinterface.py
   - python engine/memorymanager.py
   - python feed/feed.home.tracer.py --help

@@ -1,11 +1,12 @@
 #!/usr/local/bin/python3 -u
-__author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
+__author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
-__license__   = 'Apache License, Version 2.0'
+__license__ = 'Apache License, Version 2.0'
 
 # Make sure we have access to SentientHome commons
-import os, sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 
 # Sentient Home Application
 from common.shapp import shApp
@@ -13,7 +14,8 @@ from common.shutil import flatten_dict
 from common.sheventhandler import shEventHandler
 
 # Add path to submodule dependencies.ISYlib-python
-sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/../dependencies/ISYlib-python')
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
+                '/../dependencies/ISYlib-python')
 from ISY.IsyEvent import ISYEvent
 
 app = shApp('isy')
@@ -21,6 +23,7 @@ app.setup()
 app.run()
 
 handler = shEventHandler(app)
+
 
 # Realtime event feeder
 def eventFeed(*arg):
@@ -31,7 +34,7 @@ def eventFeed(*arg):
     event = [{
         'name': 'isy',
         'columns': list(data.keys()),
-        'points': [ list(data.values()) ]
+        'points': [list(data.values())]
     }]
 
     app.log.debug('Event data: %s' % event)
@@ -47,19 +50,19 @@ retries = 0
 
 while True:
     try:
-        server.subscribe(addr=app.config.get('isy', 'isy_addr'),\
-                         userl=app.config.get('isy', 'isy_user'),\
+        server.subscribe(addr=app.config.get('isy', 'isy_addr'),
+                         userl=app.config.get('isy', 'isy_user'),
                          userp=app.config.get('isy', 'isy_pass'))
         break
     except Exception as e:
         retries += 1
 
         app.log.warn(e)
-        app.log.warn('Cannot connect to ISY. Attempt %n of %n',\
-                        retries, config.retries)
+        app.log.warn('Cannot connect to ISY. Attempt %n of %n',
+                     retries, app.config.retries)
 
-        if retries >= config.retries:
-            log.Fatal('Unable to connect to ISY. Exiting...')
+        if retries >= app.config.retries:
+            app.log.Fatal('Unable to connect to ISY. Exiting...')
             app.close(1)
 
         # Wait for the next poll intervall until we retry
@@ -71,7 +74,7 @@ while True:
 server.set_process_func(eventFeed, "")
 
 try:
-    server.events_loop()   #no return
+    server.events_loop()   # no return
 except KeyboardInterrupt:
     app.log.info('Exiting...')
 

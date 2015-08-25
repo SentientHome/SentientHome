@@ -1,16 +1,18 @@
 #!/usr/local/bin/python3 -u
-__author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
+__author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
-__license__   = 'Apache License, Version 2.0'
+__license__ = 'Apache License, Version 2.0'
 
 from collections import defaultdict
 import xml.etree.ElementTree as ET
 import locale
 
+
 def xml_to_dict(text):
     t = ET.fromstring(text)
 
     return etree_to_dict(t)
+
 
 # Helper function needed to convert an XML response to a Dictionary
 def etree_to_dict(t):
@@ -22,7 +24,7 @@ def etree_to_dict(t):
         for dc in map(etree_to_dict, c):
             for k, v in dc.items():
                 dd[k].append(v)
-        d = {t.tag: {k:v[0] if len(v) == 1 else v for k, v in dd.items()}}
+        d = {t.tag: {k: v[0] if len(v) == 1 else v for k, v in dd.items()}}
     if t.attrib:
         d[t.tag].update(('@' + k, v) for k, v in t.attrib.items())
     if t.text:
@@ -34,6 +36,7 @@ def etree_to_dict(t):
             # Turn numeric values into such
             d[t.tag] = numerify(text)
     return d
+
 
 # Turn text encoded numeric values into numbers
 # Added locale functions to deal with thousands separators in incoming
@@ -52,9 +55,11 @@ def numerify(v):
                 except Exception:
                     return v
 
+
 # Helper to rekey flattened dicts in dot notation
 def rekey_dict(key, d):
     return dict((key + '.' + k, numerify(v)) for k, v in d.items())
+
 
 # Helper to flatten embeded structures
 # If there is a dict within a dict this function will pop the dict and
@@ -77,21 +82,25 @@ def flatten_dict(d):
 
     return f
 
+
 # Conversion: Celcius to Fahrenheit
 def CtoF(t):
-  return (t*9)/5+32
+    return (t*9)/5+32
+
 
 # Conversion: mili Bar to inch Hg
 def mBtoiHg(p):
-  return p*0.02953
+    return p*0.02953
+
 
 # Conversion: millimeter to inch
 def mmtoin(m):
-  return m*0.03937
+    return m*0.03937
+
 
 # Conversion: square meter to square foot
 def m2toft2(a):
-  return a*10.764
+    return a*10.764
 
 
 # Conversion: string to bool

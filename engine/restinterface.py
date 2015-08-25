@@ -1,42 +1,49 @@
 #!/usr/local/bin/python3 -u
-__author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
+__author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
-__license__   = 'Apache License, Version 2.0'
+__license__ = 'Apache License, Version 2.0'
 
 # Make sure we have access to SentientHome commons
-import os, sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 
-import logging as log
 import asyncio
 from aiohttp import web
 import json
 import time
-from collections import defaultdict, deque
+from collections import defaultdict
+
 
 class shRestInterface:
     'SentientHome event engine restful interfaces'
 
     def __init__(self, app, webapp, memory):
-        self._app    = app
+        self._app = app
         self._webapp = webapp
         self._memory = memory
 
         self._webapp.router.add_route('GET', '/', self.handle_default)
-        self._webapp.router.add_route('GET', '/cacheinfo', self.handle_cacheinfo)
-        self._webapp.router.add_route('GET', '/cache/{name}', self.handle_samplecache)
-        self._webapp.router.add_route('GET', '/cache/isy/control/{name}', self.handle_isycontrol)
-        self._webapp.router.add_route('GET', '/cache/isy/controlinfo', self.handle_isycontrolinfo)
-        self._webapp.router.add_route('GET', '/cache/isy/state/{node}', self.handle_isystate)
+        self._webapp.router.add_route('GET', '/cacheinfo',
+                                      self.handle_cacheinfo)
+        self._webapp.router.add_route('GET', '/cache/{name}',
+                                      self.handle_samplecache)
+        self._webapp.router.add_route('GET', '/cache/isy/control/{name}',
+                                      self.handle_isycontrol)
+        self._webapp.router.add_route('GET', '/cache/isy/controlinfo',
+                                      self.handle_isycontrolinfo)
+        self._webapp.router.add_route('GET', '/cache/isy/state/{node}',
+                                      self.handle_isystate)
 
     @asyncio.coroutine
     def handle_default(self, request):
-        output = {'msg' : 'SentientHome Event Engine',
+        output = {'msg': 'SentientHome Event Engine',
                   'body': 'I`m alive!'}
 
         self._app.log.debug('Response: %s' % output)
 
-        return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
+        return web.Response(body=json.dumps(output,
+                                            sort_keys=True).encode('utf-8'))
 
     @asyncio.coroutine
     def handle_samplecache(self, request):
@@ -44,30 +51,33 @@ class shRestInterface:
         try:
             name = request.match_info.get('name', 'all')
 
-            output = {'msg' : 'SentientHome Event Engine',
+            output = {'msg': 'SentientHome Event Engine',
                       'body': name + ' Sample Data',
                       'events': []}
 
-            for i in range (0, 50):
+            for i in range(0, 50):
                 try:
-                    output['events'].append(self._memory.eventmemory['raw'][name][i])
+                    output['events'].append(self._memory.eventmemory['raw'][
+                        name][i])
                 except Exception:
                     break
         except Exception as e:
             self._app.log.error('Exception: %s' % e)
 
-        return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
+        return web.Response(body=json.dumps(output,
+                                            sort_keys=True).encode('utf-8'))
 
     @asyncio.coroutine
     def handle_cacheinfo(self, request):
         try:
-            output = {'msg' : 'SentientHome Event Engine',
+            output = {'msg': 'SentientHome Event Engine',
                       'body': 'Cache Statistics',
                       'cacheinfo': []}
 
             for c in self._memory.eventmemory:
                 cacheinfo = dict()
-                cacheinfo[c + '.maxlen'] = self._memory.eventmemory['raw'][c].maxlen
+                cacheinfo[c + '.maxlen'] = self._memory.eventmemory['raw'][
+                    c].maxlen
                 cacheinfo[c + '.len'] = len(self._memory.eventmemory['raw'][c])
 
                 # Calculate event statistics
@@ -108,7 +118,8 @@ class shRestInterface:
         except Exception as e:
             self._app.log.error('Exception: %s' % e)
 
-        return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
+        return web.Response(body=json.dumps(output,
+                                            sort_keys=True).encode('utf-8'))
 
     @asyncio.coroutine
     def handle_isycontrol(self, request):
@@ -116,7 +127,7 @@ class shRestInterface:
         try:
             name = request.match_info.get('name', 'ST')
 
-            output = {'msg' : 'SentientHome Event Engine',
+            output = {'msg': 'SentientHome Event Engine',
                       'body': 'isy/' + name + ' Sample Data',
                       'events': []}
 
@@ -128,27 +139,30 @@ class shRestInterface:
                         i = i + 1
                 except Exception:
                     break
-                if i >= 50: break
+                if i >= 50:
+                    break
         except Exception as e:
             self._app.log.error('Exception: %s' % e)
 
-        return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
+        return web.Response(body=json.dumps(output,
+                                            sort_keys=True).encode('utf-8'))
 
     @asyncio.coroutine
     def handle_isycontrolinfo(self, request):
 
         try:
-            output = {'msg' : 'SentientHome Event Engine',
+            output = {'msg': 'SentientHome Event Engine',
                       'body': 'ISY Control Info Data in Cache'}
             output['control'] = defaultdict(int)
             # Count events by control type
             for event in self._memory.eventmemory['raw']['isy']:
-                output['control'][event['Event.control']] +=1
+                output['control'][event['Event.control']] += 1
 
         except Exception as e:
             self._app.log.error('Exception: %s' % e)
 
-        return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
+        return web.Response(body=json.dumps(output,
+                                            sort_keys=True).encode('utf-8'))
 
     @asyncio.coroutine
     def handle_isystate(self, request):
@@ -156,7 +170,7 @@ class shRestInterface:
         try:
             node = request.match_info.get('node')
 
-            output = {'msg' : 'SentientHome Event Engine',
+            output = {'msg': 'SentientHome Event Engine',
                       'body': 'isy/[' + node + '] State Data',
                       'state': []}
 
@@ -167,11 +181,13 @@ class shRestInterface:
                     i = i + 1
                 except Exception:
                     break
-                if i >= 50: break
+                if i >= 50:
+                    break
         except Exception as e:
             self._app.log.error('Exception: %s' % e)
 
-        return web.Response(body=json.dumps(output, sort_keys=True).encode('utf-8'))
+        return web.Response(body=json.dumps(output,
+                                            sort_keys=True).encode('utf-8'))
 
 #
 # Do nothing
