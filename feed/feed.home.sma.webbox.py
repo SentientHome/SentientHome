@@ -1,17 +1,16 @@
 #!/usr/local/bin/python3 -u
-__author__    = 'Oliver Ratzesberger <https://github.com/fxstein>'
+__author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
-__license__   = 'Apache License, Version 2.0'
+__license__ = 'Apache License, Version 2.0'
 
 # Make sure we have access to SentientHome commons
-import os, sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__))  + '/..')
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 
 # Sentient Home Application
 from common.shapp import shApp
-from common.shutil import xml_to_dict
 from common.sheventhandler import shEventHandler
-from common.shregistry import shRegistry
 
 import json
 import hashlib
@@ -51,15 +50,16 @@ with shApp('sma_webbox', config_defaults=defaults) as app:
             passwd = None
             pass
 
-        if passwd != None:
-            rpcrequest['passwd'] = hashlib.md5(passwd.encode('utf-8')).hexdigest()
+        if passwd is not None:
+            rpcrequest['passwd'] = hashlib.md5(
+                passwd.encode('utf-8')).hexdigest()
         else:
             # If there is no password make sure we delete pior one
             rpcrequest.pop('passwd', None)
 
         app.log.debug('RPC request: %s' % json.dumps(rpcrequest))
 
-        r = handler.post(app.config.get('sma_webbox', 'sma_webbox_addr') +\
+        r = handler.post(app.config.get('sma_webbox', 'sma_webbox_addr') +
                          '/rpc', data='RPC=' + json.dumps(rpcrequest))
 
         app.log.debug('RPC response: %s' % r.text)
@@ -77,13 +77,18 @@ with shApp('sma_webbox', config_defaults=defaults) as app:
                 if i['name'] == 'GriPwr':
                     try:
                         data['shSolarEff'] = data[i['name']] /\
-                            (config.get('sma_webbox', 'sma_webbox_total_panels')\
-                            * config.get('sma_webbox', 'sma_webbox_panel_rating'))
-                        app.log.debug('Solar System Efficency: %s%' % (data['shSolarEff']*100))
+                            (app.config.get('sma_webbox',
+                                            'sma_webbox_total_panels')
+                             * app.config.get('sma_webbox',
+                                              'sma_webbox_panel_rating'))
+                        app.log.debug('Solar System Efficency: %s%' %
+                                      (data['shSolarEff']*100))
 
                         data['shPanelPwr'] = data[i['name']] /\
-                            (config.get('sma_webbox', 'sma_webbox_total_panels'))
-                        app.log.debug('Solar Power per Panel: %sW' % data['shPanelPwr'])
+                            (app.config.get('sma_webbox',
+                                            'sma_webbox_total_panels'))
+                        app.log.debug('Solar Power per Panel: %sW' %
+                                      data['shPanelPwr'])
                     except:
                         # Skip if optional settings are not set
                         pass
@@ -93,9 +98,9 @@ with shApp('sma_webbox', config_defaults=defaults) as app:
                 pass
 
         event = [{
-            'name':    shRegistry['smawebbox']['name'], # Time Series Name
-            'columns': list(data.keys()), # Keys
-            'points':  [ list(data.values()) ] # Data points
+            'name':    'smawebbox',             # Time Series Name
+            'columns': list(data.keys()),       # Keys
+            'points':  [list(data.values())]  # Data points
         }]
 
         app.log.debug('Event data: %s' % event)
