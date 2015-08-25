@@ -70,7 +70,8 @@ class shEventHandler:
                                    self._checkpoint_filename)
                 pass
             # Fianlly check if the current class version uses the same datatype
-            if type(self._events) != type(deque(maxlen=self._events_maxlen)):
+            if isinstance(deque(maxlen=self._events_maxlen),
+                          type(self._events)) is False:
                 # This is only a checkpoint: truncate, dont bother converting
                 self._app.log.debug("Checkpoint file data type was: %s" %
                                     type(self._events))
@@ -172,7 +173,7 @@ class shEventHandler:
 
         # Put processing to sleep until next polling interval
         if stime >= 0:
-            # Logic to true up the poll intervall time for time lost processing
+            # Logic to true up the poll interval time for time lost processing
             time_to_sleep = stime - (time.clock() - prior_checkpoint)
             # Enforce minimum of .1 sec and avoid negative
             if time_to_sleep < .1:
@@ -181,7 +182,7 @@ class shEventHandler:
             self._app.log.debug('Time to sleep: %fs' % time_to_sleep)
             time.sleep(time_to_sleep)
         else:
-            self._app.log.warn('No poll intervall or sleep time defined. \
+            self._app.log.warn('No poll interval or sleep time defined. \
                                 Nothing to sleep.')
 
         self.checkPoint()
@@ -210,7 +211,7 @@ class shEventHandler:
                     raise e
 
                 # Wait until we retry
-                self.sleep(self._app._retry_intervall)
+                self.sleep(self._app._retry_interval)
                 continue
 
     # RESTful post helper to handle retries
@@ -237,7 +238,7 @@ class shEventHandler:
                     raise e
 
                 # Wait until we retry
-                self.sleep(self._app._retry_intervall)
+                self.sleep(self._app._retry_interval)
                 continue
 
 #
