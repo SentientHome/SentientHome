@@ -18,10 +18,10 @@ from collections import defaultdict
 class shRestInterface:
     'SentientHome event engine restful interfaces'
 
-    def __init__(self, app, webapp, memory):
+    def __init__(self, app):
         self._app = app
-        self._webapp = webapp
-        self._memory = memory
+        self._webapp = app._webapp
+        self._memory = app._memory
 
         self._webapp.router.add_route('GET', '/', self.handle_default)
         self._webapp.router.add_route('GET', '/cacheinfo',
