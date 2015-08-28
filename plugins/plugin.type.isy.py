@@ -70,7 +70,7 @@ def event_state(app, event_type, event):
                         deque(maxlen=100)
 
                 app.log.info('Node: %s Data: %s' %
-                              (event['Event.node'], state), __name__)
+                             (event['Event.node'], state), __name__)
                 app._memory.state[event_type][event['Event.node']].\
                     appendleft(state)
     except Exception as e:
