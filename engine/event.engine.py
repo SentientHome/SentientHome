@@ -73,10 +73,10 @@ class shEventEngine(shApp):
             app.log.error('Unable to checkpoint memory cache')
             app.log.error(e)
 
-            self._loop.call_later((int)(app.config.get('SentientHome',
-                                                       'checkpoint_interval',
-                                                       fallback=60)),
-                                  self._checkpoint)
+        self._loop.call_later((int)(app.config.get('SentientHome',
+                                                   'checkpoint_interval',
+                                                   fallback=60)),
+                              self._checkpoint)
 
     def run_forever(self):
         self._loop.run_forever()
@@ -100,14 +100,22 @@ class shEventEngine(shApp):
 
         self._webapp_handler = self._webapp.make_handler()
 
-        self._webapp_srv = yield from self._loop.create_server(
-            self._webapp_handler, eaddr, eport)
-        self.log.info("Event Engine started at http://%s:%s" % (eaddr, eport))
+        try:
+            self._webapp_srv = yield from self._loop.create_server(
+                self._webapp_handler, eaddr, eport)
 
-        self._loop.call_later((int)(self.config.get('SentientHome',
-                                                    'checkpoint_interval',
-                                                    fallback=60)),
-                              app._checkpoint)
+            self.log.info("Event Engine started at http://%s:%s" %
+                          (eaddr, eport))
+
+            self._loop.call_later((int)(self.config.get('SentientHome',
+                                                        'checkpoint_interval',
+                                                        fallback=60)),
+                                  app._checkpoint)
+        except Exception as e:
+            self.log.fatal("Unable to start RESTful interface at http://%s:%s" %
+                           (eaddr, eport))
+            self.log.fatal(e)
+            self._loop.stop()
 
     @asyncio.coroutine
     def handle_event(self, request):
@@ -207,9 +215,11 @@ class shEventEngine(shApp):
 
         self.log.info('Shuting down Event Engine...')
         yield from asyncio.sleep(0.1)
-        self._webapp_srv.close()
-        yield from self._webapp_handler.finish_connections()
-        yield from self._webapp_srv.wait_closed()
+
+        if hasattr(self, '_webapp_srv'):
+            self._webapp_srv.close()
+            yield from self._webapp_handler.finish_connections()
+            yield from self._webapp_srv.wait_closed()
 
         # Perform final inline checkpoint as we are shutting down after this
         self._memory.checkpoint()
