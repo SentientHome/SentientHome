@@ -37,6 +37,12 @@ class shEventEngine(shApp):
                         'process_event',
                         'post_process_event']
 
+        plugin_dirs = ['~/SentientHome/plugins',
+                       '~/SentientHome/rules']
+
+        plugin_config_dirs = ['~/SentientHome/plugins',
+                              '~/SentientHome/rules']
+
     def setup(self):
         # always run core setup first
         super(shEventEngine, self).setup()
