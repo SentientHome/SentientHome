@@ -86,6 +86,16 @@ with shApp('nest', config_defaults=defaults) as app:
                     handler.postEvent(event, dedupe=True)
 
                     for device in structure.devices:
+
+                        if device.away_temperature[1] is not None:
+                            away_tempC = (float)('%0.1f' %
+                                                 device.away_temperature[1])
+                            away_tempF = (float)('%0.1f' % CtoF(
+                                device.away_temperature[1]))
+                        else:
+                            away_tempC = 'Null'
+                            away_tempF = 'Null'
+
                         event = [{
                             'name': 'nest_device',
                             'columns': ['name',
@@ -130,10 +140,8 @@ with shApp('nest', config_defaults=defaults) as app:
                                                 device.away_temperature[0]),
                                         (float)('%0.1f' % CtoF(
                                             device.away_temperature[0])),
-                                        (float)('%0.1f' %
-                                                device.away_temperature[1]),
-                                        (float)('%0.1f' % CtoF(
-                                            device.away_temperature[1])),
+                                        away_tempC,
+                                        away_tempF,
                                         boolify2int(device.hvac_ac_state),
                                         boolify2int(device.hvac_cool_x2_state),
                                         boolify2int(device.hvac_heater_state),
@@ -159,26 +167,24 @@ with shApp('nest', config_defaults=defaults) as app:
                         handler.postEvent(event, dedupe=True)
 
                 break
-            except KeyError as k:
-                app.log.fatal('Key error accessing Nest data. Exiting...')
+            except (KeyError, AttributeError) as k:
+                app.log.fatal('Error accessing Nest data. Exiting...')
                 app.log.fatal(k)
-                raise
-            except AttributeError as a:
-                app.log.fatal('Attribute error accessing Nest data. Exiting...')
-                app.log.fatal(a)
                 raise
             except Exception as e:
                 retries += 1
 
                 # Something went wrong communicating to the Nest service
-                app.log.warn('Exception communicaing with Nest. \
+                app.log.warn('Exception communicating with Nest. \
                               Attempt %s of %s' % (retries, app.retries))
                 app.log.warn(e)
+                raise(e)
 
                 if retries >= app.retries:
                     app.log.fatal('Unable to connect to Nest. Exiting...')
                     app.log.fatal(e)
                     app.close(1)
+                    exit(1)
 
                 handler.sleep(app.retry_interval)
 
