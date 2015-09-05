@@ -4,4 +4,4 @@ cement==2.6.2
 requests==2.7.0
 pysnmp==4.2.5
 colorlog==2.6.0
-python-nest==2.5.0
+python-nest==2.6.0
