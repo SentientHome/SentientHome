@@ -51,8 +51,8 @@ class shEventEngine(shApp):
 
         self._loop = asyncio.get_event_loop()
 
-        # Create a ThreadPool with 2 threads
-        self._thread = ThreadPoolExecutor(2)
+        # Create a ThreadPool with 4 threads
+        self._thread = ThreadPoolExecutor(4)
 
         hook.register('post_run', self._post_run, weight=-1)
         hook.register('pre_close', self._pre_close, weight=-1)
@@ -202,8 +202,7 @@ class shEventEngine(shApp):
 
         # Enable plugins to define state/status caches specific to
         # one or more event types
-        for res in hook.run('process_event', self, event_type, event):
-            pass
+        yield from hook.run('process_event', self, event_type, event)
 
         # Enable post event processing
         for res in hook.run('post_process_event', self, event_type, event):

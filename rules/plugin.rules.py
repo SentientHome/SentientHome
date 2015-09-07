@@ -8,10 +8,11 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 
-import time
+import asyncio
 from cement.core import hook
 
 
+@asyncio.coroutine
 def process_event(app, event_type, event):
     app.log.debug('process_event() Event: %s %s' %
                   (event_type, event), __name__)
@@ -28,7 +29,7 @@ def process_event(app, event_type, event):
                     event['Event.control'] == 'DON':
                 app.log.error('Auto Off for: %s %s' %
                               (event['Event.node'], nodename), __name__)
-                time.sleep(5)
+                yield from asyncio.sleep(5)
 
                 app.isy[event['Event.node']].off()
     except Exception as e:
