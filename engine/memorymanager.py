@@ -9,7 +9,6 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 
 import time
-import configparser
 from collections import defaultdict, deque
 import pickle
 
@@ -27,18 +26,16 @@ class shMemoryManager:
         self._eventmemory['action'] = deque(maxlen=5000)
 
         # Assemble a filename for the physical checkpoint
-        try:
-            self._checkpoint_filename = os.path.join(
-                os.path.expanduser(self._app.config.get(
-                    'SentientHome', 'data_path')),
-                self._app.origin_filename + '.p')
-        except configparser.Error as e:
-            self._app.log.fatal('Missing configuration setting: %s' % e)
-            self._app.close(1)
+        self._checkpoint_filename = os.path.join(
+            os.path.expanduser(self._app.config.get(
+                'SentientHome', 'data_path')),
+            self._app.origin_filename + '.p')
 
         # See if we can restore the event memory from a previsous checkpoint
         try:
             with open(self._checkpoint_filename, 'rb') as f:
+                self._app.log.debug('Restoring from previous checkpoint: %s' %
+                                    self._checkpoint_filename)
                 # The protocol version used is detected automatically
                 self._eventmemory = pickle.load(f)
         except (OSError, EOFError, FileNotFoundError) as e:
@@ -63,22 +60,34 @@ class shMemoryManager:
             with open(self._checkpoint_filename, 'wb') as f:
                 # Pickle the event memory using the highest protocol available.
                 pickle.dump(temp, f, pickle.HIGHEST_PROTOCOL)
-        except OSError:
-            self._app.log.warning('Unable to write checkpoint file: %s' %
-                                  self._checkpoint_filename)
+        except Exception as e:
+            self._app.log.error('Unable to write checkpoint file: %s' %
+                                self._checkpoint_filename)
+            self._app.log.error(e)
             pass
 
         time3 = time.monotonic()*1000
 
-        self._app.log.debug('Time to copy(): %4.2sms' % time2 - time1)
-        self._app.log.debug('Time to pickle(): %4.2sms' % time3 - time2)
-        self._app.log.debug('Total time to checkpoint(): %4.2sms' %
-                            time3 - time1)
+        self._app.log.debug('Time to copy(): %0.2fms' % (time2 - time1))
+        self._app.log.debug('Time to pickle(): %0.2fms' % (time3 - time2))
+        self._app.log.debug('Total time to checkpoint(): %0.2fms' %
+                            (time3 - time1))
 
     @property
     def eventmemory(self):
         return self._eventmemory
 
+    @property
+    def action(self):
+        return self._eventmemory['action']
+
+    @property
+    def raw(self):
+        return self._eventmemory['raw']
+
+    @property
+    def state(self):
+        return self._eventmemory['state']
 
 #
 # Do nothing
