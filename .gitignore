@@ -9,3 +9,5 @@ data/nest/cache
 samples/nest._status.cje/StoreContent/persistentStore-shm
 
 samples/nest._status.cje/StoreContent/persistentStore-wal
+
+samples/nest.json
