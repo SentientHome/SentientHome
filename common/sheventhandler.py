@@ -109,6 +109,25 @@ class shEventHandler:
                                     % self._app.event_engine_path_safe)
                 self._app.close(1)
 
+    def _postListener(self, event, timestamp):
+        # Now post the same event into the listener if active
+        if self._app._listener_active == 1:
+            event_for_listener = copy.deepcopy(event)
+            # Apply the timestamp to all events heading to the event engine
+            for e in event_for_listener:
+                e['shtime1'] = timestamp
+
+            try:
+                r = self.post(self._app._listener_path,
+                              data=json.dumps(event_for_listener),
+                              headers=self._app._listener_auth)
+                self._app.log.info('Listener response: %s' % r)
+            except Exception as e:
+                self._app.log.fatal(e)
+                self._app.log.fatal('Exception posting data to listener: %s'
+                                    % self._app._listener_path)
+                self._app.close(1)
+
     def postEvent(self, event, dedupe=False):
 
         # Timestamp the event - only applied to events heading to event engine
@@ -132,8 +151,11 @@ class shEventHandler:
         # First deposit the event data into our event store
         self._postStore(event)
 
-        # Next send event data to our event engine
+        # Next send event data to our in-memory event engine
         self._postEngine(event, timestamp)
+
+        # Next send event data to a generic Listener if configured
+        self._postListener(event, timestamp)
 
     def checkPoint(self, write=False):
         if (self._dedupe and write and self._events_modified) is True:
@@ -194,7 +216,7 @@ class shEventHandler:
         while True:
             try:
                 r = requests.get(url, auth=auth)
-                if r.status_code != 200:
+                if r.status_code not in [200, 201]:
                     self._app.log.error('Invalid status code: %s' %
                                         r.status_code)
                 return r
@@ -221,7 +243,7 @@ class shEventHandler:
         while True:
             try:
                 r = requests.post(url, auth=auth, data=data, headers=headers)
-                if r.status_code != 200:
+                if r.status_code not in [200, 201]:
                     self._app.log.error('Invalid status code: %s' %
                                         r.status_code)
                 return r

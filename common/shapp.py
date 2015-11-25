@@ -66,6 +66,7 @@ class shApp(CementApp):
         # Setup event store and event engine configurations
         self._setEventStore()
         self._setEventEngine()
+        self._setListener()
 
     def _setEventStore(self):
         config = self.config
@@ -130,6 +131,23 @@ class shApp(CementApp):
             self._event_engine_active = 0
 
         self.log.debug('Event engine @: %s' % self._event_engine_path_safe)
+
+    def _setListener(self):
+        config = self.config
+
+        self._listener_path = None
+        self._listener_auth = None
+
+        if config.get('SentientHome', 'listener', fallback='OFF') == 'ON':
+            self._listener_active = 1
+            self._listener_path = config.get('SentientHome', 'listener_addr')
+            api_key = config.get('SentientHome', 'listener_api_key')
+
+            self._listener_auth = {"Authorization": "token %s" % api_key}
+        else:
+            self._event_engine_active = 0
+
+        self.log.debug('Listener @: %s' % self._listener_path)
 
     @property
     def retries(self):
