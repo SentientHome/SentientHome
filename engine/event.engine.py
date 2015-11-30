@@ -11,6 +11,8 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 import asyncio
 import json
 import time
+import copy
+
 from aiohttp import web
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
@@ -134,60 +136,53 @@ class shEventEngine(shApp):
             # Assemble individual events from incoming stream
             #
             for event in events:
-                self.log.debug('Event Type: %s' % event['name'])
+                self.log.debug('Event Type: %s' % event['measurement'])
 
                 # Initialize raw event cache if it does not exist yet
-                if not self._memory.raw[event['name']]:
+                if not self._memory.raw[event['measurement']]:
                     # TODO: Lookup cache size from config
-                    self._memory.raw[event['name']] = deque(maxlen=5000)
+                    self._memory.raw[event['measurement']] = deque(maxlen=5000)
 
-                for p in event['points']:
-                    # Perform a simple sanity check
-                    if len(event['columns']) != len(p):
-                        self.log.error('Number of Columns %s mismatches number \
-                                        of Points %s' %
-                                       (len(event['columns']), len(p)))
 
-                    # Populate raw event memory
-                    raw = dict()
+                # Populate raw event memory
+                raw = copy.deepcopy(event)
 
-                    # Carry forward initial timestamp from feed
-                    raw['shtime1'] = event['shtime1']
-                    # Timestamp the assembled event in milliseconds since epoch
-                    raw['shtime2'] = time.time()*1000
-                    for x in range(0, len(event['columns'])):
-                        raw[event['columns'][x]] = p[x]
+                # Timestamp the assembled event
+                raw['shtime2'] = time.time()
 
-                    self.log.debug('raw event: %s' % raw)
+                # Remove redundant measurement name
+                del raw['measurement']
 
-                    self._memory.raw[event['name']].appendleft(raw)
+                self.log.debug('raw event: %s' % raw)
 
-                    # Enable plugins to define state/status caches specific to
-                    # one or more event types
-                    for res in hook.run('event_state', self, event['name'],
-                                        raw):
-                        pass
+                self._memory.raw[event['measurement']].appendleft(raw)
 
-                    # Enable pre event processing
-                    for res in hook.run('pre_process_event', self,
-                                        event['name'], raw):
-                        pass
+                # Enable plugins to define state/status caches specific to
+                # one or more event types
+                for res in hook.run('event_state', self,
+                                    event['measurement'], raw):
+                    pass
 
-                    # Create a task to process event rule(s)
-                    # This allows us to quickly get back to the service call
-                    # while taking all the time we need to process the event
-                    # async
-                    self._loop.create_task(
-                        self.process_event(event['name'], raw))
+                # Enable pre event processing
+                for res in hook.run('pre_process_event', self,
+                                    event['measurement'], raw):
+                    pass
 
-                    time3 = time.time()*1000
+                # Create a task to process event rule(s)
+                # This allows us to quickly get back to the service call
+                # while taking all the time we need to process the event
+                # async
+                self._loop.create_task(
+                    self.process_event(event['measurement'], raw))
 
-                    # Report event latency
-                    self.log.info('Event Latency: %2.4sms' %
-                                  (raw['shtime2'] - raw['shtime1']))
+                time3 = time.time()
 
-                    self.log.info('Event Processing Init Latency: %2.4sms' %
-                                  (time3 - raw['shtime1']))
+                # Report event latency
+                self.log.info('Event Latency: %2.4sms' %
+                              ((raw['shtime2'] - raw['shtime1'])*1000))
+
+                self.log.info('Event Processing Init Latency: %2.4sms' %
+                              ((time3 - raw['shtime1'])*1000))
 
             output = {'msg': 'Event Received'}
         except Exception as e:
@@ -209,11 +204,11 @@ class shEventEngine(shApp):
         for res in hook.run('post_process_event', self, event_type, event):
             pass
 
-        time4 = time.time()*1000
+        time4 = time.time()
 
         # Report final event processing latency
         self.log.info('Event Processing Final Latency: %2.4sms' %
-                      (time4 - event['shtime1']))
+                      ((time4 - event['shtime1'])*1000))
 
     @asyncio.coroutine
     def finish(self):

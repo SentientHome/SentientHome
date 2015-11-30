@@ -82,13 +82,12 @@ class shEventHandler:
     def _postStore(self, event):
         if self._app.event_store_active == 1:
             try:
-                r = self.post(self._app.event_store_path,
-                              data=json.dumps(event))
+                r = self._app._event_store_client.write_points(event, 's')
                 self._app.log.info('Event store response: %s' % r)
             except Exception as e:
                 self._app.log.fatal(e)
                 self._app.log.fatal('Exception posting data to event store: %s'
-                                    % self._app.event_store_path_safe)
+                                    % self._app._event_store_info)
                 self._app.close(1)
 
     def _postEngine(self, event, timestamp):
@@ -131,7 +130,7 @@ class shEventHandler:
     def postEvent(self, event, dedupe=False):
 
         # Timestamp the event - only applied to events heading to event engine
-        timestamp = time.time()*1000
+        timestamp = time.time()
 
         # Engage deduping logic if required
         if dedupe is True and self._dedupe is True:

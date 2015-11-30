@@ -86,6 +86,7 @@ with shApp('apcups', config_defaults=defaults) as app:
             app.log.info('%s = %s' % (name.prettyPrint(), val.prettyPrint()))
 
     data = dict()
+    tags = dict()
 
     while True:
 
@@ -117,10 +118,12 @@ with shApp('apcups', config_defaults=defaults) as app:
                 else:
                     data[oids[str(name)]['name']] = numerify(str(val))
 
+            tags['lasttestdate'] = data.pop('lasttestdate')
+
             event = [{
-                'name': 'apcups',  # Time Series Name
-                'columns': list(data.keys()),  # Keys
-                'points': [list(data.values())]  # Data points
+                'measurement': 'apcups',  # Time Series Name
+                'tags': tags,
+                'fields': data  # Data points
             }]
 
             app.log.debug('Event data: %s' % event)
