@@ -143,7 +143,6 @@ class shEventEngine(shApp):
                     # TODO: Lookup cache size from config
                     self._memory.raw[event['measurement']] = deque(maxlen=5000)
 
-
                 # Populate raw event memory
                 raw = copy.deepcopy(event)
 
