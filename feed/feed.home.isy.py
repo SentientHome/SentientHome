@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 
 # Sentient Home Application
 from common.shapp import shApp
-from common.shutil import flatten_dict
+from common.shutil import flatten_dict, extract_tags
 from common.sheventhandler import shEventHandler
 
 # Add path to submodule dependencies.ISYlib-python
@@ -31,10 +31,23 @@ def eventFeed(*arg):
     # Flatten dict and turn embedded structure into dot notation
     data = flatten_dict(arg[0])
 
+    # specify a few specific datatypes
+    try:
+        data['Event.eventInfo.value'] = float(data['Event.eventInfo.value'])
+    except KeyError:
+        # Ok if it does not exist
+        pass
+    except ValueError:
+        data['Event.eventInfo.valuestring'] =\
+            str(data.pop('Event.eventInfo.value'))
+        pass
+
+    tags = extract_tags(data, ['Event-sid', 'Event.node', 'Event.control'])
+
     event = [{
-        'name': 'isy',
-        'columns': list(data.keys()),
-        'points': [list(data.values())]
+        'measurement': 'isy',
+        'tags': tags,
+        'fields': data
     }]
 
     app.log.debug('Event data: %s' % event)
