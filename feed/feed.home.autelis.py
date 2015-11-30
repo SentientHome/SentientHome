@@ -40,16 +40,21 @@ with shApp('autelis', config_defaults=defaults) as app:
 
         app.log.debug('Fetch data: %s' % r.text)
 
-        data = xml_to_dict(r.text)
+        rawdata = xml_to_dict(r.text)
 
-        alldata = dict(list(data['response']['equipment'].items()) +
-                       list(data['response']['system'].items()) +
-                       list(data['response']['temp'].items()))
+        data = dict(list(rawdata['response']['equipment'].items()) +
+                    list(rawdata['response']['system'].items()) +
+                    list(rawdata['response']['temp'].items()))
+
+        tags = dict()
+        tags['version'] = data.pop('version')
+        tags['model'] = data.pop('model')
+        tags['haddr'] = data.pop('haddr')
 
         event = [{
-            'name':    'autelis',  # Time Series Name
-            'columns': list(alldata.keys()),  # Keys
-            'points':  [list(alldata.values())]  # Data points
+            'measurement': 'autelis',  # Time Series Name
+            'tags': tags,
+            'fields': data  # Data points
         }]
 
         app.log.debug('Event data: %s' % event)
