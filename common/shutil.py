@@ -83,6 +83,16 @@ def flatten_dict(d):
     return f
 
 
+# Helper function to extract tags out of data dict
+def extract_tags(data, keys):
+    tags = dict()
+
+    for key in keys:
+        tags[key] = data.pop(key)
+
+    return tags
+
+
 # Conversion: Celcius to Fahrenheit
 def CtoF(t):
     return (t*9)/5+32

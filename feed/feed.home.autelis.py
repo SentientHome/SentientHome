@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 
 # Sentient Home Application
 from common.shapp import shApp
-from common.shutil import xml_to_dict
+from common.shutil import xml_to_dict, extract_tags
 from common.sheventhandler import shEventHandler
 
 # Default settings
@@ -46,10 +46,7 @@ with shApp('autelis', config_defaults=defaults) as app:
                     list(rawdata['response']['system'].items()) +
                     list(rawdata['response']['temp'].items()))
 
-        tags = dict()
-        tags['version'] = data.pop('version')
-        tags['model'] = data.pop('model')
-        tags['haddr'] = data.pop('haddr')
+        tags = extract_tags(data, ['version', 'model', 'haddr'])
 
         event = [{
             'measurement': 'autelis',  # Time Series Name

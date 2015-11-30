@@ -11,7 +11,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 # Sentient Home Application
 from common.shapp import shApp
 from common.sheventhandler import shEventHandler
-from common.shutil import numerify, CtoF
+from common.shutil import extract_tags, numerify, CtoF
 
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 
@@ -86,7 +86,6 @@ with shApp('apcups', config_defaults=defaults) as app:
             app.log.info('%s = %s' % (name.prettyPrint(), val.prettyPrint()))
 
     data = dict()
-    tags = dict()
 
     while True:
 
@@ -118,7 +117,7 @@ with shApp('apcups', config_defaults=defaults) as app:
                 else:
                     data[oids[str(name)]['name']] = numerify(str(val))
 
-            tags['lasttestdate'] = data.pop('lasttestdate')
+            tags = extract_tags(data, ['lasttestdate'])
 
             event = [{
                 'measurement': 'apcups',  # Time Series Name
