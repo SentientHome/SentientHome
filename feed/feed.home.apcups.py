@@ -123,7 +123,7 @@ with shApp('apcups', config_defaults=defaults) as app:
                 'points': [list(data.values())]  # Data points
             }]
 
-            app.log.debug('Event data: %s', event)
+            app.log.debug('Event data: %s' % event)
 
             handler.postEvent(event)
 
