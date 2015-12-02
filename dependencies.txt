@@ -4,5 +4,5 @@ cement==2.6.2
 requests==2.7.0
 pysnmp==4.2.5
 colorlog==2.6.0
-python-nest==2.7.0
-influxdb>=2.10.0
+python-nest==2.8.0
+influxdb==2.10.0
