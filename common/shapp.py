@@ -124,6 +124,8 @@ class shApp(CementApp):
     def _setEventEngine(self):
         config = self.config
 
+        self._event_engine_active = 0
+
         self._event_engine_addr = None
         self._event_engine_port = None
         self._event_engine_path_safe = None
@@ -140,13 +142,13 @@ class shApp(CementApp):
 
             # TODO: Add authentication to event engine
             self._event_engine_path = self._event_engine_path_safe
-        else:
-            self._event_engine_active = 0
 
         self.log.debug('Event engine @: %s' % self._event_engine_path_safe)
 
     def _setListener(self):
         config = self.config
+
+        self._listener_active = 0
 
         self._listener_path = None
         self._listener_auth = None
@@ -157,8 +159,6 @@ class shApp(CementApp):
             api_key = config.get('SentientHome', 'listener_api_key')
 
             self._listener_auth = {"Authorization": "token %s" % api_key}
-        else:
-            self._event_engine_active = 0
 
         self.log.debug('Listener @: %s' % self._listener_path)
 
