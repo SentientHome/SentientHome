@@ -42,18 +42,12 @@ def etree_to_dict(t):
 # Added locale functions to deal with thousands separators in incoming
 def numerify(v):
     try:
-        return int(v)
+        return float(v)
     except Exception:
         try:
-            return locale.atoi(v)
+            return locale.atof(v)
         except Exception:
-            try:
-                return float(v)
-            except Exception:
-                try:
-                    return locale.atof(v)
-                except Exception:
-                    return v
+            return v
 
 
 # Helper to rekey flattened dicts in dot notation
