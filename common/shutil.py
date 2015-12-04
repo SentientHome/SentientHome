@@ -6,6 +6,7 @@ __license__ = 'Apache License, Version 2.0'
 from collections import defaultdict
 import xml.etree.ElementTree as ET
 import locale
+import time
 
 
 def xml_to_dict(text):
@@ -57,7 +58,7 @@ def rekey_dict(key, d):
 
 # Helper to flatten embeded structures
 # If there is a dict within a dict this function will pop the dict and
-# insert is rekeyed keys and values into the main dict. The key of the
+# insert it's rekeyed keys and values into the main dict. The key of the
 # embedded dict will be prepended with a separator '.' to the keys
 def flatten_dict(d):
     f = d
@@ -116,6 +117,10 @@ def boolify(s):
 def boolify2int(str):
     return (int)(boolify(str))
 
+
+# Conversion epoch to local timestamp string
+def epoch2date(epoch):
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(epoch))
 
 #
 # Do nothing
