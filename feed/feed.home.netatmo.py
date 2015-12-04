@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 
 # Sentient Home Application
 from common.shapp import shApp
-from common.shutil import CtoF, mBtoiHg, mmtoin
+from common.shutil import CtoF, mBtoiHg, mmtoin, epoch2date
 from common.sheventhandler import shEventHandler
 
 # Default settings
@@ -36,16 +36,18 @@ def mapStation(station):
             'module_name': station['module_name'],
             'firmware': int(station['firmware']),
             'type': station['type'],
-            'date_max_temp': station['dashboard_data']['date_max_temp'],
-            'date_min_temp': station['dashboard_data']['date_min_temp'],
-            'pressure_trend': station['dashboard_data']['pressure_trend'],  # noqa
+            'date_max_temp':
+                epoch2date(station['dashboard_data']['date_max_temp']),
+            'date_min_temp':
+                epoch2date(station['dashboard_data']['date_min_temp']),
+            'pressure_trend': station['dashboard_data']['pressure_trend'],
             'temp_trend': station['dashboard_data']['temp_trend'],
             },
         'fields': {
             'co2_calibrating': station['co2_calibrating'],
             'wifi_status': station['wifi_status'],
             'pressure': station['dashboard_data']['Pressure'],
-            'abs_pressure': station['dashboard_data']['AbsolutePressure'],  # noqa
+            'abs_pressure': station['dashboard_data']['AbsolutePressure'],
             'pressurei': mBtoiHg(station['dashboard_data']['Pressure']),
             'abs_pressurei': mBtoiHg(station['dashboard_data']['AbsolutePressure']),  # noqa
             'co2': int(station['dashboard_data']['CO2']),
@@ -86,8 +88,8 @@ def mapModule(station, module):
     # Now add module type specific mappings
     if module['type'] in ['NAModule1', 'NAModule4']:  # Outdoor & Indoor
         tags['temp_trend'] = dashboard['temp_trend']
-        tags['date_max_temp'] = dashboard['date_max_temp']
-        tags['date_min_temp'] = dashboard['date_min_temp']
+        tags['date_max_temp'] = epoch2date(dashboard['date_max_temp']),
+        tags['date_min_temp'] = epoch2date(dashboard['date_min_temp']),
 
         fields['humidity'] = int(dashboard['Humidity'])
         fields['temp'] = dashboard['Temperature']
@@ -134,7 +136,6 @@ with shApp('netatmo', config_defaults=defaults) as app:
     app.log.info('NetAtmo Connection established.')
 
     while True:
-
         time1 = time.time()
 
         # Check if we need to renew our Oauth2 tokens
@@ -157,7 +158,7 @@ with shApp('netatmo', config_defaults=defaults) as app:
 
         data = json.loads(r.text, parse_int=float)
 
-        # app.log.debug('Device data: %s' % json.dumps(data, sort_keys=True))  # noqa
+        # app.log.debug('Device data: %s' % json.dumps(data, sort_keys=True))
 
         time2 = time.time()
 
