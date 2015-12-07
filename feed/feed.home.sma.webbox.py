@@ -12,8 +12,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 from common.shapp import shApp
 from common.sheventhandler import shEventHandler
 
-from common.shutil import numerify
-
 import json
 import hashlib
 
@@ -203,7 +201,5 @@ with shApp('sma_webbox', config_defaults=defaults) as app:
         app.log.debug('Event data: %s' % event)
 
         handler.postEvent(event)
-
-
 
         handler.sleep()
