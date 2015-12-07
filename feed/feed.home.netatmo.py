@@ -29,7 +29,20 @@ defaults['netatmo']['poll_interval'] = 60.0
 
 def mapStation(station):
     return [{
-        'measurement': 'netatmo',
+        'measurement': 'netatmo.station',
+        'tags': {
+            'id': station['_id'],
+            'station_name': station['station_name'],
+            'module_name': station['module_name'],
+            'firmware': int(station['firmware']),
+            'type': station['type'],
+            },
+        'fields': {
+            'wifi_status': int(station['wifi_status']),
+            }
+    },
+    {
+        'measurement': 'netatmo.module',
         'tags': {
             'id': station['_id'],
             'station_name': station['station_name'],
@@ -45,7 +58,6 @@ def mapStation(station):
             },
         'fields': {
             'co2_calibrating': station['co2_calibrating'],
-            'wifi_status': station['wifi_status'],
             'pressure': station['dashboard_data']['Pressure'],
             'abs_pressure': station['dashboard_data']['AbsolutePressure'],
             'pressurei': mBtoiHg(station['dashboard_data']['Pressure']),
@@ -67,7 +79,7 @@ def mapModule(station, module):
 
     # This part of the event mapping is constant accross module types
     event = [{
-        'measurement': 'netatmo',
+        'measurement': 'netatmo.module',
         'tags': {
             'id': module['_id'],
             'station_name': station['station_name'],
@@ -87,7 +99,6 @@ def mapModule(station, module):
 
     # Now add module type specific mappings
     if module['type'] in ['NAModule1', 'NAModule4']:  # Outdoor & Indoor
-        tags['temp_trend'] = dashboard['temp_trend']
         tags['date_max_temp'] = epoch2date(dashboard['date_max_temp']),
         tags['date_min_temp'] = epoch2date(dashboard['date_min_temp']),
 
@@ -108,6 +119,7 @@ def mapModule(station, module):
         fields['sum_rain_24i'] = mmtoin(dashboard['sum_rain_24'])
 
     if module['type'] == 'NAModule4':  # Additional for Indoor
+        tags['temp_trend'] = dashboard['temp_trend']
         fields['co2'] = int(dashboard['CO2'])
 
     return event
@@ -163,7 +175,7 @@ with shApp('netatmo', config_defaults=defaults) as app:
         time2 = time.time()
 
         event = [{
-            'measurement': 'netatmo',
+            'measurement': 'netatmo.service',
             'tags': {
                 'status': data['status']
                 },
