@@ -31,7 +31,7 @@ defaults = init_defaults('eagle', 'eagle')
 defaults['eagle']['poll_interval'] = 5.0
 defaults['eagle']['voltage'] = 240
 
-with shApp('autelis', config_defaults=defaults) as app:
+with shApp('eagle', config_defaults=defaults) as app:
     app.run()
 
     handler = shEventHandler(app)
