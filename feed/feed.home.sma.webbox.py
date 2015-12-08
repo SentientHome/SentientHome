@@ -11,6 +11,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 # Sentient Home Application
 from common.shapp import shApp
 from common.sheventhandler import shEventHandler
+from common.shutil import CtoF
 
 import json
 import hashlib
@@ -134,10 +135,17 @@ def mapProcessData(device_data, process_data):
                     fields[names[channel['name']]] = float(channel['value']) *\
                         units[channel['unit']]
                     at_least_one = True
+
+                    # Convert C to F for select channels
+                    if channel['unit'] == 'degC':
+                        fields[names[channel['name']] + 'f'] =\
+                            CtoF(fields[names[channel['name']]])
                 except ValueError:
                     # Skip none numeric portions of the result
                     pass
 
+        # At night the sma webbox gives us all empty fields
+        # We need at least on valid field to post the event
         if at_least_one is True:
             events.append(event)
 
@@ -193,7 +201,7 @@ with shApp('sma_webbox', config_defaults=defaults) as app:
         app.log.debug('RPC response: %s' % r.text)
         device_data = json.loads(r.text)
 
-        # Process Data of those devices
+        # Get Process Data of those devices
         rpcRequest['proc'] = 'GetProcessData'
         rpcRequest['params'] = {'devices': []}
 
@@ -206,6 +214,7 @@ with shApp('sma_webbox', config_defaults=defaults) as app:
                          '/rpc', data='RPC=' + json.dumps(rpcRequest))
         app.log.debug('RPC response: %s' % r.text)
 
+        # Map the Device and Process Data into new events
         event = mapProcessData(device_data, json.loads(r.text))
         app.log.debug('Event data: %s' % event)
 
