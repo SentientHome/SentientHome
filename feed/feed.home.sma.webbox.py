@@ -97,6 +97,13 @@ def mapPlantOverview(plant_overview):
 def mapProcessData(device_data, process_data):
 
     events = []
+    device_names = {}
+
+    devices = device_data['result']['devices']
+
+    for device in devices:
+        device_names[device['key']] = device['name']
+
     devices = process_data['result']['devices']
 
     for device in devices:
@@ -106,6 +113,8 @@ def mapProcessData(device_data, process_data):
                 'id': process_data['id'],
                 'proc': process_data['proc'],
                 'version': process_data['version'],
+                'device': device_names[device['key']],
+                'device_key': device['key'],
                 },
             'fields': {
             }
