@@ -136,7 +136,7 @@ class shEventHandler:
         if dedupe is True and self._dedupe is True:
             if event in self._events:
                 self._app.log.debug('Duplicate event: %.25s...' %
-                                    event[0]['points'])
+                                    event)
 
                 # Nothing left to do here. The same event was already sent
                 return
