@@ -52,7 +52,8 @@ def eventFeed(*arg):
             str(data.pop('Event.eventInfo.value'))
         pass
 
-    tags = extract_tags(data, ['Event-sid', 'Event.node', 'Event.control'])
+    tags = extract_tags(data, ['Event-sid', 'Event.node', 'Event.control',
+                        'Event.eventInfo.id'])
 
     event = [{
         'measurement': 'isy',
