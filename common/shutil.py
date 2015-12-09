@@ -83,7 +83,11 @@ def extract_tags(data, keys):
     tags = dict()
 
     for key in keys:
-        tags[key] = data.pop(key)
+        try:
+            tags[key] = data.pop(key)
+        except KeyError:
+            # Skip optional tags
+            pass
 
     return tags
 
