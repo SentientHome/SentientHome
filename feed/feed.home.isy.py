@@ -33,6 +33,16 @@ def eventFeed(*arg):
 
     # specify a few specific datatypes
     try:
+        data['Event.action'] = float(data['Event.action'])
+    except KeyError:
+        # Ok if it does not exist
+        pass
+    except ValueError:
+        data['Event.actionstring'] =\
+            str(data.pop('Event.actionstring'))
+        pass
+
+    try:
         data['Event.eventInfo.value'] = float(data['Event.eventInfo.value'])
     except KeyError:
         # Ok if it does not exist
