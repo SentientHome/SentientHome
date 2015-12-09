@@ -195,13 +195,13 @@ with shApp('netatmo', config_defaults=defaults) as app:
 
             app.log.debug('Event data: %s' % event)
 
-            handler.postEvent(event)
+            handler.postEvent(event, batch=True)
 
             for module in station['modules']:
                 event = mapModule(station, module)
 
                 app.log.debug('Event data: %s' % event)
 
-                handler.postEvent(event)
+                handler.postEvent(event, batch=True)
 
         handler.sleep()

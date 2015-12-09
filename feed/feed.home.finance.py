@@ -65,7 +65,7 @@ def quotes_feed(app, handler, finance_path, series_name, symbol_list):
 
         app.log.debug('Event data: %s' % event)
 
-        handler.postEvent(event)
+        handler.postEvent(event, batch=True)
 
 # Default settings
 from cement.utils.misc import init_defaults

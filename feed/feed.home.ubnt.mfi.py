@@ -135,7 +135,7 @@ with shApp('ubnt_mfi', config_defaults=defaults) as app:
             # deduping built in and keeps an in-memory cache of events of the
             # past ~24h for that. \In this case only changed sensor data points
             # will get emitted and stored
-            handler.postEvent(event, dedupe=True)
+            handler.postEvent(event, dedupe=True, batch=True)
 
         # We reset the poll interval in case the configuration has changed
         handler.sleep()

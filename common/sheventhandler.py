@@ -28,6 +28,9 @@ class shEventHandler:
         # See if we need to enable deduping logic
         self._dedupe = dedupe
 
+        # In case we need to batch up events
+        self._batch = []
+
         self.checkPoint()
 
         # If we are require to dedupe re-read the checkpoint file
@@ -117,7 +120,7 @@ class shEventHandler:
                 e['shtime1'] = timestamp
 
             try:
-                r = self.post(self._app._listener_path,
+                r = self.post(self._app._listener_path + '/messages',
                               data=json.dumps(event_for_listener),
                               headers=self._app._listener_auth)
                 self._app.log.info('Listener response: %s' % r)
@@ -127,7 +130,7 @@ class shEventHandler:
                                     % self._app._listener_path)
                 self._app.close(1)
 
-    def postEvent(self, event, dedupe=False):
+    def postEvent(self, event, dedupe=False, batch=False):
 
         # Timestamp the event - only applied to events heading to event engine
         timestamp = time.time()
@@ -147,14 +150,18 @@ class shEventHandler:
             self._app.log.warning('Eventhandler dedupe logic not \
                                    inititalized. Ignoring dedupe.')
 
-        # First deposit the event data into our event store
-        self._postStore(event)
+        if batch is True:
+            for e in event:
+                self._batch.append(e)
+        else:
+            # First deposit the event data into our event store
+            self._postStore(event)
 
-        # Next send event data to our in-memory event engine
-        self._postEngine(event, timestamp)
+            # Next send event data to our in-memory event engine
+            self._postEngine(event, timestamp)
 
-        # Next send event data to a generic Listener if configured
-        self._postListener(event, timestamp)
+            # Next send event data to a generic Listener if configured
+            self._postListener(event, timestamp)
 
     def checkPoint(self, write=False):
         if (self._dedupe and write and self._events_modified) is True:
@@ -174,6 +181,13 @@ class shEventHandler:
         self._checkpoint = time.clock()
 
     def sleep(self, sleeptime=None):
+        # Before anything else flush batch if one has been accumulated
+        if len(self._batch) > 0:
+            self._app.log.info('Batch Event Count: %s' % len(self._batch))
+            self.postEvent(self._batch)
+            # Reset batch
+            self._batch = []
+
         # Update poll_interval if supplied
         self._poll_interval = (float)(self._app.config.get(
             self._app._meta.label,
