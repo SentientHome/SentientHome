@@ -99,6 +99,9 @@ with shApp('eagle', config_defaults=defaults) as app:
         except ValueError:
             app.log.error('Unsupport linkg strength format')
             pass
+        except KeyError:
+            link_strength = None
+            pass
 
         tags = extract_tags(networkdata, ['network_meter_mac_id',
                                           'network_ext_pan_id',
