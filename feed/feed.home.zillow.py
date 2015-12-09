@@ -35,12 +35,17 @@ with shApp('zillow', config_defaults=defaults) as app:
                         app.config.get('zillow', 'zillow_path') + "?zws-id=" +
                         app.config.get('zillow', 'zillow_zws_id') + "&zpid=" +
                         app.config.get('zillow', 'zillow_zpid'))
-        app.log.debug('Fetch data: %s' % r.text)
+        # app.log.debug('Fetch data: %s' % r.text)
 
         data = xml_to_dict(r.text)
+        app.log.debug('Raw data: %s' % data)
+
         # Data Structure Documentation:
         # http://www.zillow.com/howto/api/APIOverview.htm
 
+        request_data = data[
+            '{http://www.zillow.com/static/xsd/Zestimate.xsd}zestimate'][
+            'response']
         property_data = data[
             '{http://www.zillow.com/static/xsd/Zestimate.xsd}zestimate'][
             'response']['zestimate']
@@ -49,18 +54,21 @@ with shApp('zillow', config_defaults=defaults) as app:
             'response']['localRealEstate']
 
         event = [{
-            'name': 'zillow',
-            'columns': ['valuation', '30daychange', 'rangehigh', 'rangelow',
-                        'percentile', 'last-updated', 'region', 'regiontype',
-                        'zindexValue'],
-            'points': [[property_data['amount'], property_data['valueChange'],
-                        property_data['valuationRange']['high'],
-                        property_data['valuationRange']['low'],
-                        property_data['percentile'],
-                        property_data['last-updated'],
-                        local_data['region']['@name'],
-                        local_data['region']['@type'],
-                        local_data['region']['zindexValue']]]
+            'measurement': 'zillow',
+            'tags': {
+                'zpid': request_data['zpid'],
+                'last_updated': property_data['last-updated'],
+                'region': local_data['region']['@name'],
+                'region_type': local_data['region']['@type'],
+            },
+            'fields': {
+                'valuation': float(property_data['amount']),
+                '30daychange': float(property_data['valueChange']),
+                'range_high': float(property_data['valuationRange']['high']),
+                'range_low': float(property_data['valuationRange']['low']),
+                'percentile': int(property_data['percentile']),
+                'zindexValue': float(local_data['region']['zindexValue']),
+            }
         }]
 
         app.log.debug('Event data: %s' % event)

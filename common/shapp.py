@@ -7,6 +7,9 @@ import os
 import inspect
 import configparser
 
+# Storage engine support - might move into a plugin at some point in time
+from influxdb import InfluxDBClient
+
 from cement.core.foundation import CementApp
 from cement.ext.ext_colorlog import ColorLogHandler
 from cement.ext.ext_configparser import ConfigParserConfigHandler
@@ -73,43 +76,55 @@ class shApp(CementApp):
         self._event_store = config.get('SentientHome', 'event_store',
                                        fallback='OFF')
 
-        self._event_store_addr = None
+        self._event_store_host = None
         self._event_store_port = None
         self._event_store_db = None
         self._event_store_user = None
         self._event_store_pass = None
-        self._event_store_path_safe = None
-        self._event_store_path = None
+        self._event_store_client = None
+        self._event_store_info = None
 
         if self._event_store == 'OFF':
             self._event_store_active = 0
         elif self._event_store == 'INFLUXDB':
             self._event_store_active = 1
-            self._event_store_addr = config.get('influxdb', 'influx_addr')
+            self._event_store_host = config.get('influxdb', 'influx_host')
             self._event_store_port = config.get('influxdb', 'influx_port')
             self._event_store_db = config.get('influxdb', 'influx_db')
             self._event_store_user = config.get('influxdb', 'influx_user')
             self._event_store_pass = config.get('influxdb', 'influx_pass')
 
+            try:
+                self._event_store_client =\
+                    InfluxDBClient(host=self._event_store_host,
+                                   port=self._event_store_port,
+                                   username=self._event_store_user,
+                                   password=self._event_store_pass,
+                                   database=self._event_store_db)
+            except Exception as e:
+                self.log.fatal(e)
+                self.log.fatal('Exception creating InfluxDB client: %s' %
+                               self._event_store_info)
+                self._app.close(1)
+
             # safe event store path without password
             # can be used for reporting and general debugging
-            self._event_store_path_safe =\
-                self._event_store_addr + ':' + \
-                self._event_store_port + '/db/' + \
-                self._event_store_db + '/series?time_precision=s&u=' + \
+            self._event_store_info =\
+                self._event_store_host + ':' + \
+                self._event_store_port + ';db=' + \
+                self._event_store_db + ';user=' + \
                 self._event_store_user
-            # complete event store path with full authentication
-            self._event_store_path = self._event_store_path_safe +\
-                '&p=' + self._event_store_pass
         else:
             self.log.fatal('Unsupported event store: %s' % self._event_store)
             self.close(1)
 
-        self.log.debug('Event store @: %s' % self._event_store_path_safe)
+        self.log.debug('Event store @: %s' % self._event_store_info)
         pass
 
     def _setEventEngine(self):
         config = self.config
+
+        self._event_engine_active = 0
 
         self._event_engine_addr = None
         self._event_engine_port = None
@@ -127,13 +142,13 @@ class shApp(CementApp):
 
             # TODO: Add authentication to event engine
             self._event_engine_path = self._event_engine_path_safe
-        else:
-            self._event_engine_active = 0
 
         self.log.debug('Event engine @: %s' % self._event_engine_path_safe)
 
     def _setListener(self):
         config = self.config
+
+        self._listener_active = 0
 
         self._listener_path = None
         self._listener_auth = None
@@ -144,8 +159,6 @@ class shApp(CementApp):
             api_key = config.get('SentientHome', 'listener_api_key')
 
             self._listener_auth = {"Authorization": "token %s" % api_key}
-        else:
-            self._event_engine_active = 0
 
         self.log.debug('Listener @: %s' % self._listener_path)
 

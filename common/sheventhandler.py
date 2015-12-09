@@ -28,6 +28,9 @@ class shEventHandler:
         # See if we need to enable deduping logic
         self._dedupe = dedupe
 
+        # In case we need to batch up events
+        self._batch = []
+
         self.checkPoint()
 
         # If we are require to dedupe re-read the checkpoint file
@@ -82,13 +85,12 @@ class shEventHandler:
     def _postStore(self, event):
         if self._app.event_store_active == 1:
             try:
-                r = self.post(self._app.event_store_path,
-                              data=json.dumps(event))
+                r = self._app._event_store_client.write_points(event, 's')
                 self._app.log.info('Event store response: %s' % r)
             except Exception as e:
                 self._app.log.fatal(e)
                 self._app.log.fatal('Exception posting data to event store: %s'
-                                    % self._app.event_store_path_safe)
+                                    % self._app._event_store_info)
                 self._app.close(1)
 
     def _postEngine(self, event, timestamp):
@@ -118,7 +120,7 @@ class shEventHandler:
                 e['shtime1'] = timestamp
 
             try:
-                r = self.post(self._app._listener_path,
+                r = self.post(self._app._listener_path + '/messages',
                               data=json.dumps(event_for_listener),
                               headers=self._app._listener_auth)
                 self._app.log.info('Listener response: %s' % r)
@@ -128,16 +130,16 @@ class shEventHandler:
                                     % self._app._listener_path)
                 self._app.close(1)
 
-    def postEvent(self, event, dedupe=False):
+    def postEvent(self, event, dedupe=False, batch=False):
 
         # Timestamp the event - only applied to events heading to event engine
-        timestamp = time.time()*1000
+        timestamp = time.time()
 
         # Engage deduping logic if required
         if dedupe is True and self._dedupe is True:
             if event in self._events:
                 self._app.log.debug('Duplicate event: %.25s...' %
-                                    event[0]['points'])
+                                    event)
 
                 # Nothing left to do here. The same event was already sent
                 return
@@ -148,14 +150,18 @@ class shEventHandler:
             self._app.log.warning('Eventhandler dedupe logic not \
                                    inititalized. Ignoring dedupe.')
 
-        # First deposit the event data into our event store
-        self._postStore(event)
+        if batch is True:
+            for e in event:
+                self._batch.append(e)
+        else:
+            # First deposit the event data into our event store
+            self._postStore(event)
 
-        # Next send event data to our in-memory event engine
-        self._postEngine(event, timestamp)
+            # Next send event data to our in-memory event engine
+            self._postEngine(event, timestamp)
 
-        # Next send event data to a generic Listener if configured
-        self._postListener(event, timestamp)
+            # Next send event data to a generic Listener if configured
+            self._postListener(event, timestamp)
 
     def checkPoint(self, write=False):
         if (self._dedupe and write and self._events_modified) is True:
@@ -175,6 +181,13 @@ class shEventHandler:
         self._checkpoint = time.clock()
 
     def sleep(self, sleeptime=None):
+        # Before anything else flush batch if one has been accumulated
+        if len(self._batch) > 0:
+            self._app.log.info('Batch Event Count: %s' % len(self._batch))
+            self.postEvent(self._batch)
+            # Reset batch
+            self._batch = []
+
         # Update poll_interval if supplied
         self._poll_interval = (float)(self._app.config.get(
             self._app._meta.label,
