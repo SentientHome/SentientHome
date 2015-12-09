@@ -24,9 +24,10 @@ with shApp('loadtest') as app:
         count += 1
 
         event = [{
-            'name': 'loadtest',    # Time Series Name
-            'columns': ['count'],  # Keys
-            'points': [[count]]    # Data points
+            'measurement': 'loadtest',    # Time Series Name
+            'fields': {
+                'loadtest_count': count
+                }
         }]
 
         handler.postEvent(event)
