@@ -15,7 +15,6 @@ from common.sheventhandler import shEventHandler
 from common.shutil import CtoF, m2toft2, boolify, epoch2date
 
 from nest import Nest
-import json
 
 # Default settings
 from cement.utils.misc import init_defaults
