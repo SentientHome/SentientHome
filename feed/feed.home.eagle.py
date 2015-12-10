@@ -85,23 +85,18 @@ with shApp('eagle', config_defaults=defaults) as app:
                 units[usagedata['summation_units']]
             delivered = float(usagedata['summation_delivered']) *\
                 units[usagedata['summation_units']]
+            link_strength = int(networkdata['network_link_strength'], base=16)
         except ValueError:
             app.log.error('Unsupport demand or summation units')
+            pass
+        except KeyError as e:
+            app.log.error('Missing Key: %s' % e)
             pass
 
         try:
             amps = demand/(int)(app.config.get('eagle', 'voltage'))
         except ZeroDivisionError as e:
             app.log.error(e)
-
-        try:
-            link_strength = int(networkdata['network_link_strength'], base=16)
-        except ValueError:
-            app.log.error('Unsupport linkg strength format')
-            pass
-        except KeyError:
-            link_strength = None
-            pass
 
         tags = extract_tags(networkdata, ['network_meter_mac_id',
                                           'network_ext_pan_id',
