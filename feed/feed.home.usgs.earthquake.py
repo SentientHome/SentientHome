@@ -73,7 +73,7 @@ def mapFeature(feature):
             'felt': feature['properties']['felt'],
             'sig': feature['properties']['sig'],
             'dmin': feature['properties']['dmin'],
-            'rms': feature['properties']['rms'],
+            'rms': float(feature['properties']['rms']),
         }
     }]
 
