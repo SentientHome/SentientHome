@@ -39,7 +39,7 @@ def eventFeed(*arg):
         pass
     except ValueError:
         data['Event.actionstring'] =\
-            str(data.pop('Event.actionstring'))
+            str(data.pop('Event.action'))
         pass
 
     try:
