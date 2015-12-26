@@ -73,7 +73,6 @@ def mapFeature(feature):
             'felt': feature['properties']['felt'],
             'sig': feature['properties']['sig'],
             'dmin': feature['properties']['dmin'],
-            'rms': float(feature['properties']['rms']),
         }
     }]
 
@@ -85,6 +84,9 @@ def mapFeature(feature):
 
     if feature['properties']['gap'] is not None:
         fields['gap'] = float(feature['properties']['gap'])
+
+    if feature['properties']['rms'] is not None:
+        fields['rms'] = float(feature['properties']['rms'])
 
     return event
 
