@@ -1,0 +1,29 @@
+influxdb:
+  image: tutum/influxdb
+  #volumes:
+    #- ./data:/data
+  ports:
+    - "8080:8080"
+    - "8083:8083"
+    - "8086:8086"
+    - "8088:8088"
+    - "8090:8090"
+    - "8099:8099"
+  environment:
+    - PRE_CREATE_DB=Home
+grafana:
+  image: grafana/grafana
+  ports:
+    - "3000:3000"
+  links:
+    - influxdb:influxdb
+sentienthome:
+  image: sentienthome
+  volumes:
+    - ./data:/data
+    - ~/.config/sentienthome/sentienthome.conf:/etc/sentienthome.conf
+  ports:
+    - "9001:9001" # supervisor
+    - "8888:8888" # event engine
+  links:
+    - influxdb:influxdb

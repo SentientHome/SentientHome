@@ -37,7 +37,8 @@ COLORS = {
 
 class shApp(CementApp):
     class Meta:
-        config_files = ['~/.config/sentienthome/sentienthome.conf']
+        config_files = ['~/.config/sentienthome/sentienthome.conf',
+                        '/etc/sentienthome.conf']
         extensions = ['colorlog']
         arguments_override_config = True
 

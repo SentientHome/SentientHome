@@ -13,8 +13,6 @@ from common.shapp import shApp
 from common.shutil import xml_to_dict
 from common.sheventhandler import shEventHandler
 
-import locale
-
 # Default settings
 from cement.utils.misc import init_defaults
 
@@ -25,9 +23,6 @@ with shApp('zillow', config_defaults=defaults) as app:
     app.run()
 
     handler = shEventHandler(app)
-
-    # set locale so we can easily strip the komma in the zindexValue
-    locale.setlocale(locale.LC_ALL, 'en_US')
 
     while True:
         r = handler.get(app.config.get('zillow', 'zillow_addr') + ":" +
@@ -67,7 +62,8 @@ with shApp('zillow', config_defaults=defaults) as app:
                 'range_high': float(property_data['valuationRange']['high']),
                 'range_low': float(property_data['valuationRange']['low']),
                 'percentile': int(property_data['percentile']),
-                'zindexValue': float(local_data['region']['zindexValue']),
+                'zindexValue': float(local_data['region']
+                                     ['zindexValue'].replace(',', '')),
             }
         }]
 

@@ -3,8 +3,8 @@
 
 node_modules
 data/*.p
-
-data/nest/cache
+data/nestcache
+data/meta
 
 samples/nest._status.cje/StoreContent/persistentStore-shm
 
@@ -17,5 +17,3 @@ samples/netatmo.json
 samples/smawebbox.json
 
 samples/mfi.json
-
-data/nest/cache.old
