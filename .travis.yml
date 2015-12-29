@@ -2,7 +2,12 @@ language: python
 python:
   - "3.4"
   - "3.5"
-sudo: false
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t "$DOCKER_USERNAME"/sentienthome .
+
 install:
   - pip install --upgrade pip
   - pip install -r requirements.txt
@@ -28,3 +33,8 @@ script:
   - python feed/feed.home.ubnt.mfi.py --help
   - python feed/feed.home.usgs.earthquake.py --help
   - python feed/feed.home.zillow.py --help
+after_success:
+  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker push "$DOCKER_USERNAME"/sentienthome
+  on:
+      branch: deploy
