@@ -38,6 +38,9 @@ script:
   - python feed/feed.home.ubnt.mfi.py --help
   - python feed/feed.home.usgs.earthquake.py --help
   - python feed/feed.home.zillow.py --help
-after_success:
-  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker push "$DOCKER_USERNAME"/sentienthome
+deploy:
+  provider: script
+  script: scripts/travis.deploy.sh
+  on:
+  	branch: deploy
+    python: "3.4"
