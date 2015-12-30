@@ -2,6 +2,11 @@ language: python
 python:
   - "3.4"
   - "3.5"
+  - "nightly"
+matrix:
+  allow_failures:
+    - python: "nightly"
+  fast_finish: true
 sudo: required
 services:
   - docker
