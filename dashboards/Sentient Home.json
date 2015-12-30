@@ -60,13 +60,13 @@
             {
               "fields": [
                 {
-                  "func": "mean",
+                  "func": "last",
                   "name": "demand"
                 }
               ],
               "groupByTags": [],
               "measurement": "eagle",
-              "query": "SELECT mean(demand) FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT last(demand) FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval)",
               "tags": []
             }
           ],
@@ -127,13 +127,13 @@
             {
               "fields": [
                 {
-                  "func": "mean",
+                  "func": "last",
                   "name": "GriPwr"
                 }
               ],
               "groupByTags": [],
               "measurement": "smawebbox.plant_overview",
-              "query": "SELECT mean(GriPwr) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT last(GriPwr) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
               "tags": []
             }
           ],
@@ -270,6 +270,6 @@
   },
   "refresh": "30s",
   "schemaVersion": 6,
-  "version": 66,
+  "version": 67,
   "links": []
 }
