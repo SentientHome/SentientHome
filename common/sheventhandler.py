@@ -28,6 +28,9 @@ class shEventHandler:
         # See if we need to enable deduping logic
         self._dedupe = dedupe
 
+        # In case we need to batch up events
+        self._batch = []
+
         self.checkPoint()
 
         # If we are require to dedupe re-read the checkpoint file
@@ -82,13 +85,12 @@ class shEventHandler:
     def _postStore(self, event):
         if self._app.event_store_active == 1:
             try:
-                r = self.post(self._app.event_store_path,
-                              data=json.dumps(event))
+                r = self._app._event_store_client.write_points(event, 's')
                 self._app.log.info('Event store response: %s' % r)
             except Exception as e:
                 self._app.log.fatal(e)
                 self._app.log.fatal('Exception posting data to event store: %s'
-                                    % self._app.event_store_path_safe)
+                                    % self._app._event_store_info)
                 self._app.close(1)
 
     def _postEngine(self, event, timestamp):
@@ -109,16 +111,35 @@ class shEventHandler:
                                     % self._app.event_engine_path_safe)
                 self._app.close(1)
 
-    def postEvent(self, event, dedupe=False):
+    def _postListener(self, event, timestamp):
+        # Now post the same event into the listener if active
+        if self._app._listener_active == 1:
+            event_for_listener = copy.deepcopy(event)
+            # Apply the timestamp to all events heading to the event engine
+            for e in event_for_listener:
+                e['shtime1'] = timestamp
+
+            try:
+                r = self.post(self._app._listener_path + '/messages',
+                              data=json.dumps(event_for_listener),
+                              headers=self._app._listener_auth)
+                self._app.log.info('Listener response: %s' % r)
+            except Exception as e:
+                self._app.log.fatal(e)
+                self._app.log.fatal('Exception posting data to listener: %s'
+                                    % self._app._listener_path)
+                self._app.close(1)
+
+    def postEvent(self, event, dedupe=False, batch=False):
 
         # Timestamp the event - only applied to events heading to event engine
-        timestamp = time.time()*1000
+        timestamp = time.time()
 
         # Engage deduping logic if required
         if dedupe is True and self._dedupe is True:
             if event in self._events:
                 self._app.log.debug('Duplicate event: %.25s...' %
-                                    event[0]['points'])
+                                    event)
 
                 # Nothing left to do here. The same event was already sent
                 return
@@ -126,14 +147,21 @@ class shEventHandler:
                 self._events_modified = True
                 self._events.appendleft(event)
         elif dedupe is True:
-            self._app.log.warning('Eventhandler dedupe logic not \
+            self._app.log.warn('Eventhandler dedupe logic not \
                                    inititalized. Ignoring dedupe.')
 
-        # First deposit the event data into our event store
-        self._postStore(event)
+        if batch is True:
+            for e in event:
+                self._batch.append(e)
+        else:
+            # First deposit the event data into our event store
+            self._postStore(event)
 
-        # Next send event data to our event engine
-        self._postEngine(event, timestamp)
+            # Next send event data to our in-memory event engine
+            self._postEngine(event, timestamp)
+
+            # Next send event data to a generic Listener if configured
+            self._postListener(event, timestamp)
 
     def checkPoint(self, write=False):
         if (self._dedupe and write and self._events_modified) is True:
@@ -143,8 +171,8 @@ class shEventHandler:
                     # Pickle the event cache
                     pickle.dump(self._events, f, pickle.HIGHEST_PROTOCOL)
             except OSError:
-                self._app.log.warning('Unable to write checkpoint file: %s' %
-                                      self._checkpoint_filename)
+                self._app.log.warn('Unable to write checkpoint file: %s' %
+                                   self._checkpoint_filename)
                 pass
 
             # Now that we have written the checkpoint file reset modified flag
@@ -153,6 +181,13 @@ class shEventHandler:
         self._checkpoint = time.clock()
 
     def sleep(self, sleeptime=None):
+        # Before anything else flush batch if one has been accumulated
+        if len(self._batch) > 0:
+            self._app.log.info('Batch Event Count: %s' % len(self._batch))
+            self.postEvent(self._batch)
+            # Reset batch
+            self._batch = []
+
         # Update poll_interval if supplied
         self._poll_interval = (float)(self._app.config.get(
             self._app._meta.label,
@@ -194,7 +229,7 @@ class shEventHandler:
         while True:
             try:
                 r = requests.get(url, auth=auth)
-                if r.status_code != 200:
+                if r.status_code not in [200, 201]:
                     self._app.log.error('Invalid status code: %s' %
                                         r.status_code)
                 return r
@@ -221,7 +256,7 @@ class shEventHandler:
         while True:
             try:
                 r = requests.post(url, auth=auth, data=data, headers=headers)
-                if r.status_code != 200:
+                if r.status_code not in [200, 201]:
                     self._app.log.error('Invalid status code: %s' %
                                         r.status_code)
                 return r

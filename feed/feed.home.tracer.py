@@ -33,10 +33,11 @@ with shApp('shTracer', config_defaults=defaults) as app:
         count += 1
 
         event = [{
-            'name': 'tracer',                       # Time Series Name
-            'columns': ['tracertime', 'count'],     # Keys
-            # time in milliseconds since epoch
-            'points': [[time.time()*1000, count]]   # Data points
+            'measurement': 'tracer',
+            'fields': {
+                'tracer_time': time.time(),
+                'tracer_count': count
+                }
         }]
 
         app.log.info('Event data: %s' % event)

@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 
 # Sentient Home Application
 from common.shapp import shApp
-from common.shutil import numerify
+from common.shutil import numerify, extract_tags
 from common.sheventhandler import shEventHandler
 
 import json
@@ -31,7 +31,7 @@ defaults = init_defaults('eagle', 'eagle')
 defaults['eagle']['poll_interval'] = 5.0
 defaults['eagle']['voltage'] = 240
 
-with shApp('autelis', config_defaults=defaults) as app:
+with shApp('eagle', config_defaults=defaults) as app:
     app.run()
 
     handler = shEventHandler(app)
@@ -47,47 +47,72 @@ with shApp('autelis', config_defaults=defaults) as app:
     device = json.loads(r.text)
     device_macid = device['device_mac_id[0]']
 
-    command = '<LocalCommand>\n\
-                    <Name>get_usage_data</Name>\n\
-                    <MacId>' + device_macid + '</MacId>\n\
-               </LocalCommand>'
+    network_command = '<LocalCommand>\n\
+                            <Name>get_network_info</Name>\n\
+                            <MacId>' + device_macid + '</MacId>\n\
+                       </LocalCommand>'
+
+    usage_command = '<LocalCommand>\n\
+                        <Name>get_usage_data</Name>\n\
+                        <MacId>' + device_macid + '</MacId>\n\
+                    </LocalCommand>'
 
     while True:
         try:
-            r = handler.post(app.config.get('eagle', 'eagle_addr') +
-                             '/cgi-bin/cgi_manager', data=command)
+            n = handler.post(app.config.get('eagle', 'eagle_addr') +
+                             '/cgi-bin/cgi_manager', data=network_command)
+            u = handler.post(app.config.get('eagle', 'eagle_addr') +
+                             '/cgi-bin/cgi_manager', data=usage_command)
         except Exception as e:
             # If event handler was unsuccessful retrying stop
             app.log.fatal(e)
             app.close(1)
 
-        app.log.debug('Fetch data: %s' % r.text)
+        app.log.debug('Network data: %s' % n.text)
+        app.log.debug('Usage data: %s' % u.text)
 
-        devicedata = dict((k, numerify(v)) for k, v in
-                          json.loads(r.text).items())
+        networkdata = dict((k, numerify(v)) for k, v in
+                           json.loads(n.text).items())
+
+        usagedata = dict((k, numerify(v)) for k, v in
+                         json.loads(u.text).items())
 
         # Normalize to W or Wh
         try:
-            power = float(devicedata['demand']) *\
-                units[devicedata['demand_units']]
-            received = float(devicedata['summation_received']) *\
-                units[devicedata['summation_units']]
-            delivered = float(devicedata['summation_delivered']) *\
-                units[devicedata['summation_units']]
+            demand = float(usagedata['demand']) *\
+                units[usagedata['demand_units']]
+            received = float(usagedata['summation_received']) *\
+                units[usagedata['summation_units']]
+            delivered = float(usagedata['summation_delivered']) *\
+                units[usagedata['summation_units']]
+            link_strength = int(networkdata['network_link_strength'], base=16)
         except ValueError:
             app.log.error('Unsupport demand or summation units')
             pass
+        except KeyError as e:
+            app.log.error('Missing Key: %s' % e)
+            pass
 
         try:
-            amps = power/(int)(app.config.get('eagle', 'voltage'))
+            amps = demand/(int)(app.config.get('eagle', 'voltage'))
         except ZeroDivisionError as e:
             app.log.error(e)
 
+        tags = extract_tags(networkdata, ['network_meter_mac_id',
+                                          'network_ext_pan_id',
+                                          'network_short_addr',
+                                          'network_status',
+                                          'network_channel'])
         event = [{
-            'name': 'power',
-            'columns': ['whole_house_power', 'whole_house_amps',
-                        'whole_house_received', 'whole_house_delivered'],
-            'points': [[power, amps, received, delivered]]
+            'measurement': 'eagle',
+            'tags': tags,
+            'fields': {
+                'demand': demand,
+                'amps': amps,
+                'summation_received': received,
+                'summation_delivered': delivered,
+                'network_link_strength': link_strength
+                }
         }]
 
         app.log.debug('Event data: %s' % event)

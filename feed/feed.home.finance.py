@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 
 # Sentient Home Application
 from common.shapp import shApp
-from common.shutil import numerify
+from common.shutil import numerify, extract_tags
 from common.sheventhandler import shEventHandler
 
 import json
@@ -55,15 +55,17 @@ def quotes_feed(app, handler, finance_path, series_name, symbol_list):
         rekeyed_quote = dict([(CODES_GOOGLE.get(key, key), value)
                              for key, value in quote.items()])
 
+        tags = extract_tags(rekeyed_quote, ['id', 'exchange', 'symbol'])
+
         event = [{
-            'name': series_name,
-            'columns': list(rekeyed_quote.keys()),
-            'points': [list(rekeyed_quote.values())]
+            'measurement': series_name,
+            'tags': tags,
+            'fields': rekeyed_quote
             }]
 
         app.log.debug('Event data: %s' % event)
 
-        handler.postEvent(event)
+        handler.postEvent(event, batch=True)
 
 # Default settings
 from cement.utils.misc import init_defaults
@@ -82,13 +84,13 @@ with shApp('finance', config_defaults=defaults) as app:
             app.config.get('finance', 'finance_provider_path')
         app.log.debug("Finance Path: %s", finance_path)
 
-        quotes_feed(app, handler, finance_path, 'indexes',
+        quotes_feed(app, handler, finance_path, 'finance.indexes',
                     app.config.get('finance', 'finance_index_list'))
 
-        quotes_feed(app, handler, finance_path, 'stockquotes',
+        quotes_feed(app, handler, finance_path, 'finance.stockquotes',
                     app.config.get('finance', 'finance_stock_list'))
 
-        quotes_feed(app, handler, finance_path, 'currencies',
+        quotes_feed(app, handler, finance_path, 'finance.currencies',
                     app.config.get('finance', 'finance_currency_list'))
 
         handler.sleep()

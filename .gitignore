@@ -3,5 +3,17 @@
 
 node_modules
 data/*.p
+data/nestcache
+data/meta
 
-data/nest/cache
+samples/nest._status.cje/StoreContent/persistentStore-shm
+
+samples/nest._status.cje/StoreContent/persistentStore-wal
+
+samples/nest.json
+
+samples/netatmo.json
+
+samples/smawebbox.json
+
+samples/mfi.json

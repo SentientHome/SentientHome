@@ -11,6 +11,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 # Sentient Home Application
 from common.shapp import shApp
 from common.sheventhandler import shEventHandler
+from common.shutil import epoch2date
 
 import json
 
@@ -19,6 +20,78 @@ from cement.utils.misc import init_defaults
 
 defaults = init_defaults('usgs_quake', 'usgs_quake')
 defaults['usgs_quake']['poll_interval'] = 10.0
+
+
+def mapMetadata(metadata):
+
+    event = [{
+        'measurement': 'usgs.earthquake.metadata',     # Time Series Name
+        'tags': {
+            'title': metadata['title'],
+            'generated': epoch2date(metadata['generated']/1000),
+            'api': metadata['api'],
+            'status': metadata['status'],
+        },
+        'fields': {
+            'count': metadata['count']
+        }
+    }]
+
+    return event
+
+
+def mapFeature(feature):
+    event = [{
+        'measurement': 'usgs.earthquake.feature',      # Time Series Name
+        'tags': {
+            'id': feature['id'],
+            'status': feature['properties']['status'],
+            'title': feature['properties']['title'],
+            'place': feature['properties']['place'],
+            'status': feature['properties']['status'],
+            'type': feature['properties']['type'],
+            'gtype': feature['geometry']['type'],
+            'types': feature['properties']['types'],
+            'magType': feature['properties']['magType'],
+            'tsunami': feature['properties']['tsunami'],
+            'code': feature['properties']['code'],
+            'time': epoch2date(feature['properties']['time']/1000),
+            'updated': epoch2date(feature['properties']['updated']/1000),
+            'tz': feature['properties']['tz'],
+            'ids': feature['properties']['ids'],
+            'cdi': feature['properties']['cdi'],
+            'net': feature['properties']['net'],
+            'nst': feature['properties']['nst'],
+            'sources': feature['properties']['sources'],
+            'alert': feature['properties']['alert'],
+        },
+        'fields': {
+            'long': float(feature['geometry']['coordinates'][0]),
+            'lat': float(feature['geometry']['coordinates'][1]),
+            'depth': float(feature['geometry']['coordinates'][2]),
+            'mag': feature['properties']['mag'],
+            'felt': feature['properties']['felt'],
+            'sig': feature['properties']['sig'],
+            'dmin': feature['properties']['dmin'],
+        }
+    }]
+
+    fields = event[0]['fields']
+
+    # Optional fields
+    if feature['properties']['felt'] is not None:
+        fields['felt'] = float(feature['properties']['felt'])
+
+    if feature['properties']['gap'] is not None:
+        fields['gap'] = float(feature['properties']['gap'])
+
+    if feature['properties']['rms'] is not None:
+        fields['rms'] = float(feature['properties']['rms'])
+
+    if feature['properties']['mag'] is not None:
+        fields['mag'] = float(feature['properties']['mag'])
+
+    return event
 
 with shApp('usgs_quake', config_defaults=defaults) as app:
     app.run()
@@ -34,62 +107,23 @@ with shApp('usgs_quake', config_defaults=defaults) as app:
         r = handler.get(app.config.get('usgs_quake', 'usgs_quake_addr') +
                         path)
         data = json.loads(r.text)
+        # app.log.debug('Raw data: %s' % r.text)
 
-        m = data['metadata']
-
-        event = [{
-            'name': 'usgs.earthquake.metadata',     # Time Series Name
-            'columns': ['title', 'count', 'generated', 'api', 'status'],  # Keys
-            'points': [[m['title'], m['count'], m['generated'],
-                        m['api'], m['status']]]     # Data points
-        }]
-
+        event = mapMetadata(data['metadata'])
         app.log.debug('Event data: %s' % event)
 
-        handler.postEvent(event, dedupe=True)
+        handler.postEvent(event, dedupe=True, batch=True)
 
         # Need to revser the order of incoming events as news are on top but we
         # need to process in the order they happened.
         features = data['features'][::-1]
 
-        for f in features:
-            event = [{
-                'name': 'usgs.earthquake.feature',      # Time Series Name
-                'columns': ['id', 'long', 'lat', 'depth', 'mag', 'type',
-                            'magtype', 'tz', 'felt', 'place', 'status',
-                            'gap', 'dmin', 'rms', 'ids', 'title', 'types',
-                            'cdi', 'net', 'nst', 'sources', 'alert', 'time',
-                            'tsunami', 'code', 'sig'
-                            ],                          # Keys
-                'points': [[f['id'],
-                            f['geometry']['coordinates'][0],
-                            f['geometry']['coordinates'][1],
-                            f['geometry']['coordinates'][2],
-                            f['properties']['mag'],
-                            f['properties']['type'],
-                            f['properties']['magType'],
-                            f['properties']['tz'],
-                            f['properties']['felt'],
-                            f['properties']['place'],
-                            f['properties']['status'],
-                            f['properties']['gap'],
-                            f['properties']['dmin'],
-                            f['properties']['rms'],
-                            f['properties']['ids'],
-                            f['properties']['title'],
-                            f['properties']['types'],
-                            f['properties']['cdi'],
-                            f['properties']['net'],
-                            f['properties']['nst'],
-                            f['properties']['sources'],
-                            f['properties']['alert'],
-                            f['properties']['time'],
-                            f['properties']['tsunami'],
-                            f['properties']['code'],
-                            f['properties']['sig']]]    # Data points
-            }]
+        for feature in features:
+            event = mapFeature(feature)
+            app.log.debug('Event data: %s' % event)
+
             # dedupe automatically ignores events we have processed before
-            handler.postEvent(event, dedupe=True)
+            handler.postEvent(event, dedupe=True, batch=True)
 
         # We reset the poll interval in case the configuration has changed
         handler.sleep()

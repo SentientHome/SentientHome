@@ -1,0 +1,411 @@
+{
+  "id": 1,
+  "title": "Sentient Home",
+  "originalTitle": "Sentient Home",
+  "tags": [
+    "Home",
+    "Sentient",
+    "DevOps"
+  ],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": false,
+  "sharedCrosshair": false,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "200px",
+      "panels": [
+        {
+          "cacheTimeout": null,
+          "colorBackground": true,
+          "colorValue": false,
+          "colors": [
+            "rgba(45, 154, 41, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "format": "watt",
+          "height": "",
+          "id": 21,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/rainforest-eagle",
+              "dashboard": "Rainforest Eagle",
+              "title": "Rainforest Eagle",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "last",
+                  "name": "demand"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "eagle",
+              "query": "SELECT last(demand) FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            }
+          ],
+          "thresholds": "-100000,3500,10000",
+          "timeFrom": null,
+          "title": "Home Power",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": true,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "format": "watt",
+          "height": "",
+          "id": 22,
+          "interval": null,
+          "links": [
+            {
+              "dashUri": "db/sma-solar",
+              "dashboard": "SMA Solar",
+              "title": "SMA Solar",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "last",
+                  "name": "GriPwr"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "smawebbox.plant_overview",
+              "query": "SELECT last(GriPwr) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "Solar",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "format": "farenheit",
+          "height": "",
+          "id": 23,
+          "interval": null,
+          "links": [
+            {
+              "dashUri": "db/nest",
+              "dashboard": "Nest",
+              "title": "Nest",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "temperature_F"
+                }
+              ],
+              "fill": "",
+              "groupByTags": [],
+              "measurement": "nest.thermostat",
+              "query": "SELECT mean(temperature_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            }
+          ],
+          "thresholds": "0,0,1",
+          "timeFrom": null,
+          "title": "Avg Room Temp",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "format": "farenheit",
+          "height": "",
+          "id": 24,
+          "interval": null,
+          "links": [
+            {
+              "dashUri": "db/nest",
+              "dashboard": "Nest",
+              "title": "Nest",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "max",
+                  "name": "temperature_F"
+                }
+              ],
+              "fill": "",
+              "groupByTags": [],
+              "measurement": "nest.thermostat",
+              "query": "SELECT max(temperature_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            }
+          ],
+          "thresholds": "0,0,1",
+          "timeFrom": null,
+          "title": "Max Room Temp",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "format": "farenheit",
+          "height": "",
+          "id": 25,
+          "interval": null,
+          "links": [
+            {
+              "dashUri": "db/nest",
+              "dashboard": "Nest",
+              "title": "Nest",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "min",
+                  "name": "temperature_F"
+                }
+              ],
+              "fill": "",
+              "groupByTags": [],
+              "measurement": "nest.thermostat",
+              "query": "SELECT min(temperature_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            }
+          ],
+          "thresholds": "0,0,1",
+          "timeFrom": null,
+          "title": "Min Room Temp",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        }
+      ],
+      "showTitle": true,
+      "title": "Sentient Home"
+    }
+  ],
+  "nav": [
+    {
+      "collapse": false,
+      "enable": true,
+      "notice": false,
+      "now": true,
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "status": "Stable",
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ],
+      "type": "timepicker"
+    }
+  ],
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": "30s",
+  "schemaVersion": 6,
+  "version": 68,
+  "links": []
+}
