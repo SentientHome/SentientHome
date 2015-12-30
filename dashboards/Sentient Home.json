@@ -207,7 +207,143 @@
           ],
           "thresholds": "0,0,1",
           "timeFrom": null,
-          "title": "Average Home Temp",
+          "title": "Avg Room Temp",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "format": "farenheit",
+          "height": "",
+          "id": 24,
+          "interval": null,
+          "links": [
+            {
+              "dashUri": "db/nest",
+              "dashboard": "Nest",
+              "title": "Nest",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "max",
+                  "name": "temperature_F"
+                }
+              ],
+              "fill": "",
+              "groupByTags": [],
+              "measurement": "nest.thermostat",
+              "query": "SELECT max(temperature_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            }
+          ],
+          "thresholds": "0,0,1",
+          "timeFrom": null,
+          "title": "Max Room Temp",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "format": "farenheit",
+          "height": "",
+          "id": 25,
+          "interval": null,
+          "links": [
+            {
+              "dashUri": "db/nest",
+              "dashboard": "Nest",
+              "title": "Nest",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "min",
+                  "name": "temperature_F"
+                }
+              ],
+              "fill": "",
+              "groupByTags": [],
+              "measurement": "nest.thermostat",
+              "query": "SELECT min(temperature_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            }
+          ],
+          "thresholds": "0,0,1",
+          "timeFrom": null,
+          "title": "Min Room Temp",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -270,6 +406,6 @@
   },
   "refresh": "30s",
   "schemaVersion": 6,
-  "version": 67,
+  "version": 68,
   "links": []
 }
