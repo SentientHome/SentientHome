@@ -6,19 +6,26 @@ influxdb:
     - "8080:8080"
     - "8083:8083"
     - "8086:8086"
-    - "8088:8088"
-    - "8090:8090"
-    - "8099:8099"
+  expose:
+    - "8088"
+    - "8090"
+    - "8099"
   environment:
     - PRE_CREATE_DB=Home
 grafana:
   image: grafana/grafana
   ports:
     - "3000:3000"
+  environment:
+    - INFLUXDB_HOST=influxdb
+    - INFLUXDB_PORT=8086
+    - INFLUXDB_NAME=Home
+    - INFLUXDB_USER=root
+    - INFLUXDB_PASS=root
   links:
     - influxdb:influxdb
 sentienthome:
-  image: sentienthome
+  image: fxstein/sentienthome
   volumes:
     - ./data:/data
     - ~/.config/sentienthome/sentienthome.conf:/etc/sentienthome.conf
