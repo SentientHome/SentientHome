@@ -97,6 +97,8 @@ class shEventEngine(shApp):
 
         eaddr = eaddr.replace('http://', '')
 
+        eaddr = '0.0.0.0'
+
         self._webapp = web.Application(loop=loop, logger=None)
 
         # Handle incoming events

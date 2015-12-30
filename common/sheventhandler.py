@@ -147,7 +147,7 @@ class shEventHandler:
                 self._events_modified = True
                 self._events.appendleft(event)
         elif dedupe is True:
-            self._app.log.warning('Eventhandler dedupe logic not \
+            self._app.log.warn('Eventhandler dedupe logic not \
                                    inititalized. Ignoring dedupe.')
 
         if batch is True:
@@ -171,8 +171,8 @@ class shEventHandler:
                     # Pickle the event cache
                     pickle.dump(self._events, f, pickle.HIGHEST_PROTOCOL)
             except OSError:
-                self._app.log.warning('Unable to write checkpoint file: %s' %
-                                      self._checkpoint_filename)
+                self._app.log.warn('Unable to write checkpoint file: %s' %
+                                   self._checkpoint_filename)
                 pass
 
             # Now that we have written the checkpoint file reset modified flag

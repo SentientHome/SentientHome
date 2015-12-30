@@ -15,6 +15,7 @@ from common.sheventhandler import shEventHandler
 from common.shutil import CtoF, m2toft2, boolify, epoch2date
 
 from nest import Nest
+# import json
 
 # Default settings
 from cement.utils.misc import init_defaults
@@ -126,8 +127,8 @@ def mapProtect(protect):
             'latest_manual_test_end_utc_secs': protect.latest_manual_test_end_utc_secs,  # noqa
             'latest_manual_test_start_utc_secs': protect.latest_manual_test_start_utc_secs,  # noqa
             'replace_by_date_utc_secs': epoch2date(protect.replace_by_date_utc_secs),  # noqa
+            'co_sequence_number': protect.co_sequence_number,
             'smoke_sequence_number': protect.smoke_sequence_number,
-            'smoke_status': protect.smoke_status,
             'wired_or_battery': protect.wired_or_battery
             },
         'fields': {
@@ -136,8 +137,8 @@ def mapProtect(protect):
             'co_blame_duration': protect.co_blame_duration,
             'co_blame_threshold': protect.co_blame_threshold,
             'co_previous_peak': protect.co_previous_peak,
-            'co_sequence_number': protect.co_sequence_number,
             'co_status': protect.co_status,
+            'smoke_status': protect.smoke_status,
             'component_als_test_passed': boolify(protect.component_als_test_passed),  # noqa
             'component_co_test_passed': boolify(protect.component_co_test_passed),  # noqa
             'component_heat_test_passed': boolify(protect.component_heat_test_passed),  # noqa

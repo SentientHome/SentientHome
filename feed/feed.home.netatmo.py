@@ -53,8 +53,8 @@ def mapStation(station):
                 epoch2date(station['dashboard_data']['date_max_temp']),
             'date_min_temp':
                 epoch2date(station['dashboard_data']['date_min_temp']),
-            'pressure_trend': station['dashboard_data']['pressure_trend'],
-            'temp_trend': station['dashboard_data']['temp_trend'],
+            # 'pressure_trend': station['dashboard_data']['pressure_trend'],
+            # 'temp_trend': station['dashboard_data']['temp_trend'],
             },
         'fields': {
             'co2_calibrating': station['co2_calibrating'],
