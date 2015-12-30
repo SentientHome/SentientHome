@@ -1,36 +1,13 @@
-; Sample supervisor config file.
-;
-; For more information on the config file, please see:
-; http://supervisord.org/configuration.html
-;
-; Note: shell expansion ("~" or "$HOME") is not supported.  Environment
-; variables can be expanded using this syntax: "%(ENV_HOME)s".
+# ~/.config/sentienthome/supervisord.conf
 
-[unix_http_server]
-file=/tmp/supervisor.sock   ; (the path to the socket file)
+[supervisord]
+; Since we are running inside a docker container run in foreground
+nodaemon=true
 
 [inet_http_server]          ; inet (TCP) server disabled by default
 port=*:9001                 ; (ip_address:port specifier, *:port for all iface)
-;username=mysuperadmin       ; (default is no username (open server))
-;password=123456             ; (default is no password (open server))
-
-[supervisord]
-logfile=/tmp/supervisord.log ; (main log file;default $CWD/supervisord.log)
-logfile_maxbytes=50MB        ; (max main logfile bytes b4 rotation;default 50MB)
-logfile_backups=10           ; (num of main logfile rotation backups;default 10)
-loglevel=info                ; (log level;default info; others: debug,warn,trace)
-pidfile=/tmp/supervisord.pid ; (supervisord pidfile;default supervisord.pid)
-nodaemon=false               ; (start in foreground if true;default false)
-minfds=1024                  ; (min. avail startup file descriptors;default 1024)
-minprocs=200                 ; (min. avail process descriptors;default 200)
-;umask=022                   ; (process file creation umask;default 022)
-;user=myuser                 ; (default is current user, required if root)
-;identifier=supervisor       ; (supervisord identifier, default is 'supervisor')
-;directory=/tmp              ; (default is not to cd during start)
-;nocleanup=true              ; (don't clean up tempfiles at start;default false)
-;childlogdir=/tmp            ; ('AUTO' child log dir, default $TEMP)
-;environment=KEY="value"     ; (key value pairs to add to environment)
-;strip_ansi=false            ; (strip ansi escape codes in logs; def. false)
+username=sentienthome       ; (default is no username (open server))
+password=changemenow!       ; (default is no password (open server))
 
 ; the below section must remain in the config file for RPC
 ; (supervisorctl/web interface) to work, additional interfaces may be
@@ -38,66 +15,58 @@ minprocs=200                 ; (min. avail process descriptors;default 200)
 [rpcinterface:supervisor]
 supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
 
-[supervisorctl]
-serverurl=unix:///tmp/supervisor.sock ; use a unix:// URL  for a unix socket
-;serverurl=http://127.0.0.1:9001 ; use an http:// url to specify an inet socket
-;username=chris              ; should be same as http_username if set
-;password=123                ; should be same as http_password if set
-;prompt=mysupervisor         ; cmd line prompt (default "supervisor")
-;history_file=~/.sc_history  ; use readline history if available
+; Various components of SentientHome
+; /usr/src/app is default path inside our docker image
 
-;
-; SentientHome components
-;
-
-;[program:influxdb]
-;command=/usr/local/bin/influxdb -config=/usr/local/etc/influxdb.conf
-
-[program:SentientHome.collectd.proxy]
-command=/usr/local/bin/node %(ENV_HOME)s/SentientHome/proxy/proxy.collectd.influx.js
-environment=HOME="/var/root"
+[program:sentienthome.engine.event.engine]
+command  = /usr/src/app/engine/event.engine.py
+priority = 1 ; Needs to start before all feeders
 redirect_stderr=true
 
-;[program:logstash]
-;command=/usr/local/bin/logstash -f %(ENV_HOME)s/influx/logstash.conf
-;environment=HOME="/var/root"
-
-[program:SentientHome.feed.home.apcups.py]
-command=%(ENV_HOME)s/SentientHome/feed/feed.home.apcups.py
+[program:sentienthome.feed.home.apcups]
+command=/usr/src/app/feed/feed.home.apcups.py
 redirect_stderr=true
 
-[program:SentientHome.feed.home.autelis.py]
-command=%(ENV_HOME)s/SentientHome/feed/feed.home.autelis.py
+[program:sentienthome.feed.home.autelis]
+command=/usr/src/app/feed/feed.home.autelis.py
 redirect_stderr=true
 
-[program:SentientHome.feed.home.eagle.py]
-command=%(ENV_HOME)s/SentientHome/feed/feed.home.eagle.py
+[program:sentienthome.feed.home.eagle]
+command=/usr/src/app/feed/feed.home.eagle.py
 redirect_stderr=true
 
-[program:SentientHome.feed.home.finance.py]
-command=%(ENV_HOME)s/SentientHome/feed/feed.home.finance.py
+[program:sentienthome.feed.home.finance]
+command=/usr/src/app/feed/feed.home.finance.py
 redirect_stderr=true
 
-[program:SentientHome.feed.home.isy.py]
-command=%(ENV_HOME)s/SentientHome/feed/feed.home.isy.py
+[program:sentienthome.feed.home.isy]
+command=/usr/src/app/feed/feed.home.isy.py
 redirect_stderr=true
 
-[program:SentientHome.feed.home.netatmo.py]
-command=%(ENV_HOME)s/SentientHome/feed/feed.home.netatmo.py
+[program:sentienthome.feed.home.nest]
+command=/usr/src/app/feed/feed.home.nest.py
 redirect_stderr=true
 
-[program:SentientHome.feed.home.sma.webbox.py]
-command=%(ENV_HOME)s/SentientHome/feed/feed.home.sma.webbox.py
+[program:sentienthome.feed.home.netatmo]
+command=/usr/src/app/feed/feed.home.netatmo.py
 redirect_stderr=true
 
-[program:SentientHome.feed.home.ubnt.mfi.py]
-command=%(ENV_HOME)s/SentientHome/feed/feed.home.ubnt.mfi.py
+[program:sentienthome.feed.home.sma.webbox]
+command=/usr/src/app/feed/feed.home.sma.webbox.py
 redirect_stderr=true
 
-[program:SentientHome.feed.home.usgs.earthquake.py]
-command=%(ENV_HOME)s/SentientHome/feed/feed.home.usgs.earthquake.py
+[program:sentienthome.feed.home.tracer]
+command=/usr/src/app/feed/feed.home.tracer.py
 redirect_stderr=true
 
-[program:SentientHome.feed.home.zillow.py]
-command=%(ENV_HOME)s/SentientHome/feed/feed.home.zillow.py
+[program:sentienthome.feed.home.ubnt.mfi]
+command=/usr/src/app/feed/feed.home.ubnt.mfi.py
+redirect_stderr=true
+
+[program:sentienthome.feed.home.usgs.earthquake]
+command=/usr/src/app/feed/feed.home.usgs.earthquake.py
+redirect_stderr=true
+
+[program:sentienthome.feed.home.zillow]
+command=/usr/src/app/feed/feed.home.zillow.py --debug
 redirect_stderr=true

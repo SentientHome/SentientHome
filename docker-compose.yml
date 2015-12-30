@@ -20,8 +20,6 @@ grafana:
     - INFLUXDB_HOST=influxdb
     - INFLUXDB_PORT=8086
     - INFLUXDB_NAME=Home
-    - INFLUXDB_USER=root
-    - INFLUXDB_PASS=root
   links:
     - influxdb:influxdb
 sentienthome:
@@ -29,8 +27,9 @@ sentienthome:
   volumes:
     - ./data:/data
     - ~/.config/sentienthome/sentienthome.conf:/etc/sentienthome.conf
+    - ~/.config/sentienthome/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
   ports:
-    - "9001:9001" # supervisor
-    - "8888:8888" # event engine
+    - "9001:9001" # sentienthome supervisor web interface
+    - "8888:8888" # sentienthome event engine
   links:
     - influxdb:influxdb
