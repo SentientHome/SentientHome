@@ -1,7 +1,7 @@
 influxdb:
   image: tutum/influxdb
-  #volumes:
-    #- ./data:/data
+  #volumes: # Persist data of database
+    #- ./data:/data # VirtualBox bug prevents this from working on OSX
   ports:
     - "8080:8080"
     - "8083:8083"
