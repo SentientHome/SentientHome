@@ -114,7 +114,7 @@ def m2toft2(a):
 
 # Conversion: string to bool
 def boolify(s):
-    return (str)(s).lower() in['true', '1', 't', 'y', 'yes']
+    return (str)(s).lower() in['true', '1', 't', 'y', 'yes', 'on']
 
 
 # Conversion: string to bool to int
