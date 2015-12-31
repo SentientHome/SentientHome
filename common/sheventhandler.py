@@ -164,19 +164,20 @@ class shEventHandler:
             self._postListener(event, timestamp)
 
     def checkPoint(self, write=False):
-        if (self._dedupe and write and self._events_modified) is True:
-            # Write checkpoint deque type manages maxlength automatically
-            try:
-                with open(self._checkpoint_filename, 'wb') as f:
-                    # Pickle the event cache
-                    pickle.dump(self._events, f, pickle.HIGHEST_PROTOCOL)
-            except OSError:
-                self._app.log.warn('Unable to write checkpoint file: %s' %
-                                   self._checkpoint_filename)
-                pass
+        if self._app.checkpointing is True:
+            if (self._dedupe and write and self._events_modified) is True:
+                # Write checkpoint deque type manages maxlength automatically
+                try:
+                    with open(self._checkpoint_filename, 'wb') as f:
+                        # Pickle the event cache
+                        pickle.dump(self._events, f, pickle.HIGHEST_PROTOCOL)
+                except OSError:
+                    self._app.log.warn('Unable to write checkpoint file: %s' %
+                                       self._checkpoint_filename)
+                    pass
 
-            # Now that we have written the checkpoint file reset modified flag
-            self._events_modified = False
+                # Now that we have written the checkpoint file reset modified
+                self._events_modified = False
 
         self._checkpoint = time.clock()
 

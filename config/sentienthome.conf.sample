@@ -4,7 +4,9 @@
 
 [sentienthome]
 ; loglevel possible values: INFO, WARNING, ERROR, CRITICAL, DEBUG, DEFAULT; default=DEFAULT
-loglevel               = DEBUG
+loglevel               = Default
+checkpointing          = OFF
+checkpoint_interval    = 600
 ; Number of retries for connection issues; default=10
 retries                = 10
 ; supported target stores. Currently only INFLUXDB and DEVNULL supported

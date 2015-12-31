@@ -31,47 +31,49 @@ class shMemoryManager:
                 'SentientHome', 'data_path')),
             self._app.origin_filename + '.p')
 
-        # See if we can restore the event memory from a previsous checkpoint
-        try:
-            with open(self._checkpoint_filename, 'rb') as f:
-                self._app.log.debug('Restoring from previous checkpoint: %s' %
-                                    self._checkpoint_filename)
-                # The protocol version used is detected automatically
-                self._eventmemory = pickle.load(f)
-        except (OSError, EOFError, FileNotFoundError) as e:
-            self._app.log.warn(e)
-            self._app.log.warn('Unable to read checkpoint file: %s' %
-                               self._checkpoint_filename)
-            pass
+        if app.checkpointing is True:
+            # See if we can restore the event memory from a previsous checkpoint
+            try:
+                with open(self._checkpoint_filename, 'rb') as f:
+                    app.log.debug('Restoring from previous checkpoint: %s' %
+                                  self._checkpoint_filename)
+                    # The protocol version used is detected automatically
+                    self._eventmemory = pickle.load(f)
+            except (OSError, EOFError, FileNotFoundError) as e:
+                app.log.warn(e)
+                app.log.warn('Unable to read checkpoint file: %s' %
+                             self._checkpoint_filename)
+                pass
 
     def checkpoint(self):
-        # persist memory manager to disk
-        self._app.log.debug('Checkpoint memory manager: %s' %
-                            self._checkpoint_filename)
-
-        # Measure time spent on checkpointing
-        time1 = time.monotonic()*1000
-
-        temp = self._eventmemory
-
-        time2 = time.monotonic()*1000
-
-        try:
-            with open(self._checkpoint_filename, 'wb') as f:
-                # Pickle the event memory using the highest protocol available.
-                pickle.dump(temp, f, pickle.HIGHEST_PROTOCOL)
-        except Exception as e:
-            self._app.log.error('Unable to write checkpoint file: %s' %
+        if self._app.checkpointing is True:
+            # persist memory manager to disk
+            self._app.log.debug('Checkpoint memory manager: %s' %
                                 self._checkpoint_filename)
-            self._app.log.error(e)
-            pass
 
-        time3 = time.monotonic()*1000
+            # Measure time spent on checkpointing
+            time1 = time.monotonic()*1000
 
-        self._app.log.debug('Time to copy(): %0.2fms' % (time2 - time1))
-        self._app.log.debug('Time to pickle(): %0.2fms' % (time3 - time2))
-        self._app.log.debug('Total time to checkpoint(): %0.2fms' %
-                            (time3 - time1))
+            temp = self._eventmemory
+
+            time2 = time.monotonic()*1000
+
+            try:
+                with open(self._checkpoint_filename, 'wb') as f:
+                    # Pickle the event memory
+                    pickle.dump(temp, f, pickle.HIGHEST_PROTOCOL)
+            except Exception as e:
+                self._app.log.error('Unable to write checkpoint file: %s' %
+                                    self._checkpoint_filename)
+                self._app.log.error(e)
+                pass
+
+            time3 = time.monotonic()*1000
+
+            self._app.log.debug('Time to copy(): %0.2fms' % (time2 - time1))
+            self._app.log.debug('Time to pickle(): %0.2fms' % (time3 - time2))
+            self._app.log.debug('Total time to checkpoint(): %0.2fms' %
+                                (time3 - time1))
 
     @property
     def eventmemory(self):

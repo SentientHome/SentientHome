@@ -73,18 +73,20 @@ class shEventEngine(shApp):
 
     def _checkpoint(self):
 
-        app.log.debug('Checkpointing memory cache')
+        if app.checkpointing is True:
+            app.log.debug('Checkpointing memory cache')
 
-        try:
-            self._loop.run_in_executor(self._thread, self._memory.checkpoint)
-        except Exception as e:
-            app.log.error('Unable to checkpoint memory cache')
-            app.log.error(e)
+            try:
+                self._loop.run_in_executor(self._thread,
+                                           self._memory.checkpoint)
+            except Exception as e:
+                app.log.error('Unable to checkpoint memory cache')
+                app.log.error(e)
 
-        self._loop.call_later((int)(app.config.get('SentientHome',
-                                                   'checkpoint_interval',
-                                                   fallback=60)),
-                              self._checkpoint)
+            self._loop.call_later((int)(app.config.get('SentientHome',
+                                                       'checkpoint_interval',
+                                                       fallback=600)),
+                                  self._checkpoint)
 
     def run_forever(self):
         self._loop.run_forever()

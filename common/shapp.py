@@ -3,7 +3,14 @@ __author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
 __copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
 __license__ = 'Apache License, Version 2.0'
 
+# Make sure we have access to SentientHome commons
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
+
+# Sentient Home Application
+from common.shutil import boolify
+
 import inspect
 import configparser
 
@@ -66,6 +73,10 @@ class shApp(CementApp):
         self._retry_interval = (float)(self.config.get('SentientHome',
                                                        'retry_interval',
                                                        fallback=2))
+
+        self._checkpointing = boolify(self.config.get('SentientHome',
+                                                      'checkpointing',
+                                                      fallback='OFF'))
 
         # Setup event store and event engine configurations
         self._setEventStore()
@@ -170,6 +181,10 @@ class shApp(CementApp):
     @property
     def retry_interval(self):
         return self._retry_interval
+
+    @property
+    def checkpointing(self):
+        return self._checkpointing
 
     @property
     def event_store(self):
