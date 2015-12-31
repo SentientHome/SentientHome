@@ -10,9 +10,6 @@ matrix:
 sudo: required
 services:
   - docker
-before_install:
-  - docker build -t "$DOCKER_USERNAME"/sentienthome .
-
 install:
   - pip install --upgrade pip
   - pip install -r requirements.txt
@@ -38,3 +35,5 @@ script:
   - python feed/feed.home.ubnt.mfi.py --help
   - python feed/feed.home.usgs.earthquake.py --help
   - python feed/feed.home.zillow.py --help
+after_script:
+  - docker build -t "$DOCKER_USERNAME"/sentienthome .
