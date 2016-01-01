@@ -22,51 +22,64 @@ supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
 command  = /usr/src/app/engine/event.engine.py
 priority = 1 ; Needs to start before all feeders
 redirect_stderr=true
+startsecs = 5
 
 [program:sentienthome.feed.home.apcups]
 command=/usr/src/app/feed/feed.home.apcups.py
 redirect_stderr=true
+startsecs = 5
 
 [program:sentienthome.feed.home.autelis]
 command=/usr/src/app/feed/feed.home.autelis.py
 redirect_stderr=true
+startsecs = 5
 
 [program:sentienthome.feed.home.eagle]
 command=/usr/src/app/feed/feed.home.eagle.py
 redirect_stderr=true
+startsecs = 5
 
 [program:sentienthome.feed.home.finance]
 command=/usr/src/app/feed/feed.home.finance.py
 redirect_stderr=true
+startsecs = 5
 
 [program:sentienthome.feed.home.isy]
 command=/usr/src/app/feed/feed.home.isy.py
 redirect_stderr=true
+startsecs = 5
 
 [program:sentienthome.feed.home.nest]
 command=/usr/src/app/feed/feed.home.nest.py
 redirect_stderr=true
+startsecs = 5
 
 [program:sentienthome.feed.home.netatmo]
 command=/usr/src/app/feed/feed.home.netatmo.py
 redirect_stderr=true
+startsecs = 5
 
 [program:sentienthome.feed.home.sma.webbox]
 command=/usr/src/app/feed/feed.home.sma.webbox.py
 redirect_stderr=true
+startsecs = 5
 
 [program:sentienthome.feed.home.tracer]
 command=/usr/src/app/feed/feed.home.tracer.py
 redirect_stderr=true
+startsecs = 5
 
 [program:sentienthome.feed.home.ubnt.mfi]
 command=/usr/src/app/feed/feed.home.ubnt.mfi.py
 redirect_stderr=true
+startsecs = 5
 
 [program:sentienthome.feed.home.usgs.earthquake]
 command=/usr/src/app/feed/feed.home.usgs.earthquake.py
 redirect_stderr=true
+startsecs = 5
 
 [program:sentienthome.feed.home.zillow]
 command=/usr/src/app/feed/feed.home.zillow.py --debug
 redirect_stderr=true
+startsecs = 5

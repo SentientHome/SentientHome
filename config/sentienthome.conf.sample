@@ -4,11 +4,14 @@
 
 [sentienthome]
 ; loglevel possible values: INFO, WARNING, ERROR, CRITICAL, DEBUG, DEFAULT; default=DEFAULT
-loglevel               = Default
+loglevel               = DEFAULT
 checkpointing          = OFF
 checkpoint_interval    = 600
-; Number of retries for connection issues; default=10
-retries                = 10
+
+; number of retries and interval for failed http attempts
+retries                 = 5
+retry_interval          = 2
+
 ; supported target stores. Currently only INFLUXDB and DEVNULL supported
 event_store            = INFLUXDB
 
