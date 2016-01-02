@@ -170,7 +170,7 @@ def mapProtect(protect):
 with shApp('nest', config_defaults=defaults) as app:
     app.run()
 
-    handler = shEventHandler(app, dedupe=True)
+    handler = shEventHandler(app)
 
     nest = Nest(app.config.get('nest', 'nest_user'),
                 app.config.get('nest', 'nest_pass'),
@@ -192,21 +192,21 @@ with shApp('nest', config_defaults=defaults) as app:
                     event = mapStructure(structure)
                     app.log.debug('Event data: %s' % event)
 
-                    handler.postEvent(event, dedupe=True, batch=True)
+                    handler.postEvent(event, batch=True)
 
                     # Loop through all Thermostats
                     for thermostat in structure.devices:
                         event = mapThermostat(thermostat)
                         app.log.debug('Event data: %s' % event)
 
-                        handler.postEvent(event, dedupe=True, batch=True)
+                        handler.postEvent(event, batch=True)
 
                     # Loop through all Protects
                     for protect in structure.protectdevices:
                         event = mapProtect(protect)
                         app.log.debug('Event data: %s' % event)
 
-                        handler.postEvent(event, dedupe=True, batch=True)
+                        handler.postEvent(event, batch=True)
 
                 # Break retry loop if we arrived here without exception
                 break
