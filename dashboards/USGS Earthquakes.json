@@ -1,11 +1,10 @@
 {
-  "id": 3,
-  "title": "Rainforest Eagle",
-  "originalTitle": "Rainforest Eagle",
+  "id": 8,
+  "title": "USGS Earthquakes",
+  "originalTitle": "USGS Earthquakes",
   "tags": [
-    "Power",
-    "Electricity",
-    "Grid"
+    "Earthquakes",
+    "Tsunamis"
   ],
   "style": "dark",
   "timezone": "browser",
@@ -22,10 +21,10 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "decimals": 1,
+          "decimals": 2,
           "editable": true,
           "error": false,
-          "fill": 2,
+          "fill": 1,
           "grid": {
             "leftLogBase": 1,
             "leftMax": null,
@@ -38,176 +37,16 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "hideTimeOverride": false,
-          "id": 1,
-          "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": true,
-            "hideEmpty": false,
-            "max": true,
-            "min": true,
-            "rightSide": false,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "demand",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "demand"
-                }
-              ],
-              "groupByTags": [],
-              "measurement": "eagle",
-              "query": "SELECT mean(demand) FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval)",
-              "rawQuery": false,
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Home Power [W]",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "transparent": false,
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "watt",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {
-            "amps": "#6ED0E0",
-            "eagle.mean": "#EF843C"
-          },
-          "bars": false,
-          "datasource": null,
-          "decimals": null,
-          "editable": true,
-          "error": false,
-          "fill": 2,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "hideTimeOverride": false,
           "id": 2,
+          "interval": ">3600s",
           "legend": {
             "avg": false,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "amps",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "amps"
-                }
-              ],
-              "groupByTags": [],
-              "measurement": "eagle",
-              "query": "SELECT mean(amps) FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval)",
-              "rawQuery": false,
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Home Amps [A]",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "transparent": false,
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "amp",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {
-            "eagle.mean": "#EF843C",
-            "summation_delivered": "#EF843C"
-          },
-          "bars": false,
-          "datasource": null,
-          "decimals": 3,
-          "editable": true,
-          "error": false,
-          "fill": 2,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "hideTimeOverride": false,
-          "id": 5,
-          "interval": "",
-          "legend": {
-            "avg": false,
-            "current": true,
+            "current": false,
             "max": false,
             "min": false,
             "show": true,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
           "linewidth": 2,
@@ -223,47 +62,50 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "summation_delivered",
+              "alias": "$tag_title",
               "fields": [
                 {
-                  "func": "mean",
-                  "name": "summation_delivered"
+                  "func": "max",
+                  "name": "count"
                 }
               ],
-              "fill": "previous",
-              "groupByTags": [],
-              "measurement": "eagle",
-              "query": "SELECT mean(summation_delivered) FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
-              "rawQuery": false,
-              "tags": []
+              "groupByTags": [
+                "title"
+              ],
+              "measurement": "usgs.earthquake.metadata",
+              "query": "SELECT max(count) FROM \"usgs.earthquake.metadata\" WHERE \"title\" = 'USGS All Earthquakes, Past Hour' AND $timeFilter GROUP BY time($interval), \"title\"",
+              "tags": [
+                {
+                  "key": "title",
+                  "operator": "=",
+                  "value": "USGS All Earthquakes, Past Hour"
+                }
+              ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Energy consumed from Grid [Wh]",
+          "title": "Earthquakes per Hour",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
           },
-          "transparent": false,
           "type": "graph",
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "watth",
+            "short",
             "short"
           ]
         },
         {
-          "aliasColors": {
-            "eagle.mean": "#7EB26D"
-          },
+          "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "decimals": 3,
+          "decimals": 2,
           "editable": true,
           "error": false,
-          "fill": 2,
+          "fill": 1,
           "grid": {
             "leftLogBase": 1,
             "leftMax": null,
@@ -276,17 +118,16 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "hideTimeOverride": false,
-          "id": 19,
-          "interval": "",
+          "id": 1,
+          "interval": ">3600s",
           "legend": {
             "avg": false,
-            "current": true,
+            "current": false,
             "max": false,
             "min": false,
             "show": true,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
           "linewidth": 2,
@@ -302,49 +143,44 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "summation_received",
+              "alias": "$tag_type",
               "fields": [
                 {
-                  "func": "mean",
-                  "name": "summation_received"
+                  "func": "max",
+                  "name": "mag"
                 }
               ],
-              "fill": "previous",
-              "groupByTags": [],
-              "measurement": "eagle",
-              "query": "SELECT mean(summation_received) FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
-              "rawQuery": false,
+              "groupByTags": [
+                "type"
+              ],
+              "measurement": "usgs.earthquake.feature",
+              "query": "SELECT max(mag) FROM \"usgs.earthquake.feature\" WHERE $timeFilter GROUP BY time($interval), \"type\"",
               "tags": []
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Energy delivered to Grid [Wh]",
+          "title": "Strongest Earthquake per Hour",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
           },
-          "transparent": false,
           "type": "graph",
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "watth",
+            "short",
             "short"
           ]
         },
         {
-          "aliasColors": {
-            "eagle.mean": "#7EB26D",
-            "network_link_strength": "#1F78C1",
-            "summation_received": "#6ED0E0"
-          },
+          "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "decimals": 3,
+          "decimals": 2,
           "editable": true,
           "error": false,
-          "fill": 2,
+          "fill": 1,
           "grid": {
             "leftLogBase": 1,
             "leftMax": null,
@@ -357,17 +193,16 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "hideTimeOverride": false,
-          "id": 20,
-          "interval": "",
+          "id": 3,
+          "interval": ">3600s",
           "legend": {
             "avg": false,
-            "current": true,
-            "max": true,
-            "min": true,
+            "current": false,
+            "max": false,
+            "min": false,
             "show": true,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
           "linewidth": 2,
@@ -383,40 +218,114 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "network_link_strength",
+              "alias": "$tag_type",
               "fields": [
                 {
-                  "func": "mean",
-                  "name": "network_link_strength"
+                  "func": "max",
+                  "name": "rms"
                 }
               ],
-              "fill": "previous",
-              "groupByTags": [],
-              "measurement": "eagle",
-              "query": "SELECT mean(network_link_strength) FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
-              "rawQuery": false,
+              "groupByTags": [
+                "type"
+              ],
+              "measurement": "usgs.earthquake.feature",
+              "query": "SELECT max(rms) FROM \"usgs.earthquake.feature\" WHERE $timeFilter GROUP BY time($interval), \"type\"",
               "tags": []
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Network Link Strength",
+          "title": "Max RMS per Hour",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
           },
-          "transparent": false,
           "type": "graph",
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "percent",
+            "short",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 4,
+          "interval": ">3600s",
+          "leftYAxisLabel": "",
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_type",
+              "fields": [
+                {
+                  "func": "max",
+                  "name": "depth"
+                }
+              ],
+              "groupByTags": [
+                "type"
+              ],
+              "measurement": "usgs.earthquake.feature",
+              "query": "SELECT max(depth) FROM \"usgs.earthquake.feature\" WHERE $timeFilter GROUP BY time($interval), \"type\"",
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Max Depth per Hour",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
             "short"
           ]
         }
       ],
-      "showTitle": true,
-      "title": "Rainforest EAGLE - Home Power Consumption"
+      "title": "Row"
     }
   ],
   "nav": [
@@ -453,7 +362,7 @@
     }
   ],
   "time": {
-    "from": "now-24h",
+    "from": "now-12h",
     "to": "now"
   },
   "templating": {
@@ -462,8 +371,7 @@
   "annotations": {
     "list": []
   },
-  "refresh": false,
   "schemaVersion": 6,
-  "version": 6,
+  "version": 3,
   "links": []
 }

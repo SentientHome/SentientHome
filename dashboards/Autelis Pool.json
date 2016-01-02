@@ -1,11 +1,10 @@
 {
-  "id": 4,
-  "title": "Nest",
-  "originalTitle": "Nest",
+  "id": 10,
+  "title": "Autelis Pool",
+  "originalTitle": "Autelis Pool",
   "tags": [
-    "Thermostat",
-    "Protect",
-    "Firealarm"
+    "Pool",
+    "Spa"
   ],
   "style": "dark",
   "timezone": "browser",
@@ -24,7 +23,252 @@
           "datasource": null,
           "editable": true,
           "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 2,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": true,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Pool",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "pooltemp"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "autelis",
+              "query": "SELECT mean(pooltemp) FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            },
+            {
+              "alias": "Spa",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "spatemp"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "autelis",
+              "query": "SELECT mean(spatemp) FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Water Temp",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "farenheit",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
           "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 4,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Pool Heat",
+              "fields": [
+                {
+                  "func": "max",
+                  "name": "poolht"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "autelis",
+              "query": "SELECT max(poolht) FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            },
+            {
+              "alias": "Pool Heat",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "spaht"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "autelis",
+              "query": "SELECT mean(spaht) FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Heater Enabled",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 3,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Heater ",
+              "fields": [
+                {
+                  "func": "max",
+                  "name": "htstatus"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "autelis",
+              "query": "SELECT max(htstatus) FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Heater",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
           "grid": {
             "leftLogBase": 1,
             "leftMax": null,
@@ -61,24 +305,22 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "$tag_where",
+              "alias": "Exhaust Fan",
               "fields": [
                 {
-                  "func": "mean",
-                  "name": "temperature_F"
+                  "func": "max",
+                  "name": "circuit9"
                 }
               ],
-              "groupByTags": [
-                "where"
-              ],
-              "measurement": "nest.thermostat",
-              "query": "SELECT mean(temperature_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "groupByTags": [],
+              "measurement": "autelis",
+              "query": "SELECT max(circuit9) FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
               "tags": []
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Room Temperature",
+          "title": "Exhaust Fan",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -87,301 +329,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "farenheit",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 2,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "$tag_where",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "humidity"
-                }
-              ],
-              "groupByTags": [
-                "where"
-              ],
-              "measurement": "nest.thermostat",
-              "query": "SELECT mean(humidity) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Room Humidity",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "percent",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 3,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "$tag_where",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "target_F"
-                }
-              ],
-              "groupByTags": [
-                "where"
-              ],
-              "measurement": "nest.thermostat",
-              "query": "SELECT mean(target_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Room Target Temperature",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "farenheit",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "decimals": 0,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 8,
-          "leftYAxisLabel": "",
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "$tag_where",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "away_low_F"
-                }
-              ],
-              "groupByTags": [
-                "where"
-              ],
-              "measurement": "nest.thermostat",
-              "query": "SELECT mean(away_low_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Thermostat Away Low Temperature",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "farenheit",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 4,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "$tag_where",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "battery_level"
-                }
-              ],
-              "groupByTags": [
-                "where"
-              ],
-              "measurement": "nest.thermostat",
-              "query": "SELECT mean(battery_level) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Thermostat Battery Level",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "volt",
+            "short",
             "short"
           ]
         },
@@ -405,15 +353,16 @@
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
           "id": 5,
-          "leftYAxisLabel": "",
           "legend": {
+            "alignAsTable": false,
             "avg": false,
-            "current": false,
+            "current": true,
             "max": false,
             "min": false,
+            "rightSide": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 2,
@@ -429,98 +378,35 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "$tag_where",
+              "alias": "Pool Heat",
               "fields": [
                 {
                   "func": "mean",
-                  "name": "battery_level"
+                  "name": "poolsp"
                 }
               ],
-              "groupByTags": [
-                "where"
-              ],
-              "measurement": "nest.protect",
-              "query": "SELECT mean(battery_level) FROM \"nest.protect\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "groupByTags": [],
+              "measurement": "autelis",
+              "query": "SELECT mean(poolsp) FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
               "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Protect Battery Level",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "short",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 7,
-          "leftYAxisLabel": "",
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
+            },
             {
-              "alias": "$tag_where",
+              "alias": "Pool Heat",
               "fields": [
                 {
-                  "func": "max",
-                  "name": "co_status"
+                  "func": "mean",
+                  "name": "spasp"
                 }
               ],
-              "groupByTags": [
-                "where"
-              ],
-              "measurement": "nest.protect",
-              "query": "SELECT max(co_status) FROM \"nest.protect\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "groupByTags": [],
+              "measurement": "autelis",
+              "query": "SELECT mean(spasp) FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
               "tags": []
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Protect CO Status",
+          "title": "Heater Setpoints",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -529,7 +415,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "none",
+            "farenheit",
             "short"
           ]
         },
@@ -539,81 +425,7 @@
           "datasource": null,
           "editable": true,
           "error": false,
-          "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 9,
-          "leftYAxisLabel": "",
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "$tag_where",
-              "fields": [
-                {
-                  "func": "max",
-                  "name": "smoke_status"
-                }
-              ],
-              "groupByTags": [
-                "where"
-              ],
-              "measurement": "nest.protect",
-              "query": "SELECT max(smoke_status) FROM \"nest.protect\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Protect Smoke Status",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "short",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
+          "fill": 1,
           "grid": {
             "leftLogBase": 1,
             "leftMax": null,
@@ -627,15 +439,16 @@
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
           "id": 6,
-          "leftYAxisLabel": "",
           "legend": {
+            "alignAsTable": false,
             "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
+            "current": true,
+            "max": true,
+            "min": true,
+            "rightSide": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 2,
@@ -651,24 +464,22 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "$tag_where",
+              "alias": "Pool House",
               "fields": [
                 {
                   "func": "mean",
-                  "name": "co_previous_peak"
+                  "name": "airtemp"
                 }
               ],
-              "groupByTags": [
-                "where"
-              ],
-              "measurement": "nest.protect",
-              "query": "SELECT mean(co_previous_peak) FROM \"nest.protect\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "groupByTags": [],
+              "measurement": "autelis",
+              "query": "SELECT mean(airtemp) FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
               "tags": []
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Protect Previous CO Peak",
+          "title": "Pool House Air Temp",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -677,7 +488,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "ppm",
+            "farenheit",
             "short"
           ]
         },
@@ -687,7 +498,7 @@
           "datasource": null,
           "editable": true,
           "error": false,
-          "fill": 0,
+          "fill": 1,
           "grid": {
             "leftLogBase": 1,
             "leftMax": null,
@@ -700,15 +511,17 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 10,
+          "id": 7,
           "legend": {
+            "alignAsTable": false,
             "avg": false,
-            "current": false,
+            "current": true,
             "max": false,
             "min": false,
+            "rightSide": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 2,
@@ -724,25 +537,95 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "$tag_where",
+              "alias": "Runstate",
               "fields": [
                 {
-                  "func": "max",
-                  "name": "online"
+                  "func": "mean",
+                  "name": "runstate"
                 }
               ],
-              "groupByTags": [
-                "where"
-              ],
-              "measurement": "nest.thermostat",
-              "query": "SELECT max(online) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
-              "rawQuery": false,
+              "groupByTags": [],
+              "measurement": "autelis",
+              "query": "SELECT mean(runstate) FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
               "tags": []
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Online Thermostats",
+          "title": "Runstate",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 8,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Operations Mode",
+              "fields": [
+                {
+                  "func": "max",
+                  "name": "opmode"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "autelis",
+              "query": "SELECT max(opmode) FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Operations Mode",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -793,7 +676,7 @@
     }
   ],
   "time": {
-    "from": "now-2d",
+    "from": "now-24h",
     "to": "now"
   },
   "templating": {
@@ -803,6 +686,6 @@
     "list": []
   },
   "schemaVersion": 6,
-  "version": 20,
+  "version": 13,
   "links": []
 }

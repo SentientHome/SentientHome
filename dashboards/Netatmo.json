@@ -2,7 +2,10 @@
   "id": 6,
   "title": "Netatmo",
   "originalTitle": "Netatmo",
-  "tags": [],
+  "tags": [
+    "Climate",
+    "Weather"
+  ],
   "style": "dark",
   "timezone": "browser",
   "editable": true,
@@ -691,6 +694,7 @@
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
           "id": 10,
+          "leftYAxisLabel": "inch",
           "legend": {
             "avg": false,
             "current": false,
@@ -741,8 +745,8 @@
               ],
               "measurement": "netatmo.module",
               "query": "SELECT mean(sum_rain_1i) FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"module_name\"",
-              "tags": [],
-              "rawQuery": false
+              "rawQuery": false,
+              "tags": []
             },
             {
               "alias": "sum_rain_24",
@@ -757,8 +761,8 @@
               ],
               "measurement": "netatmo.module",
               "query": "SELECT mean(sum_rain_24i) FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"module_name\"",
-              "tags": [],
-              "rawQuery": false
+              "rawQuery": false,
+              "tags": []
             }
           ],
           "timeFrom": null,
@@ -774,8 +778,7 @@
           "y_formats": [
             "short",
             "short"
-          ],
-          "leftYAxisLabel": "inch"
+          ]
         }
       ],
       "title": "Row"
@@ -815,7 +818,7 @@
     }
   ],
   "time": {
-    "from": "now-6h",
+    "from": "now-2d",
     "to": "now"
   },
   "templating": {
@@ -825,6 +828,6 @@
     "list": []
   },
   "schemaVersion": 6,
-  "version": 3,
+  "version": 5,
   "links": []
 }

@@ -3,9 +3,8 @@
   "title": "SMA Solar",
   "originalTitle": "SMA Solar",
   "tags": [
-    "Home",
-    "Sentient",
-    "DevOps"
+    "Solar",
+    "Electricity"
   ],
   "style": "dark",
   "timezone": "browser",
@@ -277,7 +276,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "GriEgyTdy",
+              "alias": "GriEgyTot",
               "fields": [
                 {
                   "func": "mean",
@@ -349,7 +348,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "i_pv($tag_device)",
+              "alias": "$tag_device",
               "fields": [
                 {
                   "func": "mean",
@@ -423,7 +422,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "i_ac($tag_device)",
+              "alias": "$tag_device",
               "fields": [
                 {
                   "func": "mean",
@@ -497,7 +496,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "v_pv($tag_device)",
+              "alias": "$tag_device",
               "fields": [
                 {
                   "func": "mean",
@@ -571,7 +570,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "v_ac($tag_device)",
+              "alias": "$tag_device",
               "fields": [
                 {
                   "func": "mean",
@@ -645,7 +644,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "inverter_tempf($tag_device)",
+              "alias": "$tag_device",
               "fields": [
                 {
                   "func": "mean",
@@ -719,7 +718,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "pcb_tempf($tag_device)",
+              "alias": "$tag_device",
               "fields": [
                 {
                   "func": "mean",
@@ -795,7 +794,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "r_iso($tag_device)",
+              "alias": "$tag_device",
               "fields": [
                 {
                   "func": "mean",
@@ -876,6 +875,6 @@
   },
   "refresh": false,
   "schemaVersion": 6,
-  "version": 5,
+  "version": 10,
   "links": []
 }

@@ -166,13 +166,13 @@
           "error": false,
           "format": "farenheit",
           "height": "",
-          "id": 23,
-          "interval": null,
+          "id": 29,
+          "interval": "",
           "links": [
             {
-              "dashUri": "db/nest",
-              "dashboard": "Nest",
-              "title": "Nest",
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
               "type": "dashboard"
             }
           ],
@@ -195,14 +195,169 @@
               "fields": [
                 {
                   "func": "mean",
-                  "name": "temperature_F"
+                  "name": "tempf"
                 }
               ],
               "fill": "",
               "groupByTags": [],
-              "measurement": "nest.thermostat",
-              "query": "SELECT mean(temperature_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval)",
-              "tags": []
+              "measurement": "netatmo.module",
+              "query": "SELECT mean(tempf) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule1' AND $timeFilter GROUP BY time($interval)",
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule1"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,0,1",
+          "timeFrom": null,
+          "title": "Outdoor Temp",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": true,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(52, 143, 22, 0.89)",
+            "rgba(250, 126, 22, 0.97)"
+          ],
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "format": "percent",
+          "height": "",
+          "id": 30,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "humidity"
+                }
+              ],
+              "fill": "",
+              "groupByTags": [],
+              "measurement": "netatmo.module",
+              "query": "SELECT mean(humidity) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule1' AND $timeFilter GROUP BY time($interval)",
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule1"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,30,80",
+          "timeFrom": null,
+          "title": "Outdoor Humidity",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "format": "farenheit",
+          "height": "",
+          "id": 23,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "alias": "",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "tempf"
+                }
+              ],
+              "fill": "",
+              "groupByTags": [],
+              "measurement": "netatmo.module",
+              "query": "SELECT mean(tempf) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule4"
+                }
+              ]
             }
           ],
           "thresholds": "0,0,1",
@@ -232,15 +387,163 @@
           "decimals": 1,
           "editable": true,
           "error": false,
+          "format": "percent",
+          "height": "",
+          "id": 31,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "humidity"
+                }
+              ],
+              "fill": "",
+              "groupByTags": [],
+              "measurement": "netatmo.module",
+              "query": "SELECT mean(humidity) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule4"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,0,1",
+          "timeFrom": null,
+          "title": "Avg Indoor Humidity",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "format": "farenheit",
+          "height": "",
+          "id": 25,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "min",
+                  "name": "tempf"
+                }
+              ],
+              "fill": "",
+              "groupByTags": [],
+              "measurement": "netatmo.module",
+              "query": "SELECT min(tempf) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule4"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,0,1",
+          "timeFrom": null,
+          "title": "Min Room Temp",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 1,
+          "editable": true,
+          "error": false,
           "format": "farenheit",
           "height": "",
           "id": 24,
-          "interval": null,
+          "interval": "",
           "links": [
             {
-              "dashUri": "db/nest",
-              "dashboard": "Nest",
-              "title": "Nest",
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
               "type": "dashboard"
             }
           ],
@@ -263,14 +566,20 @@
               "fields": [
                 {
                   "func": "max",
-                  "name": "temperature_F"
+                  "name": "tempf"
                 }
               ],
               "fill": "",
               "groupByTags": [],
-              "measurement": "nest.thermostat",
-              "query": "SELECT max(temperature_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval)",
-              "tags": []
+              "measurement": "netatmo.module",
+              "query": "SELECT max(tempf) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule4"
+                }
+              ]
             }
           ],
           "thresholds": "0,0,1",
@@ -302,8 +611,8 @@
           "error": false,
           "format": "farenheit",
           "height": "",
-          "id": 25,
-          "interval": null,
+          "id": 35,
+          "interval": "",
           "links": [
             {
               "dashUri": "db/nest",
@@ -330,20 +639,372 @@
             {
               "fields": [
                 {
-                  "func": "min",
-                  "name": "temperature_F"
+                  "func": "max",
+                  "name": "target_F"
                 }
               ],
-              "fill": "",
               "groupByTags": [],
               "measurement": "nest.thermostat",
-              "query": "SELECT min(temperature_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval)",
-              "tags": []
+              "query": "SELECT max(target_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": [],
+              "target": ""
             }
           ],
           "thresholds": "0,0,1",
           "timeFrom": null,
-          "title": "Min Room Temp",
+          "title": "Max Room Target",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "farenheit",
+          "height": "",
+          "id": 26,
+          "interval": null,
+          "links": [
+            {
+              "dashUri": "db/autelis-pool",
+              "dashboard": "Autelis Pool",
+              "title": "Autelis Pool",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "last",
+                  "name": "pooltemp"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "autelis",
+              "query": "SELECT last(pooltemp) FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "Pool Temp",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 32,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/financial",
+              "dashboard": "Financial",
+              "title": "Financial",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "price_last"
+                }
+              ],
+              "groupByTags": [
+                "symbol"
+              ],
+              "measurement": "finance.currencies",
+              "query": "SELECT mean(price_last) FROM \"finance.currencies\" WHERE \"symbol\" = 'EURUSD' AND $timeFilter GROUP BY time($interval), \"symbol\"",
+              "tags": [
+                {
+                  "key": "symbol",
+                  "operator": "=",
+                  "value": "EURUSD"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "EURO vs USD",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 33,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/financial",
+              "dashboard": "Financial",
+              "title": "Financial",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "price_last"
+                }
+              ],
+              "groupByTags": [],
+              "hide": false,
+              "measurement": "finance.stockquotes",
+              "query": "SELECT mean(price_last) FROM \"finance.stockquotes\" WHERE \"symbol\" = 'TDC' AND $timeFilter GROUP BY time($interval)",
+              "tags": [
+                {
+                  "key": "symbol",
+                  "operator": "=",
+                  "value": "TDC"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": "1w",
+          "title": "Teradata",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 34,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/usgs-earthquakes",
+              "dashboard": "USGS Earthquakes",
+              "title": "USGS Earthquakes",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "count"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "usgs.earthquake.metadata",
+              "query": "SELECT mean(count) FROM \"usgs.earthquake.metadata\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": [],
+              "target": ""
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "Global Earthquakes",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 28,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/sma-solar",
+              "dashboard": "",
+              "title": "",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "count",
+                  "name": "tracer_count"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "tracer",
+              "query": "SELECT count(tracer_count) FROM \"tracer\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "Sentient Heartbeat",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -395,7 +1056,7 @@
     }
   ],
   "time": {
-    "from": "now-24h",
+    "from": "now-2d",
     "to": "now"
   },
   "templating": {
@@ -404,8 +1065,8 @@
   "annotations": {
     "list": []
   },
-  "refresh": "30s",
+  "refresh": false,
   "schemaVersion": 6,
-  "version": 68,
+  "version": 94,
   "links": []
 }
