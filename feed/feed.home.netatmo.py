@@ -119,7 +119,7 @@ def mapModule(station, module):
         fields['sum_rain_24i'] = mmtoin(dashboard['sum_rain_24'])
 
     if module['type'] == 'NAModule4':  # Additional for Indoor
-        tags['temp_trend'] = dashboard['temp_trend']
+        # tags['temp_trend'] = dashboard['temp_trend']
         fields['co2'] = int(dashboard['CO2'])
 
     return event
