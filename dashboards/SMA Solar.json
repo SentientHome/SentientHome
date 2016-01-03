@@ -54,13 +54,29 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "smawebbox.plant_overview.max",
+              "fillBelowTo": "smawebbox.plant_overview.min",
+              "legend": false,
+              "lines": false
+            },
+            {
+              "alias": "smawebbox.plant_overview.min",
+              "legend": false,
+              "lines": false
+            },
+            {
+              "alias": "Power",
+              "zindex": 3
+            }
+          ],
           "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "alias": "gripwr",
+              "alias": "Power",
               "fields": [
                 {
                   "func": "mean",
@@ -70,6 +86,23 @@
               "groupByTags": [],
               "measurement": "smawebbox.plant_overview",
               "query": "SELECT mean(GriPwr) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": []
+            },
+            {
+              "alias": "",
+              "fields": [
+                {
+                  "func": "min",
+                  "name": "GriPwr"
+                },
+                {
+                  "func": "max",
+                  "name": "GriPwr"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "smawebbox.plant_overview",
+              "query": "SELECT min(GriPwr), max(GriPwr) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
               "tags": []
             }
           ],
@@ -864,7 +897,7 @@
     }
   ],
   "time": {
-    "from": "now-24h",
+    "from": "now-2d",
     "to": "now"
   },
   "templating": {
@@ -875,6 +908,6 @@
   },
   "refresh": false,
   "schemaVersion": 6,
-  "version": 10,
+  "version": 14,
   "links": []
 }

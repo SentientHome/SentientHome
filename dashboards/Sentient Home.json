@@ -154,12 +154,12 @@
         },
         {
           "cacheTimeout": null,
-          "colorBackground": false,
+          "colorBackground": true,
           "colorValue": false,
           "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(45, 154, 41, 0.97)"
+            "rgba(45, 154, 41, 0.97)",
+            "rgba(37, 220, 37, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
           ],
           "decimals": 1,
           "editable": true,
@@ -211,7 +211,7 @@
               ]
             }
           ],
-          "thresholds": "0,0,1",
+          "thresholds": "0,60,80",
           "timeFrom": null,
           "title": "Outdoor Temp",
           "transparent": false,
@@ -599,6 +599,228 @@
         },
         {
           "cacheTimeout": null,
+          "colorBackground": true,
+          "colorValue": false,
+          "colors": [
+            "rgba(45, 154, 41, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "ppm",
+          "height": "",
+          "id": 39,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "co2"
+                }
+              ],
+              "fill": "",
+              "groupByTags": [],
+              "measurement": "netatmo.module",
+              "query": "SELECT mean(co2) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule4"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,600,900",
+          "timeFrom": null,
+          "title": "Avg Room CO2",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": true,
+          "colorValue": false,
+          "colors": [
+            "rgba(45, 154, 41, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "ppm",
+          "height": "",
+          "id": 38,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "min",
+                  "name": "co2"
+                }
+              ],
+              "fill": "",
+              "groupByTags": [],
+              "measurement": "netatmo.module",
+              "query": "SELECT min(co2) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule4"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,600,900",
+          "timeFrom": null,
+          "title": "Min Room CO2",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": true,
+          "colorValue": false,
+          "colors": [
+            "rgba(45, 154, 41, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "ppm",
+          "height": "",
+          "id": 37,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "max",
+                  "name": "co2"
+                }
+              ],
+              "fill": "",
+              "groupByTags": [],
+              "measurement": "netatmo.module",
+              "query": "SELECT max(co2) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule4"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,600,900",
+          "timeFrom": null,
+          "title": "Max Room CO2",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
           "colorBackground": false,
           "colorValue": false,
           "colors": [
@@ -937,7 +1159,75 @@
           ],
           "thresholds": "0,0,5",
           "timeFrom": null,
-          "title": "Global Earthquakes",
+          "title": "USGS Earthquake Count",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 36,
+          "interval": ">1h",
+          "links": [
+            {
+              "dashUri": "db/usgs-earthquakes",
+              "dashboard": "USGS Earthquakes",
+              "title": "USGS Earthquakes",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "fields": [
+                {
+                  "func": "max",
+                  "name": "mag"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "usgs.earthquake.feature",
+              "query": "SELECT max(mag) FROM \"usgs.earthquake.feature\" WHERE $timeFilter GROUP BY time($interval)",
+              "tags": [],
+              "target": ""
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "Earthquake Max Magnitude",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -1067,6 +1357,6 @@
   },
   "refresh": false,
   "schemaVersion": 6,
-  "version": 94,
+  "version": 104,
   "links": []
 }

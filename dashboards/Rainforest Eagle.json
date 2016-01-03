@@ -60,7 +60,25 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "eagle.max",
+              "fill": 0,
+              "fillBelowTo": "eagle.min",
+              "legend": false,
+              "lines": false
+            },
+            {
+              "alias": "eagle.min",
+              "fill": 0,
+              "legend": false,
+              "lines": false
+            },
+            {
+              "alias": "demand",
+              "zindex": 3
+            }
+          ],
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -76,6 +94,24 @@
               "groupByTags": [],
               "measurement": "eagle",
               "query": "SELECT mean(demand) FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval)",
+              "rawQuery": false,
+              "tags": []
+            },
+            {
+              "alias": "",
+              "fields": [
+                {
+                  "func": "min",
+                  "name": "demand"
+                },
+                {
+                  "func": "max",
+                  "name": "demand"
+                }
+              ],
+              "groupByTags": [],
+              "measurement": "eagle",
+              "query": "SELECT min(demand), max(demand) FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval)",
               "rawQuery": false,
               "tags": []
             }
@@ -453,7 +489,7 @@
     }
   ],
   "time": {
-    "from": "now-24h",
+    "from": "now-2d",
     "to": "now"
   },
   "templating": {
@@ -464,6 +500,6 @@
   },
   "refresh": false,
   "schemaVersion": 6,
-  "version": 6,
+  "version": 7,
   "links": []
 }
