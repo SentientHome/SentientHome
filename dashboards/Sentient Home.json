@@ -1,5 +1,5 @@
 {
-  "id": 1,
+  "id": 2,
   "title": "Sentient Home",
   "originalTitle": "Sentient Home",
   "tags": [
@@ -27,6 +27,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
+          "datasource": null,
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -58,15 +59,40 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "last",
                   "name": "demand"
                 }
               ],
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "eagle",
-              "query": "SELECT last(demand) FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"demand\") FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "demand"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -94,6 +120,7 @@
             "rgba(237, 129, 40, 0)",
             "rgba(45, 154, 41, 0.97)"
           ],
+          "datasource": null,
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -125,15 +152,40 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "last",
                   "name": "GriPwr"
                 }
               ],
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "smawebbox.plant_overview",
-              "query": "SELECT last(GriPwr) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"GriPwr\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GriPwr"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -161,6 +213,7 @@
             "rgba(37, 220, 37, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
+          "datasource": null,
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -192,6 +245,7 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -199,9 +253,33 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(tempf) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule1' AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"tempf\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule1' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "tempf"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": [
                 {
                   "key": "type",
@@ -235,6 +313,7 @@
             "rgba(52, 143, 22, 0.89)",
             "rgba(250, 126, 22, 0.97)"
           ],
+          "datasource": null,
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -266,6 +345,7 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -273,9 +353,33 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(humidity) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule1' AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"humidity\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule1' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "humidity"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": [
                 {
                   "key": "type",
@@ -309,6 +413,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(45, 154, 41, 0.97)"
           ],
+          "datasource": null,
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -341,6 +446,7 @@
           "targets": [
             {
               "alias": "",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -348,9 +454,33 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(tempf) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"tempf\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "tempf"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": [
                 {
                   "key": "type",
@@ -384,6 +514,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(45, 154, 41, 0.97)"
           ],
+          "datasource": null,
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -415,6 +546,7 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -422,9 +554,33 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(humidity) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"humidity\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "humidity"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": [
                 {
                   "key": "type",
@@ -458,6 +614,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(45, 154, 41, 0.97)"
           ],
+          "datasource": null,
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -489,6 +646,7 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "min",
@@ -496,9 +654,33 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "netatmo.module",
-              "query": "SELECT min(tempf) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT min(\"tempf\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "tempf"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ]
+              ],
               "tags": [
                 {
                   "key": "type",
@@ -532,6 +714,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(45, 154, 41, 0.97)"
           ],
+          "datasource": null,
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -563,6 +746,7 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "max",
@@ -570,9 +754,33 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "netatmo.module",
-              "query": "SELECT max(tempf) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT max(\"tempf\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "tempf"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
               "tags": [
                 {
                   "key": "type",
@@ -606,6 +814,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
+          "datasource": null,
           "decimals": 0,
           "editable": true,
           "error": false,
@@ -637,6 +846,7 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -644,9 +854,33 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(co2) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"co2\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "co2"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": [
                 {
                   "key": "type",
@@ -680,6 +914,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
+          "datasource": null,
           "decimals": 0,
           "editable": true,
           "error": false,
@@ -711,6 +946,7 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "min",
@@ -718,9 +954,33 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "netatmo.module",
-              "query": "SELECT min(co2) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT min(\"co2\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "co2"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ]
+              ],
               "tags": [
                 {
                   "key": "type",
@@ -754,6 +1014,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
+          "datasource": null,
           "decimals": 0,
           "editable": true,
           "error": false,
@@ -785,6 +1046,7 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "max",
@@ -792,9 +1054,33 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "netatmo.module",
-              "query": "SELECT max(co2) FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT max(\"co2\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "co2"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
               "tags": [
                 {
                   "key": "type",
@@ -828,6 +1114,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(45, 154, 41, 0.97)"
           ],
+          "datasource": null,
           "decimals": 1,
           "editable": true,
           "error": false,
@@ -859,15 +1146,40 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "max",
                   "name": "target_F"
                 }
               ],
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "nest.thermostat",
-              "query": "SELECT max(target_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT max(\"target_F\") FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "target_F"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
               "tags": [],
               "target": ""
             }
@@ -896,6 +1208,7 @@
             "rgba(237, 129, 40, 0)",
             "rgba(45, 154, 41, 0.97)"
           ],
+          "datasource": null,
           "decimals": 0,
           "editable": true,
           "error": false,
@@ -927,15 +1240,40 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "last",
                   "name": "pooltemp"
                 }
               ],
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "autelis",
-              "query": "SELECT last(pooltemp) FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"pooltemp\") FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "pooltemp"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -963,10 +1301,11 @@
             "rgba(237, 129, 40, 0)",
             "rgba(45, 154, 41, 0.97)"
           ],
+          "datasource": null,
           "decimals": 3,
           "editable": true,
           "error": false,
-          "format": "short",
+          "format": "currencyUSD",
           "height": "",
           "id": 32,
           "interval": "",
@@ -994,17 +1333,47 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "price_last"
                 }
               ],
-              "groupByTags": [
-                "symbol"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "symbol",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "finance.currencies",
-              "query": "SELECT mean(price_last) FROM \"finance.currencies\" WHERE \"symbol\" = 'EURUSD' AND $timeFilter GROUP BY time($interval), \"symbol\"",
+              "query": "SELECT mean(\"price_last\") FROM \"finance.currencies\" WHERE \"symbol\" = 'EURUSD' AND $timeFilter GROUP BY time($interval), \"tag\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "price_last"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": [
                 {
                   "key": "symbol",
@@ -1038,10 +1407,11 @@
             "rgba(237, 129, 40, 0)",
             "rgba(45, 154, 41, 0.97)"
           ],
+          "datasource": null,
           "decimals": 3,
           "editable": true,
           "error": false,
-          "format": "short",
+          "format": "currencyUSD",
           "height": "",
           "id": 33,
           "interval": "",
@@ -1069,16 +1439,41 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "price_last"
                 }
               ],
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "hide": false,
               "measurement": "finance.stockquotes",
-              "query": "SELECT mean(price_last) FROM \"finance.stockquotes\" WHERE \"symbol\" = 'TDC' AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"price_last\") FROM \"finance.stockquotes\" WHERE \"symbol\" = 'TDC' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "price_last"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": [
                 {
                   "key": "symbol",
@@ -1113,6 +1508,7 @@
             "rgba(237, 129, 40, 0)",
             "rgba(45, 154, 41, 0.97)"
           ],
+          "datasource": null,
           "decimals": 0,
           "editable": true,
           "error": false,
@@ -1144,15 +1540,40 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "count"
                 }
               ],
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "usgs.earthquake.metadata",
-              "query": "SELECT mean(count) FROM \"usgs.earthquake.metadata\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"count\") FROM \"usgs.earthquake.metadata\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "count"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": [],
               "target": ""
             }
@@ -1181,6 +1602,7 @@
             "rgba(237, 129, 40, 0)",
             "rgba(45, 154, 41, 0.97)"
           ],
+          "datasource": null,
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -1212,15 +1634,40 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "max",
                   "name": "mag"
                 }
               ],
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "usgs.earthquake.feature",
-              "query": "SELECT max(mag) FROM \"usgs.earthquake.feature\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT max(\"mag\") FROM \"usgs.earthquake.feature\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "mag"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
               "tags": [],
               "target": ""
             }
@@ -1249,6 +1696,7 @@
             "rgba(237, 129, 40, 0)",
             "rgba(45, 154, 41, 0.97)"
           ],
+          "datasource": null,
           "decimals": 0,
           "editable": true,
           "error": false,
@@ -1280,15 +1728,40 @@
           },
           "targets": [
             {
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "count",
                   "name": "tracer_count"
                 }
               ],
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "tracer",
-              "query": "SELECT count(tracer_count) FROM \"tracer\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT count(\"tracer_count\") FROM \"tracer\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "tracer_count"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "count"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -1310,44 +1783,43 @@
       ],
       "showTitle": true,
       "title": "Sentient Home"
-    }
-  ],
-  "nav": [
+    },
     {
       "collapse": false,
-      "enable": true,
-      "notice": false,
-      "now": true,
-      "refresh_intervals": [
-        "5s",
-        "10s",
-        "30s",
-        "1m",
-        "5m",
-        "15m",
-        "30m",
-        "1h",
-        "2h",
-        "1d"
-      ],
-      "status": "Stable",
-      "time_options": [
-        "5m",
-        "15m",
-        "1h",
-        "6h",
-        "12h",
-        "24h",
-        "2d",
-        "7d",
-        "30d"
-      ],
-      "type": "timepicker"
+      "editable": true,
+      "height": "250px",
+      "panels": [],
+      "title": "New row"
     }
   ],
   "time": {
     "from": "now-2d",
     "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
   },
   "templating": {
     "list": []
@@ -1356,7 +1828,7 @@
     "list": []
   },
   "refresh": false,
-  "schemaVersion": 6,
-  "version": 104,
+  "schemaVersion": 8,
+  "version": 4,
   "links": []
 }

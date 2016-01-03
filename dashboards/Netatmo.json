@@ -61,17 +61,53 @@
           "targets": [
             {
               "alias": "$tag_module_name",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "tempf"
                 }
               ],
-              "groupByTags": [
-                "module_name"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "module_name",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "module_name"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(tempf) FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"module_name\"",
+              "query": "SELECT mean(\"tempf\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"module_name\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "tempf"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -134,17 +170,53 @@
           "targets": [
             {
               "alias": "$tag_module_name",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "humidity"
                 }
               ],
-              "groupByTags": [
-                "module_name"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "module_name",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "module_name"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(humidity) FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"module_name\"",
+              "query": "SELECT mean(\"humidity\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"module_name\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "humidity"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -207,17 +279,53 @@
           "targets": [
             {
               "alias": "$tag_module_name",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "abs_pressurei"
                 }
               ],
-              "groupByTags": [
-                "module_name"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "module_name",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "module_name"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(abs_pressurei) FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"module_name\"",
+              "query": "SELECT mean(\"abs_pressurei\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"module_name\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "abs_pressurei"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -280,17 +388,53 @@
           "targets": [
             {
               "alias": "$tag_module_name",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "pressurei"
                 }
               ],
-              "groupByTags": [
-                "module_name"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "module_name",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "module_name"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(pressurei) FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"module_name\"",
+              "query": "SELECT mean(\"pressurei\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"module_name\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "pressurei"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -353,17 +497,53 @@
           "targets": [
             {
               "alias": "$tag_module_name",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "co2"
                 }
               ],
-              "groupByTags": [
-                "module_name"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "module_name",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "module_name"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(co2) FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"module_name\"",
+              "query": "SELECT mean(\"co2\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"module_name\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "co2"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -426,17 +606,53 @@
           "targets": [
             {
               "alias": "$tag_module_name",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "noise"
                 }
               ],
-              "groupByTags": [
-                "module_name"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "module_name",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "module_name"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(noise) FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"module_name\"",
+              "query": "SELECT mean(\"noise\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"module_name\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "noise"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -499,17 +715,53 @@
           "targets": [
             {
               "alias": "$tag_station_name",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "wifi_status"
                 }
               ],
-              "groupByTags": [
-                "station_name"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "station_name",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "station_name"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "netatmo.station",
-              "query": "SELECT mean(wifi_status) FROM \"netatmo.station\" WHERE $timeFilter GROUP BY time($interval), \"station_name\"",
+              "query": "SELECT mean(\"wifi_status\") FROM \"netatmo.station\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"station_name\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "wifi_status"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -572,17 +824,53 @@
           "targets": [
             {
               "alias": "$tag_module_name",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "rf_status"
                 }
               ],
-              "groupByTags": [
-                "module_name"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "module_name",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "module_name"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(rf_status) FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"module_name\"",
+              "query": "SELECT mean(\"rf_status\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"module_name\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rf_status"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -645,17 +933,53 @@
           "targets": [
             {
               "alias": "$tag_module_name",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "co2_calibrating"
                 }
               ],
-              "groupByTags": [
-                "module_name"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "module_name",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "module_name"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(co2_calibrating) FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"module_name\"",
+              "query": "SELECT mean(\"co2_calibrating\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"module_name\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "co2_calibrating"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -719,49 +1043,139 @@
           "targets": [
             {
               "alias": "rain",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "raini"
                 }
               ],
-              "groupByTags": [
-                "module_name"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "module_name",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(raini) FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"module_name\"",
+              "query": "SELECT mean(\"raini\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "raini"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             },
             {
               "alias": "sum_rain_1",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "sum_rain_1i"
                 }
               ],
-              "groupByTags": [
-                "module_name"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "module_name",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(sum_rain_1i) FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"module_name\"",
+              "query": "SELECT mean(\"sum_rain_1i\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\"",
               "rawQuery": false,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "sum_rain_1i"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             },
             {
               "alias": "sum_rain_24",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "sum_rain_24i"
                 }
               ],
-              "groupByTags": [
-                "module_name"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "module_name",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(sum_rain_24i) FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"module_name\"",
+              "query": "SELECT mean(\"sum_rain_24i\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\"",
               "rawQuery": false,
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "sum_rain_24i"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -784,42 +1198,40 @@
       "title": "Row"
     }
   ],
-  "nav": [
-    {
-      "collapse": false,
-      "enable": true,
-      "notice": false,
-      "now": true,
-      "refresh_intervals": [
-        "5s",
-        "10s",
-        "30s",
-        "1m",
-        "5m",
-        "15m",
-        "30m",
-        "1h",
-        "2h",
-        "1d"
-      ],
-      "status": "Stable",
-      "time_options": [
-        "5m",
-        "15m",
-        "1h",
-        "6h",
-        "12h",
-        "24h",
-        "2d",
-        "7d",
-        "30d"
-      ],
-      "type": "timepicker"
-    }
-  ],
   "time": {
     "from": "now-2d",
     "to": "now"
+  },
+  "timepicker": {
+    "collapse": false,
+    "enable": true,
+    "notice": false,
+    "now": true,
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "status": "Stable",
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ],
+    "type": "timepicker"
   },
   "templating": {
     "list": []
@@ -827,7 +1239,7 @@
   "annotations": {
     "list": []
   },
-  "schemaVersion": 6,
-  "version": 5,
+  "schemaVersion": 8,
+  "version": 2,
   "links": []
 }

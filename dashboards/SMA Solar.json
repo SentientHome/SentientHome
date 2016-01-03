@@ -1,5 +1,5 @@
 {
-  "id": 2,
+  "id": 8,
   "title": "SMA Solar",
   "originalTitle": "SMA Solar",
   "tags": [
@@ -77,19 +77,45 @@
           "targets": [
             {
               "alias": "Power",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "GriPwr"
                 }
               ],
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "smawebbox.plant_overview",
-              "query": "SELECT mean(GriPwr) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"GriPwr\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GriPwr"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             },
             {
               "alias": "",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "min",
@@ -100,9 +126,45 @@
                   "name": "GriPwr"
                 }
               ],
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "smawebbox.plant_overview",
-              "query": "SELECT min(GriPwr), max(GriPwr) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT min(\"GriPwr\"), max(\"GriPwr\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GriPwr"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "GriPwr"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -165,6 +227,7 @@
           "targets": [
             {
               "alias": "$tag_device",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -172,11 +235,46 @@
                 }
               ],
               "fill": "previous",
-              "groupByTags": [
-                "device"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(power_ac) FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"device\" fill(previous)",
+              "query": "SELECT mean(\"power_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\" fill(previous)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "power_ac"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -239,15 +337,40 @@
           "targets": [
             {
               "alias": "GriEgyTdy",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "GriEgyTdy"
                 }
               ],
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "smawebbox.plant_overview",
-              "query": "SELECT mean(GriEgyTdy) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"GriEgyTdy\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GriEgyTdy"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -310,6 +433,7 @@
           "targets": [
             {
               "alias": "GriEgyTot",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -317,9 +441,33 @@
                 }
               ],
               "fill": "previous",
-              "groupByTags": [],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
               "measurement": "smawebbox.plant_overview",
-              "query": "SELECT mean(GriEgyTot) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
+              "query": "SELECT mean(\"GriEgyTot\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GriEgyTot"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -382,6 +530,7 @@
           "targets": [
             {
               "alias": "$tag_device",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -389,11 +538,46 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [
-                "device"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(i_pv) FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"device\"",
+              "query": "SELECT mean(\"i_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "i_ac"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -456,6 +640,7 @@
           "targets": [
             {
               "alias": "$tag_device",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -463,11 +648,46 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [
-                "device"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(i_ac) FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"device\"",
+              "query": "SELECT mean(\"i_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "i_ac"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -530,6 +750,7 @@
           "targets": [
             {
               "alias": "$tag_device",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -537,11 +758,46 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [
-                "device"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(v_pv) FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"device\"",
+              "query": "SELECT mean(\"v_pv\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "v_pv"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -604,6 +860,7 @@
           "targets": [
             {
               "alias": "$tag_device",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -611,11 +868,46 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [
-                "device"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(v_ac) FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"device\"",
+              "query": "SELECT mean(\"v_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "v_ac"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -678,6 +970,7 @@
           "targets": [
             {
               "alias": "$tag_device",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -685,11 +978,46 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [
-                "device"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(inverter_tempf) FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"device\"",
+              "query": "SELECT mean(\"inverter_tempf\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "inverter_tempf"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -752,6 +1080,7 @@
           "targets": [
             {
               "alias": "$tag_device",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -759,11 +1088,46 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [
-                "device"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(pcb_tempf) FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"device\"",
+              "query": "SELECT mean(\"pcb_tempf\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "pcb_tempf"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -828,6 +1192,7 @@
           "targets": [
             {
               "alias": "$tag_device",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
@@ -835,11 +1200,46 @@
                 }
               ],
               "fill": "",
-              "groupByTags": [
-                "device"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(r_iso) FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"device\"",
+              "query": "SELECT mean(\"r_iso\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "r_iso"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -863,42 +1263,34 @@
       "title": "SMA Solar - PV Production"
     }
   ],
-  "nav": [
-    {
-      "collapse": false,
-      "enable": true,
-      "notice": false,
-      "now": true,
-      "refresh_intervals": [
-        "5s",
-        "10s",
-        "30s",
-        "1m",
-        "5m",
-        "15m",
-        "30m",
-        "1h",
-        "2h",
-        "1d"
-      ],
-      "status": "Stable",
-      "time_options": [
-        "5m",
-        "15m",
-        "1h",
-        "6h",
-        "12h",
-        "24h",
-        "2d",
-        "7d",
-        "30d"
-      ],
-      "type": "timepicker"
-    }
-  ],
   "time": {
     "from": "now-2d",
     "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
   },
   "templating": {
     "list": []
@@ -907,7 +1299,7 @@
     "list": []
   },
   "refresh": false,
-  "schemaVersion": 6,
-  "version": 14,
+  "schemaVersion": 8,
+  "version": 1,
   "links": []
 }

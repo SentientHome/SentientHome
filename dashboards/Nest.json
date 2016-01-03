@@ -1,5 +1,5 @@
 {
-  "id": 4,
+  "id": 5,
   "title": "Nest",
   "originalTitle": "Nest",
   "tags": [
@@ -62,17 +62,53 @@
           "targets": [
             {
               "alias": "$tag_where",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "temperature_F"
                 }
               ],
-              "groupByTags": [
-                "where"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "where",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "where"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "nest.thermostat",
-              "query": "SELECT mean(temperature_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "query": "SELECT mean(\"temperature_F\") FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"where\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "temperature_F"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -135,17 +171,53 @@
           "targets": [
             {
               "alias": "$tag_where",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "humidity"
                 }
               ],
-              "groupByTags": [
-                "where"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "where",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "where"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "nest.thermostat",
-              "query": "SELECT mean(humidity) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "query": "SELECT mean(\"humidity\") FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"where\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "humidity"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -208,17 +280,53 @@
           "targets": [
             {
               "alias": "$tag_where",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "target_F"
                 }
               ],
-              "groupByTags": [
-                "where"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "where",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "where"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "nest.thermostat",
-              "query": "SELECT mean(target_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "query": "SELECT mean(\"target_F\") FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"where\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "target_F"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -283,17 +391,53 @@
           "targets": [
             {
               "alias": "$tag_where",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "away_low_F"
                 }
               ],
-              "groupByTags": [
-                "where"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "where",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "where"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "nest.thermostat",
-              "query": "SELECT mean(away_low_F) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "query": "SELECT mean(\"away_low_F\") FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"where\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "away_low_F"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -356,17 +500,53 @@
           "targets": [
             {
               "alias": "$tag_where",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "battery_level"
                 }
               ],
-              "groupByTags": [
-                "where"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "where",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "where"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "nest.thermostat",
-              "query": "SELECT mean(battery_level) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "query": "SELECT mean(\"battery_level\") FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"where\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "battery_level"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -430,17 +610,53 @@
           "targets": [
             {
               "alias": "$tag_where",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "battery_level"
                 }
               ],
-              "groupByTags": [
-                "where"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "where",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "where"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "nest.protect",
-              "query": "SELECT mean(battery_level) FROM \"nest.protect\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "query": "SELECT mean(\"battery_level\") FROM \"nest.protect\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"where\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "battery_level"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -504,17 +720,53 @@
           "targets": [
             {
               "alias": "$tag_where",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "max",
                   "name": "co_status"
                 }
               ],
-              "groupByTags": [
-                "where"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "where",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "where"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "nest.protect",
-              "query": "SELECT max(co_status) FROM \"nest.protect\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "query": "SELECT mean(\"co_status\") FROM \"nest.protect\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"where\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "co_status"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -578,17 +830,53 @@
           "targets": [
             {
               "alias": "$tag_where",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "max",
                   "name": "smoke_status"
                 }
               ],
-              "groupByTags": [
-                "where"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "where",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "where"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "nest.protect",
-              "query": "SELECT max(smoke_status) FROM \"nest.protect\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "query": "SELECT mean(\"smoke_status\") FROM \"nest.protect\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"where\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "smoke_status"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -652,17 +940,53 @@
           "targets": [
             {
               "alias": "$tag_where",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
                   "name": "co_previous_peak"
                 }
               ],
-              "groupByTags": [
-                "where"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "where",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "where"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "nest.protect",
-              "query": "SELECT mean(co_previous_peak) FROM \"nest.protect\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "query": "SELECT mean(\"co_previous_peak\") FROM \"nest.protect\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"where\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "co_previous_peak"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -725,18 +1049,54 @@
           "targets": [
             {
               "alias": "$tag_where",
+              "dsType": "influxdb",
               "fields": [
                 {
                   "func": "max",
                   "name": "online"
                 }
               ],
-              "groupByTags": [
-                "where"
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "where",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "where"
+                  ],
+                  "type": "tag"
+                }
               ],
               "measurement": "nest.thermostat",
-              "query": "SELECT max(online) FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"where\"",
+              "query": "SELECT mean(\"online\") FROM \"nest.thermostat\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"where\"",
               "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "online"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
               "tags": []
             }
           ],
@@ -759,42 +1119,34 @@
       "title": "Row"
     }
   ],
-  "nav": [
-    {
-      "collapse": false,
-      "enable": true,
-      "notice": false,
-      "now": true,
-      "refresh_intervals": [
-        "5s",
-        "10s",
-        "30s",
-        "1m",
-        "5m",
-        "15m",
-        "30m",
-        "1h",
-        "2h",
-        "1d"
-      ],
-      "status": "Stable",
-      "time_options": [
-        "5m",
-        "15m",
-        "1h",
-        "6h",
-        "12h",
-        "24h",
-        "2d",
-        "7d",
-        "30d"
-      ],
-      "type": "timepicker"
-    }
-  ],
   "time": {
     "from": "now-2d",
     "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
   },
   "templating": {
     "list": []
@@ -802,7 +1154,7 @@
   "annotations": {
     "list": []
   },
-  "schemaVersion": 6,
-  "version": 20,
+  "schemaVersion": 8,
+  "version": 1,
   "links": []
 }
