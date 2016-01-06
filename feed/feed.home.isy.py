@@ -16,6 +16,7 @@ from common.sheventhandler import shEventHandler
 # Add path to submodule dependencies.ISYlib-python
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 '/../dependencies/ISYlib-python')
+from ISY.IsyClass import Isy
 from ISY.IsyEvent import ISYEvent
 
 app = shApp('isy')
@@ -23,6 +24,24 @@ app.setup()
 app.run()
 
 handler = shEventHandler(app)
+
+isy_addr = app.config.get('isy', 'isy_addr')
+isy_user = app.config.get('isy', 'isy_user')
+isy_pass = app.config.get('isy', 'isy_pass')
+
+app.log.debug('Connecting to ISY controller @%s' % isy_addr, __name__)
+
+try:
+    isy = Isy(addr=isy_addr, userl=isy_user, userp=isy_pass)
+except Exception as e:
+    app.log.error('Unable to connect to ISY controller @%s' % isy_addr,
+                  __name__)
+    app.log.error(e)
+    app.close()
+    exit(1)
+
+# Make sure we pre populate all internal isy structures
+isy.load_nodes()
 
 
 # Realtime event feeder
@@ -52,8 +71,15 @@ def eventFeed(*arg):
             str(data.pop('Event.eventInfo.value'))
         pass
 
-    tags = extract_tags(data, ['Event-sid', 'Event.node', 'Event.control',
-                        'Event.eventInfo.id'])
+    # Add node name to be used as a tag
+    try:
+        data['Event.node.name'] = isy._nodedict[data['Event.node']]['name']
+    except KeyError:
+        # Ok if it does not exist
+        pass
+
+    tags = extract_tags(data, ['Event-sid', 'Event.node', 'Event.node.name',
+                        'Event.control', 'Event.eventInfo.id'])
 
     event = [{
         'measurement': 'isy',
@@ -74,9 +100,9 @@ retries = 0
 
 while True:
     try:
-        server.subscribe(addr=app.config.get('isy', 'isy_addr'),
-                         userl=app.config.get('isy', 'isy_user'),
-                         userp=app.config.get('isy', 'isy_pass'))
+        server.subscribe(addr=isy_addr,
+                         userl=isy_user,
+                         userp=isy_pass)
         break
     except Exception as e:
         retries += 1
