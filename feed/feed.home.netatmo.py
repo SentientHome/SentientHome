@@ -190,18 +190,22 @@ with shApp('netatmo', config_defaults=defaults) as app:
         handler.postEvent(event)
 
         # Loop through all stations in the account
-        for station in data['body']['devices']:
-            event = mapStation(station)
-
-            app.log.debug('Event data: %s' % event)
-
-            handler.postEvent(event, batch=True)
-
-            for module in station['modules']:
-                event = mapModule(station, module)
+        try:
+            for station in data['body']['devices']:
+                event = mapStation(station)
 
                 app.log.debug('Event data: %s' % event)
 
                 handler.postEvent(event, batch=True)
+
+                for module in station['modules']:
+                    event = mapModule(station, module)
+
+                    app.log.debug('Event data: %s' % event)
+
+                    handler.postEvent(event, batch=True)
+        except KeyError as e:
+            app.log.warn('Key Error: %s' % e)
+            pass
 
         handler.sleep()
