@@ -231,7 +231,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "percent",
+            "humidity",
             "short"
           ]
         },
@@ -331,7 +331,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Absolute Pressure inHg",
+          "title": "Absolute Atmospheric Pressure",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -340,7 +340,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "short",
+            "pressurehg",
             "short"
           ]
         },
@@ -440,7 +440,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Pressure inHg",
+          "title": "Atmospheric Pressure",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -449,7 +449,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "short",
+            "pressurehg",
             "short"
           ]
         },
@@ -667,7 +667,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "short",
+            "dB",
             "short"
           ]
         },
@@ -1021,12 +1021,12 @@
           "leftYAxisLabel": "inch",
           "legend": {
             "avg": false,
-            "current": false,
-            "max": false,
+            "current": true,
+            "max": true,
             "min": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 2,
@@ -1042,7 +1042,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "rain",
+              "alias": "Rain",
               "dsType": "influxdb",
               "fields": [
                 {
@@ -1067,7 +1067,7 @@
                 }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(\"raini\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\"",
+              "query": "SELECT last(\"raini\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\"",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
@@ -1080,14 +1080,14 @@
                   },
                   {
                     "params": [],
-                    "type": "mean"
+                    "type": "last"
                   }
                 ]
               ],
               "tags": []
             },
             {
-              "alias": "sum_rain_1",
+              "alias": "Rain 1h",
               "dsType": "influxdb",
               "fields": [
                 {
@@ -1112,7 +1112,7 @@
                 }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(\"sum_rain_1i\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\"",
+              "query": "SELECT last(\"sum_rain_1i\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\"",
               "rawQuery": false,
               "refId": "B",
               "resultFormat": "time_series",
@@ -1126,14 +1126,14 @@
                   },
                   {
                     "params": [],
-                    "type": "mean"
+                    "type": "last"
                   }
                 ]
               ],
               "tags": []
             },
             {
-              "alias": "sum_rain_24",
+              "alias": "Rain 24h",
               "dsType": "influxdb",
               "fields": [
                 {
@@ -1158,7 +1158,7 @@
                 }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(\"sum_rain_24i\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\"",
+              "query": "SELECT last(\"sum_rain_24i\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\"",
               "rawQuery": false,
               "refId": "C",
               "resultFormat": "time_series",
@@ -1167,6 +1167,115 @@
                   {
                     "params": [
                       "sum_rain_24i"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Rain",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 11,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_module_name",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "rf_status"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "module_name",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "module_name"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "netatmo.module",
+              "query": "SELECT mean(\"battery_vp\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"module_name\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "battery_vp"
                     ],
                     "type": "field"
                   },
@@ -1181,7 +1290,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Rain",
+          "title": "Module Battery Level",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -1240,6 +1349,31 @@
     "list": []
   },
   "schemaVersion": 8,
-  "version": 2,
-  "links": []
+  "version": 14,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Netatmo Dashboard",
+      "type": "link",
+      "url": "https://my.netatmo.com/app/station"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Weather.com",
+      "type": "link",
+      "url": "http://www.weather.com/"
+    }
+  ]
 }

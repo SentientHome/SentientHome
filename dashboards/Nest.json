@@ -1155,6 +1155,23 @@
     "list": []
   },
   "schemaVersion": 8,
-  "version": 1,
-  "links": []
+  "version": 2,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Nest Dashboard",
+      "type": "link",
+      "url": "https://home.nest.com/"
+    }
+  ]
 }

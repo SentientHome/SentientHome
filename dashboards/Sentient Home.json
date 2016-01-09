@@ -16,12 +16,12 @@
     {
       "collapse": false,
       "editable": true,
-      "height": "200px",
+      "height": "150px",
       "panels": [
         {
           "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
+          "colorBackground": false,
+          "colorValue": true,
           "colors": [
             "rgba(45, 154, 41, 0.97)",
             "rgba(237, 129, 40, 0.89)",
@@ -113,11 +113,11 @@
         },
         {
           "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
+          "colorBackground": false,
+          "colorValue": true,
           "colors": [
-            "rgba(245, 54, 54, 0)",
-            "rgba(237, 129, 40, 0)",
+            "rgb(212, 207, 207)",
+            "rgba(250, 247, 245, 0)",
             "rgba(45, 154, 41, 0.97)"
           ],
           "datasource": null,
@@ -189,7 +189,7 @@
               "tags": []
             }
           ],
-          "thresholds": "0,0,5",
+          "thresholds": "0,0.01,1",
           "timeFrom": null,
           "title": "Solar",
           "transparent": false,
@@ -206,7 +206,100 @@
         },
         {
           "cacheTimeout": null,
-          "colorBackground": true,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgb(246, 238, 238)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "format": "watth",
+          "height": "",
+          "id": 47,
+          "interval": null,
+          "links": [
+            {
+              "dashUri": "db/sma-solar",
+              "dashboard": "SMA Solar",
+              "title": "SMA Solar",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "last",
+                  "name": "GriPwr"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "smawebbox.plant_overview",
+              "query": "SELECT last(\"GriEgyTdy\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GriEgyTdy"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "Today Solar",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
           "colorValue": false,
           "colors": [
             "rgba(45, 154, 41, 0.97)",
@@ -306,12 +399,12 @@
         },
         {
           "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
+          "colorBackground": false,
+          "colorValue": true,
           "colors": [
             "rgba(245, 54, 54, 0.9)",
-            "rgba(52, 143, 22, 0.89)",
-            "rgba(250, 126, 22, 0.97)"
+            "rgba(248, 161, 16, 0.89)",
+            "rgba(22, 182, 43, 0.97)"
           ],
           "datasource": null,
           "decimals": 1,
@@ -389,9 +482,109 @@
               ]
             }
           ],
-          "thresholds": "0,30,80",
+          "thresholds": "0,20,40",
           "timeFrom": null,
           "title": "Outdoor Humidity",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "format": "percent",
+          "height": "",
+          "id": 31,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "humidity"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "netatmo.module",
+              "query": "SELECT mean(\"humidity\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "humidity"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule4"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,0,1",
+          "timeFrom": null,
+          "title": "Avg Indoor Humidity",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -493,106 +686,6 @@
           "thresholds": "0,0,1",
           "timeFrom": null,
           "title": "Avg Room Temp",
-          "transparent": false,
-          "type": "singlestat",
-          "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(45, 154, 41, 0.97)"
-          ],
-          "datasource": null,
-          "decimals": 1,
-          "editable": true,
-          "error": false,
-          "format": "percent",
-          "height": "",
-          "id": 31,
-          "interval": "",
-          "links": [
-            {
-              "dashUri": "db/netatmo",
-              "dashboard": "Netatmo",
-              "title": "Netatmo",
-              "type": "dashboard"
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.67)",
-            "full": true,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": true
-          },
-          "targets": [
-            {
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "humidity"
-                }
-              ],
-              "fill": "",
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "netatmo.module",
-              "query": "SELECT mean(\"humidity\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "humidity"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "type",
-                  "operator": "=",
-                  "value": "NAModule4"
-                }
-              ]
-            }
-          ],
-          "thresholds": "0,0,1",
-          "timeFrom": null,
-          "title": "Avg Indoor Humidity",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -807,306 +900,6 @@
         },
         {
           "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "rgba(45, 154, 41, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "decimals": 0,
-          "editable": true,
-          "error": false,
-          "format": "ppm",
-          "height": "",
-          "id": 39,
-          "interval": "",
-          "links": [
-            {
-              "dashUri": "db/netatmo",
-              "dashboard": "Netatmo",
-              "title": "Netatmo",
-              "type": "dashboard"
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.67)",
-            "full": true,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": true
-          },
-          "targets": [
-            {
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "co2"
-                }
-              ],
-              "fill": "",
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "netatmo.module",
-              "query": "SELECT mean(\"co2\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "co2"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "type",
-                  "operator": "=",
-                  "value": "NAModule4"
-                }
-              ]
-            }
-          ],
-          "thresholds": "0,600,900",
-          "timeFrom": null,
-          "title": "Avg Room CO2",
-          "transparent": false,
-          "type": "singlestat",
-          "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "rgba(45, 154, 41, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "decimals": 0,
-          "editable": true,
-          "error": false,
-          "format": "ppm",
-          "height": "",
-          "id": 38,
-          "interval": "",
-          "links": [
-            {
-              "dashUri": "db/netatmo",
-              "dashboard": "Netatmo",
-              "title": "Netatmo",
-              "type": "dashboard"
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.67)",
-            "full": true,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": true
-          },
-          "targets": [
-            {
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "min",
-                  "name": "co2"
-                }
-              ],
-              "fill": "",
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "netatmo.module",
-              "query": "SELECT min(\"co2\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "co2"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "min"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "type",
-                  "operator": "=",
-                  "value": "NAModule4"
-                }
-              ]
-            }
-          ],
-          "thresholds": "0,600,900",
-          "timeFrom": null,
-          "title": "Min Room CO2",
-          "transparent": false,
-          "type": "singlestat",
-          "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "rgba(45, 154, 41, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "decimals": 0,
-          "editable": true,
-          "error": false,
-          "format": "ppm",
-          "height": "",
-          "id": 37,
-          "interval": "",
-          "links": [
-            {
-              "dashUri": "db/netatmo",
-              "dashboard": "Netatmo",
-              "title": "Netatmo",
-              "type": "dashboard"
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.67)",
-            "full": true,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": true
-          },
-          "targets": [
-            {
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "max",
-                  "name": "co2"
-                }
-              ],
-              "fill": "",
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "netatmo.module",
-              "query": "SELECT max(\"co2\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "co2"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "max"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "type",
-                  "operator": "=",
-                  "value": "NAModule4"
-                }
-              ]
-            }
-          ],
-          "thresholds": "0,600,900",
-          "timeFrom": null,
-          "title": "Max Room CO2",
-          "transparent": false,
-          "type": "singlestat",
-          "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
           "colorBackground": false,
           "colorValue": false,
           "colors": [
@@ -1187,6 +980,492 @@
           "thresholds": "0,0,1",
           "timeFrom": null,
           "title": "Max Room Target",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgba(220, 212, 212, 0.9)",
+            "rgba(216, 221, 216, 0.89)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 41,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": " inch",
+          "postfixFontSize": "80%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "tempf"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "netatmo.module",
+              "query": "SELECT last(\"sum_rain_24i\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule3' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "sum_rain_24i"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule3"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,0,0.01",
+          "timeFrom": null,
+          "title": "Rain Today",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgba(202, 197, 197, 0.9)",
+            "rgba(37, 220, 37, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "hideTimeOverride": true,
+          "id": 55,
+          "interval": "1h",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": " inch",
+          "postfixFontSize": "80%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "tempf"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "netatmo.module",
+              "query": "SELECT difference(\"sum_rain_24i\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule3' AND $timeFilter GROUP BY time($interval)",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "sum_rain_24i"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule3"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,0,0.01",
+          "timeFrom": "7d",
+          "timeShift": null,
+          "title": "Rain Total past 7 days",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "total"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgba(45, 154, 41, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "datasource": null,
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "ppm",
+          "height": "",
+          "id": 38,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "min",
+                  "name": "co2"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "netatmo.module",
+              "query": "SELECT min(\"co2\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "co2"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": "0,600,900",
+          "timeFrom": null,
+          "title": "Min Room CO2",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgba(45, 154, 41, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "datasource": null,
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "ppm",
+          "height": "",
+          "id": 39,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "co2"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "netatmo.module",
+              "query": "SELECT mean(\"co2\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "co2"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": "0,600,900",
+          "timeFrom": null,
+          "title": "Avg Room CO2",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgba(45, 154, 41, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "datasource": null,
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "ppm",
+          "height": "",
+          "id": 37,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "max",
+                  "name": "co2"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "netatmo.module",
+              "query": "SELECT max(\"co2\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval)",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "co2"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": "0,600,900",
+          "timeFrom": null,
+          "title": "Max Room CO2",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -1295,218 +1574,11 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
-          "colorValue": false,
+          "colorValue": true,
           "colors": [
-            "rgba(245, 54, 54, 0)",
+            "rgba(216, 221, 216, 0.97)",
             "rgba(237, 129, 40, 0)",
-            "rgba(45, 154, 41, 0.97)"
-          ],
-          "datasource": null,
-          "decimals": 3,
-          "editable": true,
-          "error": false,
-          "format": "currencyUSD",
-          "height": "",
-          "id": 32,
-          "interval": "",
-          "links": [
-            {
-              "dashUri": "db/financial",
-              "dashboard": "Financial",
-              "title": "Financial",
-              "type": "dashboard"
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.67)",
-            "full": true,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": true
-          },
-          "targets": [
-            {
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "price_last"
-                }
-              ],
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "key": "symbol",
-                  "params": [
-                    "tag"
-                  ],
-                  "type": "tag"
-                }
-              ],
-              "measurement": "finance.currencies",
-              "query": "SELECT mean(\"price_last\") FROM \"finance.currencies\" WHERE \"symbol\" = 'EURUSD' AND $timeFilter GROUP BY time($interval), \"tag\"",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "price_last"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "symbol",
-                  "operator": "=",
-                  "value": "EURUSD"
-                }
-              ]
-            }
-          ],
-          "thresholds": "0,0,5",
-          "timeFrom": null,
-          "title": "EURO vs USD",
-          "transparent": false,
-          "type": "singlestat",
-          "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "rgba(245, 54, 54, 0)",
-            "rgba(237, 129, 40, 0)",
-            "rgba(45, 154, 41, 0.97)"
-          ],
-          "datasource": null,
-          "decimals": 3,
-          "editable": true,
-          "error": false,
-          "format": "currencyUSD",
-          "height": "",
-          "id": 33,
-          "interval": "",
-          "links": [
-            {
-              "dashUri": "db/financial",
-              "dashboard": "Financial",
-              "title": "Financial",
-              "type": "dashboard"
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.67)",
-            "full": true,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": true
-          },
-          "targets": [
-            {
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "price_last"
-                }
-              ],
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "hide": false,
-              "measurement": "finance.stockquotes",
-              "query": "SELECT mean(\"price_last\") FROM \"finance.stockquotes\" WHERE \"symbol\" = 'TDC' AND $timeFilter GROUP BY time($interval)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "price_last"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "symbol",
-                  "operator": "=",
-                  "value": "TDC"
-                }
-              ],
-              "target": ""
-            }
-          ],
-          "thresholds": "0,0,5",
-          "timeFrom": "1w",
-          "title": "Teradata",
-          "transparent": false,
-          "type": "singlestat",
-          "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "rgba(245, 54, 54, 0)",
-            "rgba(237, 129, 40, 0)",
-            "rgba(45, 154, 41, 0.97)"
+            "rgba(245, 54, 54, 0.87)"
           ],
           "datasource": null,
           "decimals": 0,
@@ -1578,9 +1650,9 @@
               "target": ""
             }
           ],
-          "thresholds": "0,0,5",
+          "thresholds": "0,7,12",
           "timeFrom": null,
-          "title": "USGS Earthquake Count",
+          "title": "Earthquakes Last Hour",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -1596,11 +1668,11 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
-          "colorValue": false,
+          "colorValue": true,
           "colors": [
-            "rgba(245, 54, 54, 0)",
-            "rgba(237, 129, 40, 0)",
-            "rgba(45, 154, 41, 0.97)"
+            "rgba(213, 220, 213, 0.97)",
+            "rgba(237, 129, 40, 0.9)",
+            "rgba(245, 54, 54, 0.87)"
           ],
           "datasource": null,
           "decimals": 2,
@@ -1672,9 +1744,300 @@
               "target": ""
             }
           ],
+          "thresholds": "0,2.5,5",
+          "timeFrom": null,
+          "title": "Max Magnitude Last Hour",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 48,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/isy",
+              "dashboard": "ISY",
+              "title": "ISY",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "count",
+                  "name": "tracer_count"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "isy",
+              "query": "SELECT count(\"Event.action\") FROM \"isy\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "Event.action"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "count"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
           "thresholds": "0,0,5",
           "timeFrom": null,
-          "title": "Earthquake Max Magnitude",
+          "title": "ISY Events",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 50,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/isy",
+              "dashboard": "ISY",
+              "title": "ISY",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "count",
+                  "name": "tracer_count"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "isy",
+              "query": "SELECT count(\"Event.action\") FROM \"isy\" WHERE \"Event.control\" =~ /O/ AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "Event.action"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "count"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "Event.control",
+                  "operator": "=~",
+                  "value": "/O/"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "ISY ON/OFF",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgb(245, 54, 54)",
+            "rgba(237, 129, 40, 0)",
+            "rgb(214, 218, 214)"
+          ],
+          "datasource": null,
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 49,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/isy",
+              "dashboard": "ISY",
+              "title": "ISY",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "count",
+                  "name": "tracer_count"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "isy",
+              "query": "SELECT count(\"Event.action\") FROM \"isy\" WHERE \"Event.control\" = '_0' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "Event.action"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "count"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "Event.control",
+                  "operator": "=",
+                  "value": "_0"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,0.1,5",
+          "timeFrom": null,
+          "title": "ISY Heartbeat",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -1779,17 +2142,1296 @@
             }
           ],
           "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgb(245, 54, 54)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "s",
+          "height": "",
+          "id": 40,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/apc",
+              "dashboard": "APC",
+              "title": "APC",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "count",
+                  "name": "tracer_count"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "apcups",
+              "query": "SELECT mean(\"runtime\") FROM \"apcups\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "runtime"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": "0,600,3000",
+          "timeFrom": null,
+          "title": "UPS Runtime",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": true,
+          "colorValue": false,
+          "colors": [
+            "rgba(45, 154, 41, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgb(245, 54, 54)"
+          ],
+          "datasource": null,
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 51,
+          "interval": ">1h",
+          "links": [
+            {
+              "dashUri": "db/usgs-earthquakes",
+              "dashboard": "USGS Earthquakes",
+              "title": "USGS Earthquakes",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "max",
+                  "name": "mag"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "usgs.earthquake.feature",
+              "query": "SELECT max(\"mag\") FROM \"usgs.earthquake.feature\" WHERE \"place\" =~ /North Korea/ AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "mag"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "place",
+                  "operator": "=~",
+                  "value": "/North Korea/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "0,0.01,3",
+          "timeFrom": null,
+          "title": "North Korea Tracker",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
         }
       ],
-      "showTitle": true,
+      "showTitle": false,
       "title": "Sentient Home"
     },
     {
       "collapse": false,
       "editable": true,
-      "height": "250px",
-      "panels": [],
-      "title": "New row"
+      "height": "100px",
+      "panels": [
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "format": "currencyUSD",
+          "height": "",
+          "id": 32,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/financial",
+              "dashboard": "Financial",
+              "title": "Financial",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "price_last"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "symbol",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "finance.currencies",
+              "query": "SELECT mean(\"price_last\") FROM \"finance.currencies\" WHERE \"symbol\" = 'EURUSD' AND $timeFilter GROUP BY time($interval), \"tag\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "price_last"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "symbol",
+                  "operator": "=",
+                  "value": "EURUSD"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "EURO vs USD",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "height": "",
+          "id": 42,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/financial",
+              "dashboard": "Financial",
+              "title": "Financial",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "price_last"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "measurement": "finance.indexes",
+              "query": "SELECT mean(\"l_fix\") FROM \"finance.indexes\" WHERE \"symbol\" = '.DJI' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "l_fix"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "symbol",
+                  "operator": "=",
+                  "value": ".DJI"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "Dow Jones",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "format": "currencyUSD",
+          "height": "",
+          "id": 56,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/financial",
+              "dashboard": "Financial",
+              "title": "Financial",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "price_last"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "measurement": "finance.stockquotes",
+              "query": "SELECT mean(\"price_last\") FROM \"finance.stockquotes\" WHERE \"symbol\" = 'AMZN' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "price_last"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "symbol",
+                  "operator": "=",
+                  "value": "AMZN"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "Amazon",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "format": "currencyUSD",
+          "height": "",
+          "id": 44,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/financial",
+              "dashboard": "Financial",
+              "title": "Financial",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "price_last"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "measurement": "finance.stockquotes",
+              "query": "SELECT mean(\"price_last\") FROM \"finance.stockquotes\" WHERE \"symbol\" = 'AAPL' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "price_last"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "symbol",
+                  "operator": "=",
+                  "value": "AAPL"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "Apple",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "format": "currencyUSD",
+          "height": "",
+          "id": 45,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/financial",
+              "dashboard": "Financial",
+              "title": "Financial",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "price_last"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "measurement": "finance.stockquotes",
+              "query": "SELECT mean(\"price_last\") FROM \"finance.stockquotes\" WHERE \"symbol\" = 'EBAY' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "price_last"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "symbol",
+                  "operator": "=",
+                  "value": "EBAY"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "eBay",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "format": "currencyUSD",
+          "height": "",
+          "id": 33,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/financial",
+              "dashboard": "Financial",
+              "title": "Financial",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "price_last"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "measurement": "finance.stockquotes",
+              "query": "SELECT mean(\"price_last\") FROM \"finance.stockquotes\" WHERE \"symbol\" = 'TDC' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "price_last"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "symbol",
+                  "operator": "=",
+                  "value": "TDC"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "Teradata",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        }
+      ],
+      "showTitle": false,
+      "title": "Financial"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "100px",
+      "panels": [
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgb(245, 54, 54)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "format": "currencyUSD",
+          "height": "",
+          "id": 46,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/zillow",
+              "dashboard": "Zillow",
+              "title": "Zillow",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "count",
+                  "name": "tracer_count"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "zillow",
+              "query": "SELECT mean(\"30daychange\") FROM \"zillow\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "30daychange"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": "-1,0,1",
+          "timeFrom": null,
+          "title": "Zillow 30 day Change",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "format": "currencyUSD",
+          "height": "",
+          "id": 43,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/zillow",
+              "dashboard": "Zillow",
+              "title": "Zillow",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "count",
+                  "name": "tracer_count"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "zillow",
+              "query": "SELECT mean(\"valuation\") FROM \"zillow\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "valuation"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "Zillow",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        }
+      ],
+      "showTitle": false,
+      "title": "Zillow"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "450px",
+      "panels": [
+        {
+          "columns": [],
+          "editable": true,
+          "error": false,
+          "fontSize": "100%",
+          "height": "",
+          "id": 52,
+          "isNew": true,
+          "links": [],
+          "pageSize": 1000,
+          "scroll": true,
+          "showHeader": true,
+          "sort": {
+            "col": 0,
+            "desc": true
+          },
+          "span": 3,
+          "styles": [
+            {
+              "dateFormat": "MMM DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "date"
+            },
+            {
+              "colorMode": "row",
+              "colors": [
+                "rgba(245, 54, 54, 0)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 0,
+              "pattern": "/.*/",
+              "thresholds": [
+                "0",
+                "1",
+                "130"
+              ],
+              "type": "number",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "query": "SELECT time, \"Event.node.name\" AS \"name\", \"Event.action\" AS dimlevel FROM \"isy\" WHERE \"Event.node\" =~ / 1$/ AND \"Event.control\" = 'ST' AND $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "table",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": "30m",
+          "title": "ISY Event Stream",
+          "transform": "table",
+          "transparent": false,
+          "type": "table"
+        },
+        {
+          "columns": [],
+          "editable": true,
+          "error": false,
+          "fontSize": "100%",
+          "height": "",
+          "id": 54,
+          "isNew": true,
+          "links": [],
+          "pageSize": 25,
+          "scroll": true,
+          "showHeader": true,
+          "sort": {
+            "col": 2,
+            "desc": true
+          },
+          "span": 3,
+          "styles": [
+            {
+              "dateFormat": "HH:mm:ss",
+              "pattern": "Time",
+              "type": "date"
+            },
+            {
+              "colorMode": "row",
+              "colors": [
+                "rgba(50, 172, 45, 0.97)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgb(245, 54, 54)"
+              ],
+              "decimals": 0,
+              "pattern": "/.*/",
+              "thresholds": [
+                "0",
+                "600",
+                "800"
+              ],
+              "type": "number",
+              "unit": "ppm"
+            }
+          ],
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "query": "SELECT last(\"co2\") AS \"CO2\" FROM \"netatmo.module\" WHERE $timeFilter GROUP BY \"module_name\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "table",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": "30m",
+          "title": "CO2 Levels",
+          "transform": "table",
+          "transparent": false,
+          "type": "table"
+        },
+        {
+          "columns": [],
+          "editable": true,
+          "error": false,
+          "fontSize": "100%",
+          "height": "",
+          "id": 53,
+          "isNew": true,
+          "links": [],
+          "pageSize": 1000,
+          "scroll": true,
+          "showHeader": true,
+          "sort": {
+            "col": 3,
+            "desc": true
+          },
+          "span": 6,
+          "styles": [
+            {
+              "dateFormat": "MMM DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "date"
+            },
+            {
+              "colorMode": "row",
+              "colors": [
+                "rgba(50, 172, 45, 0)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(245, 54, 54, 0.9)"
+              ],
+              "decimals": 2,
+              "pattern": "mag",
+              "thresholds": [
+                "0",
+                "2.5",
+                "5"
+              ],
+              "type": "number",
+              "unit": "short"
+            },
+            {
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "pattern": "depth",
+              "thresholds": [],
+              "type": "number",
+              "unit": "lengthkm"
+            }
+          ],
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "query": "SELECT time, \"place\", last(\"mag\") AS \"mag\", \"depth\"  FROM \"usgs.earthquake.feature\" WHERE $timeFilter GROUP BY \"code\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "table",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": "1d",
+          "title": "Strongest USGS Events past Day",
+          "transform": "table",
+          "transparent": false,
+          "type": "table"
+        }
+      ],
+      "showTitle": false,
+      "title": "Events"
     }
   ],
   "time": {
@@ -1797,6 +3439,7 @@
     "to": "now"
   },
   "timepicker": {
+    "now": true,
     "refresh_intervals": [
       "5s",
       "10s",
@@ -1827,8 +3470,8 @@
   "annotations": {
     "list": []
   },
-  "refresh": false,
+  "refresh": "30s",
   "schemaVersion": 8,
-  "version": 4,
+  "version": 86,
   "links": []
 }

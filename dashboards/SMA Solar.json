@@ -1300,6 +1300,23 @@
   },
   "refresh": false,
   "schemaVersion": 8,
-  "version": 1,
-  "links": []
+  "version": 2,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "SMA Sunny Portal",
+      "type": "link",
+      "url": "https://www.sunnyportal.com/FixedPages/Dashboard.aspx"
+    }
+  ]
 }

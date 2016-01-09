@@ -11,7 +11,7 @@
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": false,
+  "sharedCrosshair": true,
   "rows": [
     {
       "collapse": false,
@@ -685,6 +685,23 @@
   },
   "refresh": false,
   "schemaVersion": 8,
-  "version": 1,
-  "links": []
+  "version": 4,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Rainforest Eagle",
+      "type": "link",
+      "url": "http://eagle/"
+    }
+  ]
 }

@@ -131,6 +131,7 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
+          "decimals": 3,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -149,12 +150,12 @@
           "id": 2,
           "legend": {
             "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
+            "current": true,
+            "max": true,
+            "min": true,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 2,
@@ -189,13 +190,13 @@
                 {
                   "key": "symbol",
                   "params": [
-                    "tag"
+                    "symbol"
                   ],
                   "type": "tag"
                 }
               ],
               "measurement": "finance.currencies",
-              "query": "SELECT mean(\"price_last\") FROM \"finance.currencies\" WHERE \"symbol\" = 'EURUSD' AND $timeFilter GROUP BY time($interval), \"tag\"",
+              "query": "SELECT mean(\"price_last\") FROM \"finance.currencies\" WHERE \"symbol\" = 'EURUSD' AND $timeFilter GROUP BY time($interval), \"symbol\"",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
@@ -232,7 +233,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "short",
+            "currencyUSD",
             "short"
           ]
         },
@@ -465,6 +466,7 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
+          "decimals": 2,
           "editable": true,
           "error": false,
           "fill": 0,
@@ -1215,7 +1217,7 @@
     }
   ],
   "time": {
-    "from": "now-6h",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {
@@ -1250,6 +1252,23 @@
     "list": []
   },
   "schemaVersion": 8,
-  "version": 1,
-  "links": []
+  "version": 9,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Google Finance",
+      "type": "link",
+      "url": "https://www.google.com/finance"
+    }
+  ]
 }
