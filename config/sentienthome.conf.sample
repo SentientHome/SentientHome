@@ -102,11 +102,9 @@ verify_ssl              = 0 ; 1 to verify the https certificate, 0 to ignore
 poll_interval           = 5 ; amount of seconds between polls - duplicates are auto removed
 
 [usgs_quake]
-usgs_quake_addr         = earthquake.usgs.gov
-; init path is for first poll at startup
-usgs_quake_init_path    = /earthquakes/feed/v1.0/summary/all_day.geojson
-usgs_quake_path         = /earthquakes/feed/v1.0/summary/all_hour.geojson
-usgs_quake_poll_interval = 10
+addr                    = earthquake.usgs.gov
+path                    = /earthquakes/feed/v1.0/summary/all_hour.geojson
+poll_interval           = 10
 
 [zillow]
 zillow_addr            = www.zillow.com

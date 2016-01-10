@@ -98,14 +98,11 @@ with shApp('usgs_quake', config_defaults=defaults) as app:
 
     handler = shEventHandler(app, dedupe=True)
 
-    # Initial poll - most likely a day if the increments are hourly data
-    # We do this to catchup on events in case the feed was down for some time
-    path = app.config.get('usgs_quake', 'usgs_quake_init_path')
+    path = app.config.get('usgs_quake', 'path')
 
     while True:
         # Get all earthquakes of the past hour
-        r = handler.get(app.config.get('usgs_quake', 'usgs_quake_addr') +
-                        path)
+        r = handler.get(app.config.get('usgs_quake', 'addr') + path)
         data = json.loads(r.text)
         # app.log.debug('Raw data: %s' % r.text)
 
@@ -127,6 +124,3 @@ with shApp('usgs_quake', config_defaults=defaults) as app:
 
         # We reset the poll interval in case the configuration has changed
         handler.sleep()
-
-        # Reset poll path before looping with latest setting
-        path = app.config.get('usgs_quake', 'usgs_quake_path')
