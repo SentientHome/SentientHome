@@ -175,5 +175,5 @@ with shApp('ubnt_toughswitch', config_defaults=defaults) as app:
                 handler.postEvent(event, dedupe=True, batch=True)
 
         # Wait for the next iteration - this is also when batched events get
-        # submitted at once.
+        # submitted as one array.
         handler.sleep()
