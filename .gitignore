@@ -19,3 +19,5 @@ samples/smawebbox.json
 samples/mfi.json
 
 samples/toughtswitch.stats.json
+
+samples/toughswitch.config.json

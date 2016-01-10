@@ -11,17 +11,24 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 # Sentient Home Application
 from common.shapp import shApp
 from common.sheventhandler import shEventHandler
+from common.shutil import boolify
 
 import requests
 import json
 
 
-def mapPort(switch, port, data):
+def mapPort(switch, config, port, data):
     event = [{
         'measurement': 'ubnt.toughswitch',
         'tags': {
             'switch': switch,
-            'port': port
+            'port': port,
+            'portname': config['switch.port.%s.name' % port],
+            'duplex': boolify(config['switch.port.%s.duplex' % port]),
+            'trunk.status': boolify(config['switch.port.%s.trunk.status' %
+                                           port]),
+            'switch.jumboframes': boolify(config['switch.jumboframes']),
+            'syslog.status': boolify(config['syslog.status']),
             },
         'fields': {
             }
@@ -101,10 +108,18 @@ with shApp('ubnt_toughswitch', config_defaults=defaults) as app:
 
         while True:
             try:
-                r = session.get(switch_addr + ':' + switch_port + '/stats',
+                r = session.get(switch_addr + ':' + switch_port + '/getcfg.cgi',
                                 verify=(int)(switch_verify_ssl))
-                if r.text is not '':
-                    break
+                if r.text is not '' and r.text is not None:
+                    config = json.loads(r.text)
+
+                    r = session.get(switch_addr + ':' + switch_port + '/stats',
+                                    verify=(int)(switch_verify_ssl))
+                    if r.text is not '' and r.text is not None:
+                        data = json.loads(r.text)
+
+                        break
+
             except Exception as e:
                 retries += 1
 
@@ -120,16 +135,15 @@ with shApp('ubnt_toughswitch', config_defaults=defaults) as app:
 
                 handler.sleep(app.retry_interval)
 
-        app.log.debug('Data: %s' % r.text)
-
-        data = json.loads(r.text)
+        app.log.debug('Config: %s' % json.dumps(config, sort_keys=True))
+        app.log.debug('Data: %s' % json.dumps(data, sort_keys=True))
 
         switch = switch_addr.replace('http://', '')
         switch = switch_addr.replace('https://', '')
 
         for port in range(1, 9):
 
-            event = mapPort(switch, port, data['stats'][str(port)])
+            event = mapPort(switch, config, port, data['stats'][str(port)])
 
             app.log.debug('Event: %s' % event)
             # dedupe automatically ignores events we have processed before
