@@ -69,18 +69,22 @@ with shApp('ubnt_toughswitch', config_defaults=defaults) as app:
     passwords = app.config.get('ubnt_toughswitch', 'pass').split(', ')
     switch_verify_ssl = app.config.get('ubnt_toughswitch', 'verify_ssl')
 
-    # Setup sessions for each switch
+    # Setup sessions for each individual switch
     for i in range(len(addresses)):
         sessions.append(requests.session())
 
+    # Since we support multiple switches we require a distinct session to
+    # each individual switch to retrieve it config and stats data.
     for i in range(len(addresses)):
         while True:
             try:
+                # Prime the session by first retrieving the login page
                 r = sessions[i].get(addresses[i] + ':' + switch_port +
                                     '/login.cgi',
                                     verify=(int)(switch_verify_ssl))
                 app.log.debug('Response: %s' % r)
 
+                # Now perform login
                 r = sessions[i].post(addresses[i] + ':' + switch_port +
                                      '/login.cgi',
                                      params={'username': switch_user,
@@ -106,21 +110,25 @@ with shApp('ubnt_toughswitch', config_defaults=defaults) as app:
 
                 handler.sleep(app.retry_interval)
 
+    # At this point we have successfully logged into all the switches
     while True:
 
+        # For ever iteration of the feed we request new data from each switch
+        # through its dedicated session.
         for i in range(len(addresses)):
-
-            # Get ToughSwitch statistics
+            # We might need to retry a switch in case it does not respond
             retries = 0
 
             while True:
                 try:
+                    # First we get the most current config data from the switch
                     r = sessions[i].get(addresses[i] + ':' + switch_port +
                                         '/getcfg.cgi',
                                         verify=(int)(switch_verify_ssl))
                     if r.text is not '' and r.text is not None:
                         config = json.loads(r.text)
 
+                        # Next we get the stats data
                         r = sessions[i].get(addresses[i] + ':' + switch_port +
                                             '/stats',
                                             verify=(int)(switch_verify_ssl))
@@ -128,6 +136,8 @@ with shApp('ubnt_toughswitch', config_defaults=defaults) as app:
                             data = json.loads(r.text)
                             break
 
+                    # If we got here it means either config or stats data came
+                    # back empty - setup retry
                     handler.sleep(app.retry_interval)
 
                 except Exception as e:
@@ -150,6 +160,8 @@ with shApp('ubnt_toughswitch', config_defaults=defaults) as app:
 
             switch = addresses[i].replace('https://', '')
 
+            # Create a dsitinct event for every port of the switch - even the
+            # smaller 5 port switches track 8 ports in their software
             for port in range(1, 9):
 
                 event = mapPort(switch, config, port, data['stats'][str(port)])
@@ -162,5 +174,6 @@ with shApp('ubnt_toughswitch', config_defaults=defaults) as app:
                 # points will get emitted and stored
                 handler.postEvent(event, dedupe=True, batch=True)
 
-        # We reset the poll interval in case the configuration has changed
+        # Wait for the next iteration - this is also when batched events get
+        # submitted at once.
         handler.sleep()
