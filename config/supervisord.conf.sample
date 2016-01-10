@@ -74,6 +74,11 @@ command=/usr/src/app/feed/feed.home.ubnt.mfi.py
 redirect_stderr=true
 startsecs = 5
 
+[program:sentienthome.feed.home.ubnt.toughswitch]
+command=/usr/src/app/feed/feed.home.ubnt.toughswitch.py
+redirect_stderr=true
+startsecs = 5
+
 [program:sentienthome.feed.home.usgs.earthquake]
 command=/usr/src/app/feed/feed.home.usgs.earthquake.py
 redirect_stderr=true
