@@ -94,10 +94,10 @@ ubnt_mfi_poll_interval  = 5 ; amount of seconds between polls - duplicates are a
 
 [ubnt_toughswitch]
 debug                   = 1
-addr                    = https://toughswitch.poolhouse.ratzesberger.private
+addr                    = https://switch1, https://switch2, https://switchN
 port                    = 443
 user                    = youruser
-pass                    = yourpassword
+pass                    = yourpassword1, yourpassword2, yourpasswordN
 verify_ssl              = 0 ; 1 to verify the https certificate, 0 to ignore
 poll_interval           = 5 ; amount of seconds between polls - duplicates are auto removed
 

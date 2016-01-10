@@ -28,7 +28,6 @@ def mapPort(switch, config, port, data):
             'trunk.status': boolify(config['switch.port.%s.trunk.status' %
                                            port]),
             'switch.jumboframes': boolify(config['switch.jumboframes']),
-            'syslog.status': boolify(config['syslog.status']),
             },
         'fields': {
             }
@@ -62,68 +61,40 @@ with shApp('ubnt_toughswitch', config_defaults=defaults) as app:
     handler = shEventHandler(app, dedupe=True)
 
     retries = 0
+    sessions = []
 
-    # Setup session and login
-    session = requests.session()
-
-    switch_addr = app.config.get('ubnt_toughswitch', 'addr')
+    addresses = app.config.get('ubnt_toughswitch', 'addr').split(', ')
     switch_port = app.config.get('ubnt_toughswitch', 'port')
     switch_user = app.config.get('ubnt_toughswitch', 'user')
-    switch_pass = app.config.get('ubnt_toughswitch', 'pass')
+    passwords = app.config.get('ubnt_toughswitch', 'pass').split(', ')
     switch_verify_ssl = app.config.get('ubnt_toughswitch', 'verify_ssl')
 
-    while True:
-        try:
-            r = session.get(switch_addr + ':' + switch_port + '/login.cgi',
-                            verify=(int)(switch_verify_ssl))
-            app.log.debug('Response: %s' % r)
+    # Setup sessions for each switch
+    for i in range(len(addresses)):
+        sessions.append(requests.session())
 
-            r = session.post(switch_addr + ':' + switch_port + '/login.cgi',
-                             params={'username': switch_user,
-                                     'password': switch_pass,
-                                     'uri': ' /stats'},
-                             verify=(int)(switch_verify_ssl))
-
-            app.log.debug('Response: %s' % r)
-
-            break
-        except Exception as e:
-            retries += 1
-
-            # Something went wrong authorizing the connection to ubnt ts
-            app.log.warn(e)
-            app.log.warn('Cannot connect to ToughSwitch. Attemp %s of %s' %
-                         (retries, app.retries))
-
-            if retries >= app.retries:
-                app.log.fatal(e)
-                app.log.fatal('Unable to connect to ToughSwitch. Exiting...')
-                app.close(1)
-
-            handler.sleep(app.retry_interval)
-
-    while True:
-        # Get ToughSwitch statistics
-        retries = 0
-
+    for i in range(len(addresses)):
         while True:
             try:
-                r = session.get(switch_addr + ':' + switch_port + '/getcfg.cgi',
-                                verify=(int)(switch_verify_ssl))
-                if r.text is not '' and r.text is not None:
-                    config = json.loads(r.text)
-
-                    r = session.get(switch_addr + ':' + switch_port + '/stats',
+                r = sessions[i].get(addresses[i] + ':' + switch_port +
+                                    '/login.cgi',
                                     verify=(int)(switch_verify_ssl))
-                    if r.text is not '' and r.text is not None:
-                        data = json.loads(r.text)
+                app.log.debug('Response: %s' % r)
 
-                        break
+                r = sessions[i].post(addresses[i] + ':' + switch_port +
+                                     '/login.cgi',
+                                     params={'username': switch_user,
+                                             'password': passwords[i],
+                                             'uri': ' /stats'},
+                                     verify=(int)(switch_verify_ssl))
 
+                app.log.debug('Response: %s' % r)
+
+                break
             except Exception as e:
                 retries += 1
 
-                # Something went wrong connecting to the ubnt mfi service
+                # Something went wrong authorizing the connection to ubnt ts
                 app.log.warn(e)
                 app.log.warn('Cannot connect to ToughSwitch. Attemp %s of %s' %
                              (retries, app.retries))
@@ -135,23 +106,61 @@ with shApp('ubnt_toughswitch', config_defaults=defaults) as app:
 
                 handler.sleep(app.retry_interval)
 
-        app.log.debug('Config: %s' % json.dumps(config, sort_keys=True))
-        app.log.debug('Data: %s' % json.dumps(data, sort_keys=True))
+    while True:
 
-        switch = switch_addr.replace('http://', '')
-        switch = switch_addr.replace('https://', '')
+        for i in range(len(addresses)):
 
-        for port in range(1, 9):
+            # Get ToughSwitch statistics
+            retries = 0
 
-            event = mapPort(switch, config, port, data['stats'][str(port)])
+            while True:
+                try:
+                    r = sessions[i].get(addresses[i] + ':' + switch_port +
+                                        '/getcfg.cgi',
+                                        verify=(int)(switch_verify_ssl))
+                    if r.text is not '' and r.text is not None:
+                        config = json.loads(r.text)
 
-            app.log.debug('Event: %s' % event)
-            # dedupe automatically ignores events we have processed before
-            # This is where the dedupe magic happens. The event handler has
-            # deduping built in and keeps an in-memory cache of events of the
-            # past ~24h for that. \In this case only changed sensor data points
-            # will get emitted and stored
-            handler.postEvent(event, dedupe=True, batch=True)
+                        r = sessions[i].get(addresses[i] + ':' + switch_port +
+                                            '/stats',
+                                            verify=(int)(switch_verify_ssl))
+                        if r.text is not '' and r.text is not None:
+                            data = json.loads(r.text)
+                            break
+
+                    handler.sleep(app.retry_interval)
+
+                except Exception as e:
+                    retries += 1
+
+                    # Something went wrong connecting to the ubnt mfi service
+                    app.log.warn(e)
+                    app.log.warn('Cannot connect. Attemp %s of %s' %
+                                 (retries, app.retries))
+
+                    if retries >= app.retries:
+                        app.log.fatal(e)
+                        app.log.fatal('Unable to connect. Exiting...')
+                        app.close(1)
+
+                    handler.sleep(app.retry_interval)
+
+            app.log.debug('Config: %s' % json.dumps(config, sort_keys=True))
+            app.log.debug('Data: %s' % json.dumps(data, sort_keys=True))
+
+            switch = addresses[i].replace('https://', '')
+
+            for port in range(1, 9):
+
+                event = mapPort(switch, config, port, data['stats'][str(port)])
+
+                app.log.debug('Event: %s' % event)
+                # dedupe automatically ignores events we have processed before
+                # This is where the dedupe magic happens. The event handler has
+                # deduping built in and keeps an in-memory cache of events of
+                # the past ~24h for that. In this case only changed switch data
+                # points will get emitted and stored
+                handler.postEvent(event, dedupe=True, batch=True)
 
         # We reset the poll interval in case the configuration has changed
         handler.sleep()
