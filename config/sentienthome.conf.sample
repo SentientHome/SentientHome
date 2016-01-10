@@ -92,6 +92,15 @@ ubnt_mfi_pass           = yourpassword
 ubnt_mfi_verify_ssl     = 0 ; 1 to verify the https certificate, 0 to ignore
 ubnt_mfi_poll_interval  = 5 ; amount of seconds between polls - duplicates are auto removed
 
+[ubnt_toughswitch]
+debug                   = 1
+addr                    = https://toughswitch.poolhouse.ratzesberger.private
+port                    = 443
+user                    = youruser
+pass                    = yourpassword
+verify_ssl              = 0 ; 1 to verify the https certificate, 0 to ignore
+poll_interval           = 5 ; amount of seconds between polls - duplicates are auto removed
+
 [usgs_quake]
 usgs_quake_addr         = earthquake.usgs.gov
 ; init path is for first poll at startup

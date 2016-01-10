@@ -1,0 +1,143 @@
+#!/usr/local/bin/python3 -u
+__author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
+__copyright__ = 'Copyright (C) 2016 Oliver Ratzesberger'
+__license__ = 'Apache License, Version 2.0'
+
+# Make sure we have access to SentientHome commons
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
+
+# Sentient Home Application
+from common.shapp import shApp
+from common.sheventhandler import shEventHandler
+
+import requests
+import json
+
+
+def mapPort(switch, port, data):
+    event = [{
+        'measurement': 'ubnt.toughswitch',
+        'tags': {
+            'switch': switch,
+            'port': port
+            },
+        'fields': {
+            }
+    }]
+
+    fields = event[0]['fields']
+    tags = event[0]['tags']
+
+    for key in data.keys():
+        if key == 'stats':
+            for stat in data[key].keys():
+                try:
+                    fields[stat] = float(data[key][stat])
+                except ValueError:
+                    fields[stat] = data[key][stat]
+        else:
+            tags[key] = data[key]
+
+    return event
+
+
+# Default settings
+from cement.utils.misc import init_defaults
+
+defaults = init_defaults('ubnt_toughswitch', 'ubnt_toughswitch')
+defaults['ubnt_toughswitch']['poll_interval'] = 5.0
+
+with shApp('ubnt_toughswitch', config_defaults=defaults) as app:
+    app.run()
+
+    handler = shEventHandler(app, dedupe=True)
+
+    retries = 0
+
+    # Setup session and login
+    session = requests.session()
+
+    switch_addr = app.config.get('ubnt_toughswitch', 'addr')
+    switch_port = app.config.get('ubnt_toughswitch', 'port')
+    switch_user = app.config.get('ubnt_toughswitch', 'user')
+    switch_pass = app.config.get('ubnt_toughswitch', 'pass')
+    switch_verify_ssl = app.config.get('ubnt_toughswitch', 'verify_ssl')
+
+    while True:
+        try:
+            r = session.get(switch_addr + ':' + switch_port + '/login.cgi',
+                            verify=(int)(switch_verify_ssl))
+            app.log.debug('Response: %s' % r)
+
+            r = session.post(switch_addr + ':' + switch_port + '/login.cgi',
+                             params={'username': switch_user,
+                                     'password': switch_pass,
+                                     'uri': ' /stats'},
+                             verify=(int)(switch_verify_ssl))
+
+            app.log.debug('Response: %s' % r)
+
+            break
+        except Exception as e:
+            retries += 1
+
+            # Something went wrong authorizing the connection to ubnt ts
+            app.log.warn(e)
+            app.log.warn('Cannot connect to ToughSwitch. Attemp %s of %s' %
+                         (retries, app.retries))
+
+            if retries >= app.retries:
+                app.log.fatal(e)
+                app.log.fatal('Unable to connect to ToughSwitch. Exiting...')
+                app.close(1)
+
+            handler.sleep(app.retry_interval)
+
+    while True:
+        # Get ToughSwitch statistics
+        retries = 0
+
+        while True:
+            try:
+                r = session.get(switch_addr + ':' + switch_port + '/stats',
+                                verify=(int)(switch_verify_ssl))
+                if r.text is not '':
+                    break
+            except Exception as e:
+                retries += 1
+
+                # Something went wrong connecting to the ubnt mfi service
+                app.log.warn(e)
+                app.log.warn('Cannot connect to ToughSwitch. Attemp %s of %s' %
+                             (retries, app.retries))
+
+                if retries >= app.retries:
+                    app.log.fatal(e)
+                    app.log.fatal('Unable to connect to ToughSwitch. Exiting..')
+                    app.close(1)
+
+                handler.sleep(app.retry_interval)
+
+        app.log.debug('Data: %s' % r.text)
+
+        data = json.loads(r.text)
+
+        switch = switch_addr.replace('http://', '')
+        switch = switch_addr.replace('https://', '')
+
+        for port in range(1, 9):
+
+            event = mapPort(switch, port, data['stats'][str(port)])
+
+            app.log.debug('Event: %s' % event)
+            # dedupe automatically ignores events we have processed before
+            # This is where the dedupe magic happens. The event handler has
+            # deduping built in and keeps an in-memory cache of events of the
+            # past ~24h for that. \In this case only changed sensor data points
+            # will get emitted and stored
+            handler.postEvent(event, dedupe=True, batch=True)
+
+        # We reset the poll interval in case the configuration has changed
+        handler.sleep()
