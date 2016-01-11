@@ -1,8 +1,9 @@
 aiohttp==0.17.2
 asyncio==3.4.3
 cement==2.6.2
-requests==2.7.0
+requests==2.9.1
 pysnmp==4.2.5
 colorlog==2.6.0
 python-nest==2.8.0
 influxdb==2.10.0
+soco==0.11.1
