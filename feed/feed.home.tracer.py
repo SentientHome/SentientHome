@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3 -u
 __author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
-__copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
+__copyright__ = 'Copyright (C) 2016 Oliver Ratzesberger'
 __license__ = 'Apache License, Version 2.0'
 
 # Make sure we have access to SentientHome commons
@@ -33,10 +33,11 @@ with shApp('shTracer', config_defaults=defaults) as app:
         count += 1
 
         event = [{
-            'name': 'tracer',                       # Time Series Name
-            'columns': ['tracertime', 'count'],     # Keys
-            # time in milliseconds since epoch
-            'points': [[time.time()*1000, count]]   # Data points
+            'measurement': 'tracer',
+            'fields': {
+                'tracer_time': time.time(),
+                'tracer_count': count
+                }
         }]
 
         app.log.info('Event data: %s' % event)

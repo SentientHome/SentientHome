@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3 -u
 __author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
-__copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
+__copyright__ = 'Copyright (C) 2016 Oliver Ratzesberger'
 __license__ = 'Apache License, Version 2.0'
 
 # Make sure we have access to SentientHome commons
@@ -11,10 +11,40 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 # Sentient Home Application
 from common.shapp import shApp
 from common.sheventhandler import shEventHandler
-from common.shutil import CtoF
+from common.shutil import epoch2date, CtoF
 
 import requests
 import json
+
+
+def mapSensor(sensor):
+    event = [{
+        'measurement': 'ubnt.mfi.sensor',
+        'tags': {
+            },
+        'fields': {
+            }
+    }]
+
+    fields = event[0]['fields']
+    tags = event[0]['tags']
+
+    for key in sensor.keys():
+        if key in ['_id', 'label', 'mac', 'model', 'port', 'tag']:
+            tags[key] = sensor[key]
+        elif 'time' in key:
+            tags[key] = epoch2date(sensor[key]/1000)
+        else:
+            try:
+                fields[key] = float(sensor[key])
+
+                if key == 'temperature':
+                    fields['temperatureF'] = CtoF(sensor[key])
+            except ValueError:
+                fields[key] = sensor[key]
+
+    return event
+
 
 # Default settings
 from cement.utils.misc import init_defaults
@@ -93,21 +123,11 @@ with shApp('ubnt_mfi', config_defaults=defaults) as app:
                 handler.sleep(app.retry_interval)
 
         data = json.loads(r.text)
+        app.log.debug('Data: %s' % r.text)
 
         for sensor in data['data']:
-            # If there is a temerature reading also create a Farenheit version
-            # We have to do this since InfluxDB and/or Grafana cant do the most
-            # simplistic math...
-            try:
-                sensor['temperatureF'] = CtoF(sensor['temperature'])
-            except:
-                pass
 
-            event = [{
-                'name': 'ubnt.mfi.sensor',          # Time Series Name
-                'columns': list(sensor.keys()),     # Keys
-                'points': [list(sensor.values())]   # Data points
-            }]
+            event = mapSensor(sensor)
 
             app.log.debug('Event: %s' % event)
             # dedupe automatically ignores events we have processed before
@@ -115,7 +135,7 @@ with shApp('ubnt_mfi', config_defaults=defaults) as app:
             # deduping built in and keeps an in-memory cache of events of the
             # past ~24h for that. \In this case only changed sensor data points
             # will get emitted and stored
-            handler.postEvent(event, dedupe=True)
+            handler.postEvent(event, dedupe=True, batch=True)
 
         # We reset the poll interval in case the configuration has changed
         handler.sleep()

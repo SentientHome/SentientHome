@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3 -u
 __author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
-__copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
+__copyright__ = 'Copyright (C) 2016 Oliver Ratzesberger'
 __license__ = 'Apache License, Version 2.0'
 
 # Make sure we have access to SentientHome commons
@@ -11,7 +11,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 # Sentient Home Application
 from common.shapp import shApp
 from common.sheventhandler import shEventHandler
-from common.shutil import numerify, CtoF
+from common.shutil import extract_tags, numerify, CtoF
 
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 
@@ -117,13 +117,15 @@ with shApp('apcups', config_defaults=defaults) as app:
                 else:
                     data[oids[str(name)]['name']] = numerify(str(val))
 
+            tags = extract_tags(data, ['lasttestdate'])
+
             event = [{
-                'name': 'apcups',  # Time Series Name
-                'columns': list(data.keys()),  # Keys
-                'points': [list(data.values())]  # Data points
+                'measurement': 'apcups',  # Time Series Name
+                'tags': tags,
+                'fields': data  # Data points
             }]
 
-            app.log.debug('Event data: %s', event)
+            app.log.debug('Event data: %s' % event)
 
             handler.postEvent(event)
 

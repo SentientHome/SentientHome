@@ -1,11 +1,12 @@
 #!/usr/local/bin/python3 -u
 __author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
-__copyright__ = 'Copyright (C) 2015 Oliver Ratzesberger'
+__copyright__ = 'Copyright (C) 2016 Oliver Ratzesberger'
 __license__ = 'Apache License, Version 2.0'
 
 from collections import defaultdict
 import xml.etree.ElementTree as ET
 import locale
+import time
 
 
 def xml_to_dict(text):
@@ -42,18 +43,12 @@ def etree_to_dict(t):
 # Added locale functions to deal with thousands separators in incoming
 def numerify(v):
     try:
-        return int(v)
+        return float(v)
     except Exception:
         try:
-            return locale.atoi(v)
+            return locale.atof(v)
         except Exception:
-            try:
-                return float(v)
-            except Exception:
-                try:
-                    return locale.atof(v)
-                except Exception:
-                    return v
+            return v
 
 
 # Helper to rekey flattened dicts in dot notation
@@ -63,7 +58,7 @@ def rekey_dict(key, d):
 
 # Helper to flatten embeded structures
 # If there is a dict within a dict this function will pop the dict and
-# insert is rekeyed keys and values into the main dict. The key of the
+# insert it's rekeyed keys and values into the main dict. The key of the
 # embedded dict will be prepended with a separator '.' to the keys
 def flatten_dict(d):
     f = d
@@ -81,6 +76,20 @@ def flatten_dict(d):
                 f = dict(list(d.items()) + list(r2.items()))
 
     return f
+
+
+# Helper function to extract tags out of data dict
+def extract_tags(data, keys):
+    tags = dict()
+
+    for key in keys:
+        try:
+            tags[key] = data.pop(key)
+        except KeyError:
+            # Skip optional tags
+            pass
+
+    return tags
 
 
 # Conversion: Celcius to Fahrenheit
@@ -105,13 +114,18 @@ def m2toft2(a):
 
 # Conversion: string to bool
 def boolify(s):
-    return (str)(s).lower() in['true', '1', 't', 'y', 'yes']
+    return (str)(s).lower() in['true', '1', 't', 'y', 'yes', 'on', 'enable',
+                               'enabled']
 
 
 # Conversion: string to bool to int
 def boolify2int(str):
     return (int)(boolify(str))
 
+
+# Conversion epoch to local timestamp string
+def epoch2date(epoch):
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(epoch))
 
 #
 # Do nothing

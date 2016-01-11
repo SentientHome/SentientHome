@@ -1,29 +1,35 @@
-# ~/.config/home.home.cfg
+# ~/.config/sentienthome/sentienthome.conf
 
 ; SentientHome monitors changes to this file and reloads during downtime
 
 [sentienthome]
 ; loglevel possible values: INFO, WARNING, ERROR, CRITICAL, DEBUG, DEFAULT; default=DEFAULT
-loglevel               = DEBUG
-; Number of retries for connection issues; default=10
-retries                = 10
+loglevel               = DEFAULT
+checkpointing          = OFF
+checkpoint_interval    = 600
+
+; number of retries and interval for failed http attempts
+retries                 = 5
+retry_interval          = 2
+
 ; supported target stores. Currently only INFLUXDB and DEVNULL supported
 event_store            = INFLUXDB
 
 ; enable event engine
 event_engine           = ON
-event_addr             = 127.0.0.1
-event_port             = 8080
+event_addr             = 127.0.0.1 ; hostname/ip address of your install
+event_port             = 8888 ; if changed update docker file and docker-compose
 event_path             = /event
 
 ; setup tracer events - used to schedule and detect missing events
 tracer_interval        = 10
 
 ; data directory to persist caches and memory structures
-data_path              = ~/SentientHome/data
+data_path              = /data
 
+; Supervisor is use to orchestrate the entire setup within a docker container
 [supervisord]
-supervisord_config     = /etc/supervisord.conf
+supervisord_config     = /etc/supervisor/conf.d/supervisord.conf
 
 [isy]
 isy_addr               = isy
@@ -75,16 +81,9 @@ finance_currency_list  = CURRENCY:EURUSD,CURRENCY:USDJPY,CURRENCY:GBPUSD,CURRENC
 finance_stock_list     = AAPL,ORCL,MSFT,IBM,TDC,EBAY,AMZN,SHLD,CSCO,HPQ,EMC,VMW,MSTR,SPLK
 
 [sma_webbox]
-sma_webbox_addr         = yoursmawebboxhost
+sma_webbox_addr          = yoursmawebboxhost
 ;sma_webbox_pass         = yourpassword
 sma_webbox_poll_interval = 5
-; For optional simplified system efficiency calculation
-;sma_webbox_total_panels = 84  ; e.g. two inverters 42 panels each
-;sma_webbox_panel_rating = 260 ; e.g. Canadian Solar CS6P-260
-; In case of mixed installations use the weighted average of the panel population
-; e.g 10 panels @260 + 20 panels @245 = (10*260+20*245)/30 = 250
-; This is only a simplified just in time 'efficiency' KPI to measure the system
-; over time. It does not take solar irradiation or any other factors into account
 
 [ubnt_mfi]
 ubnt_mfi_addr           = yourmfihost
@@ -93,12 +92,19 @@ ubnt_mfi_pass           = yourpassword
 ubnt_mfi_verify_ssl     = 0 ; 1 to verify the https certificate, 0 to ignore
 ubnt_mfi_poll_interval  = 5 ; amount of seconds between polls - duplicates are auto removed
 
+[ubnt_toughswitch]
+debug                   = 1
+addr                    = https://switch1, https://switch2, https://switchN
+port                    = 443
+user                    = youruser
+pass                    = yourpassword1, yourpassword2, yourpasswordN
+verify_ssl              = 0 ; 1 to verify the https certificate, 0 to ignore
+poll_interval           = 5 ; amount of seconds between polls - duplicates are auto removed
+
 [usgs_quake]
-usgs_quake_addr         = earthquake.usgs.gov
-; init path is for first poll at startup
-usgs_quake_init_path    = /earthquakes/feed/v1.0/summary/all_day.geojson
-usgs_quake_path         = /earthquakes/feed/v1.0/summary/all_hour.geojson
-usgs_quake_poll_interval = 10
+addr                    = earthquake.usgs.gov
+path                    = /earthquakes/feed/v1.0/summary/all_hour.geojson
+poll_interval           = 10
 
 [zillow]
 zillow_addr            = www.zillow.com
@@ -107,8 +113,3 @@ zillow_path            = /webservice/GetZestimate.htm
 zillow_zws_id          = yourzillowapiid
 zillow_zpid            = yourzillowpropertyid
 zillow_poll_interval   = 3600
-
-[collectd_proxy]
-collectd_proxy_addr    = yourproxy
-collectd_proxy_port    = 8079
-collectd_proxy_verbose = true

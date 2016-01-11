@@ -1,8 +1,18 @@
 language: python
 python:
   - "3.4"
+  - "3.5"
+  - "nightly"
+matrix:
+  allow_failures:
+    - python: "nightly"
+  fast_finish: true
+sudo: required
+services:
+  - docker
 install:
-  - python setup.py
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
   - pip install flake8
 before_script:
   - "flake8 --show-source --max-line-length=80 --statistics --builtins=_ common engine feed plugins"
@@ -25,3 +35,5 @@ script:
   - python feed/feed.home.ubnt.mfi.py --help
   - python feed/feed.home.usgs.earthquake.py --help
   - python feed/feed.home.zillow.py --help
+after_script:
+  - docker build -t "$DOCKER_USERNAME"/sentienthome .

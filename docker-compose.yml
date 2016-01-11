@@ -1,0 +1,35 @@
+influxdb:
+  image: tutum/influxdb
+  #volumes: # Persist data of database
+    #- ./data:/data # VirtualBox bug prevents this from working on OSX
+  ports:
+    - "8080:8080"
+    - "8083:8083"
+    - "8086:8086"
+  expose:
+    - "8088"
+    - "8090"
+    - "8099"
+  environment:
+    - PRE_CREATE_DB=Home
+grafana:
+  image: grafana/grafana
+  ports:
+    - "3000:3000"
+  environment:
+    - INFLUXDB_HOST=influxdb
+    - INFLUXDB_PORT=8086
+    - INFLUXDB_NAME=Home
+  links:
+    - influxdb:influxdb
+sentienthome:
+  image: fxstein/sentienthome
+  volumes:
+    - ./data:/data
+    - ~/.config/sentienthome/sentienthome.conf:/etc/sentienthome.conf
+    - ~/.config/sentienthome/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+  ports:
+    - "9001:9001" # sentienthome supervisor web interface
+    - "8888:8888" # sentienthome event engine
+  links:
+    - influxdb:influxdb
