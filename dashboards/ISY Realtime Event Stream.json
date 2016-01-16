@@ -1,17 +1,31 @@
 {
-  "id": 13,
-  "title": "ISY Realtime Event Stream",
-  "originalTitle": "ISY Realtime Event Stream",
-  "tags": [
-    "Automation",
-    "ISY",
-    "Insteon"
-  ],
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": true,
+  "id": 13,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "includeVars": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "ISY Dashboard",
+      "type": "link",
+      "url": "http://isy"
+    }
+  ],
+  "originalTitle": "ISY Realtime Event Stream",
+  "refresh": "5s",
   "rows": [
     {
       "collapse": false,
@@ -83,7 +97,7 @@
                 }
               ],
               "measurement": "isy",
-              "query": "SELECT time, \"Event.node\", \"Event.node.name\", \"Event.control\", \"Event.action\" AS action FROM \"isy\" WHERE \"Event.node\" =~ / 1$/ AND \"Event.control\" = 'ST' AND $timeFilter",
+              "query": "SELECT time, \"Event.node\", \"Event.node.name\", \"Event.control\", \"Event.action\" AS action FROM \"isy\" WHERE \"Event.node\" =~ / 1$/ AND $timeFilter",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -126,6 +140,17 @@
       "title": "New row"
     }
   ],
+  "schemaVersion": 8,
+  "sharedCrosshair": true,
+  "style": "dark",
+  "tags": [
+    "Automation",
+    "ISY",
+    "Insteon"
+  ],
+  "templating": {
+    "list": []
+  },
   "time": {
     "from": "now/d",
     "to": "now"
@@ -156,32 +181,7 @@
       "30d"
     ]
   },
-  "templating": {
-    "list": []
-  },
-  "annotations": {
-    "list": []
-  },
-  "refresh": "5s",
-  "schemaVersion": 8,
-  "version": 11,
-  "links": [
-    {
-      "icon": "external link",
-      "tags": [
-        "Sentient",
-        "Home"
-      ],
-      "type": "dashboards"
-    },
-    {
-      "icon": "external link",
-      "includeVars": false,
-      "tags": [],
-      "targetBlank": true,
-      "title": "ISY Dashboard",
-      "type": "link",
-      "url": "http://isy"
-    }
-  ]
+  "timezone": "browser",
+  "title": "ISY Realtime Event Stream",
+  "version": 12
 }

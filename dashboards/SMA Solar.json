@@ -1,16 +1,30 @@
 {
-  "id": 8,
-  "title": "SMA Solar",
-  "originalTitle": "SMA Solar",
-  "tags": [
-    "Solar",
-    "Electricity"
-  ],
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": false,
+  "id": 8,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "SMA Sunny Portal",
+      "type": "link",
+      "url": "https://www.sunnyportal.com/FixedPages/Dashboard.aspx"
+    }
+  ],
+  "originalTitle": "SMA Solar",
+  "refresh": false,
   "rows": [
     {
       "collapse": false,
@@ -330,7 +344,14 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "per hour",
+              "bars": true,
+              "steppedLine": true,
+              "yaxis": 2
+            }
+          ],
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -372,6 +393,50 @@
                 ]
               ],
               "tags": []
+            },
+            {
+              "alias": "per hour",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "GriEgyTdy"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "1h"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "smawebbox.plant_overview",
+              "query": "SELECT derivative(last(\"GriEgyTot\"), 1h) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time(1h)",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GriEgyTot"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  },
+                  {
+                    "params": [
+                      "1h"
+                    ],
+                    "type": "derivative"
+                  }
+                ]
+              ],
+              "tags": []
             }
           ],
           "timeFrom": null,
@@ -386,7 +451,7 @@
           "y-axis": true,
           "y_formats": [
             "watth",
-            "short"
+            "watth"
           ]
         },
         {
@@ -490,6 +555,7 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
+          "decimals": 2,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -505,7 +571,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 11,
+          "id": 18,
           "legend": {
             "avg": false,
             "current": true,
@@ -523,21 +589,27 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "per week",
+              "bars": true,
+              "steppedLine": true,
+              "yaxis": 2
+            }
+          ],
           "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "alias": "$tag_device",
+              "alias": "GriEgyTdy",
               "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
-                  "name": "i_pv"
+                  "name": "GriEgyTdy"
                 }
               ],
-              "fill": "",
               "groupBy": [
                 {
                   "interval": "auto",
@@ -545,30 +617,17 @@
                     "auto"
                   ],
                   "type": "time"
-                },
-                {
-                  "key": "device",
-                  "params": [
-                    "tag"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "device"
-                  ],
-                  "type": "tag"
                 }
               ],
-              "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(\"i_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "measurement": "smawebbox.plant_overview",
+              "query": "SELECT mean(\"GriEgyTdy\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "i_ac"
+                      "GriEgyTdy"
                     ],
                     "type": "field"
                   },
@@ -579,11 +638,55 @@
                 ]
               ],
               "tags": []
+            },
+            {
+              "alias": "per week",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "GriEgyTdy"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "7d"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "smawebbox.plant_overview",
+              "query": "SELECT derivative(last(\"GriEgyTot\"), 7d) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time(7d)",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GriEgyTot"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  },
+                  {
+                    "params": [
+                      "7d"
+                    ],
+                    "type": "derivative"
+                  }
+                ]
+              ],
+              "tags": []
             }
           ],
-          "timeFrom": null,
+          "timeFrom": "30d",
           "timeShift": null,
-          "title": "PV Amperage by Device",
+          "title": "Solar Production Daily",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -592,8 +695,8 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "amp",
-            "short"
+            "watth",
+            "watth"
           ]
         },
         {
@@ -615,7 +718,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 12,
+          "id": 19,
           "legend": {
             "avg": false,
             "current": true,
@@ -639,15 +742,15 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "$tag_device",
+              "alias": "GriEgyTot",
               "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
-                  "name": "i_ac"
+                  "name": "GriEgyTot"
                 }
               ],
-              "fill": "",
+              "fill": "previous",
               "groupBy": [
                 {
                   "interval": "auto",
@@ -655,30 +758,17 @@
                     "auto"
                   ],
                   "type": "time"
-                },
-                {
-                  "key": "device",
-                  "params": [
-                    "tag"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "device"
-                  ],
-                  "type": "tag"
                 }
               ],
-              "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(\"i_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "measurement": "smawebbox.plant_overview",
+              "query": "SELECT mean(\"GriEgyTot\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "i_ac"
+                      "GriEgyTot"
                     ],
                     "type": "field"
                   },
@@ -691,9 +781,9 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
+          "timeFrom": "30d",
           "timeShift": null,
-          "title": "AC Amperage by Device",
+          "title": "Solar Production Total",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -702,7 +792,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "amp",
+            "watth",
             "short"
           ]
         },
@@ -945,7 +1035,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 15,
+          "id": 11,
           "legend": {
             "avg": false,
             "current": true,
@@ -974,7 +1064,7 @@
               "fields": [
                 {
                   "func": "mean",
-                  "name": "inverter_tempf"
+                  "name": "i_pv"
                 }
               ],
               "fill": "",
@@ -1001,14 +1091,14 @@
                 }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(\"inverter_tempf\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "query": "SELECT mean(\"i_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "inverter_tempf"
+                      "i_ac"
                     ],
                     "type": "field"
                   },
@@ -1023,7 +1113,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Inverter Temp by Device",
+          "title": "PV Amperage by Device",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -1032,7 +1122,157 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "farenheit",
+            "amp",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 12,
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_device",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "i_ac"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "smawebbox.process_data",
+              "query": "SELECT mean(\"i_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "i_ac"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "total",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "i_ac"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": true,
+              "measurement": "smawebbox.process_data",
+              "query": "SELECT sum(\"i_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "i_ac"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "sum"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "AC Amperage by Device",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "amp",
             "short"
           ]
         },
@@ -1134,6 +1374,116 @@
           "timeFrom": null,
           "timeShift": null,
           "title": "PCB Temp by Device",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "farenheit",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 15,
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_device",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "inverter_tempf"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "smawebbox.process_data",
+              "query": "SELECT mean(\"inverter_tempf\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "inverter_tempf"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Inverter Temp by Device",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -1263,11 +1613,22 @@
       "title": "SMA Solar - PV Production"
     }
   ],
+  "schemaVersion": 8,
+  "sharedCrosshair": true,
+  "style": "dark",
+  "tags": [
+    "Solar",
+    "Electricity"
+  ],
+  "templating": {
+    "list": []
+  },
   "time": {
     "from": "now-2d",
     "to": "now"
   },
   "timepicker": {
+    "now": true,
     "refresh_intervals": [
       "5s",
       "10s",
@@ -1292,31 +1653,7 @@
       "30d"
     ]
   },
-  "templating": {
-    "list": []
-  },
-  "annotations": {
-    "list": []
-  },
-  "refresh": false,
-  "schemaVersion": 8,
-  "version": 2,
-  "links": [
-    {
-      "icon": "external link",
-      "tags": [
-        "Sentient",
-        "Home"
-      ],
-      "type": "dashboards"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "targetBlank": true,
-      "title": "SMA Sunny Portal",
-      "type": "link",
-      "url": "https://www.sunnyportal.com/FixedPages/Dashboard.aspx"
-    }
-  ]
+  "timezone": "browser",
+  "title": "SMA Solar",
+  "version": 7
 }
