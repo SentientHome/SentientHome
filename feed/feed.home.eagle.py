@@ -1,12 +1,17 @@
 #!/usr/local/bin/python3 -u
-__author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
-__copyright__ = 'Copyright (C) 2016 Oliver Ratzesberger'
-__license__ = 'Apache License, Version 2.0'
+"""
+    Author:     Oliver Ratzesberger <https://github.com/fxstein>
+    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
+    License:    Apache License, Version 2.0
+"""
 
 # Make sure we have access to SentientHome commons
 import os
 import sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
+try:
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
+except:
+    exit(1)
 
 # Sentient Home Application
 from common.shapp import shApp
@@ -14,6 +19,13 @@ from common.shutil import numerify, extract_tags
 from common.sheventhandler import shEventHandler
 
 import json
+
+# Default settings
+from cement.utils.misc import init_defaults
+
+defaults = init_defaults('eagle', 'eagle')
+defaults['eagle']['poll_interval'] = 5.0
+defaults['eagle']['voltage'] = 240
 
 units = {
     'W':    1,
@@ -24,12 +36,6 @@ units = {
     'MWh':  1000*1000,
 }
 
-# Default settings
-from cement.utils.misc import init_defaults
-
-defaults = init_defaults('eagle', 'eagle')
-defaults['eagle']['poll_interval'] = 5.0
-defaults['eagle']['voltage'] = 240
 
 with shApp('eagle', config_defaults=defaults) as app:
     app.run()

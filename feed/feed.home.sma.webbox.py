@@ -1,12 +1,17 @@
 #!/usr/local/bin/python3 -u
-__author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
-__copyright__ = 'Copyright (C) 2016 Oliver Ratzesberger'
-__license__ = 'Apache License, Version 2.0'
+"""
+    Author:     Oliver Ratzesberger <https://github.com/fxstein>
+    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
+    License:    Apache License, Version 2.0
+"""
 
 # Make sure we have access to SentientHome commons
 import os
 import sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
+try:
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
+except:
+    exit(1)
 
 # Sentient Home Application
 from common.shapp import shApp
@@ -15,6 +20,12 @@ from common.shutil import CtoF
 
 import json
 import hashlib
+
+# Default settings
+from cement.utils.misc import init_defaults
+
+defaults = init_defaults('sma_webbox', 'sma_webbox')
+defaults['sma_webbox']['poll_interval'] = 30.0
 
 units = {
     'W':    1,
@@ -151,11 +162,6 @@ def mapProcessData(device_data, process_data):
 
     return events
 
-# Default settings
-from cement.utils.misc import init_defaults
-
-defaults = init_defaults('sma_webbox', 'sma_webbox')
-defaults['sma_webbox']['poll_interval'] = 30.0
 
 with shApp('sma_webbox', config_defaults=defaults) as app:
     app.run()
