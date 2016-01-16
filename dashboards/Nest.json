@@ -1,17 +1,29 @@
 {
-  "id": 5,
-  "title": "Nest",
-  "originalTitle": "Nest",
-  "tags": [
-    "Thermostat",
-    "Protect",
-    "Firealarm"
-  ],
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": false,
+  "id": 5,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Nest Dashboard",
+      "type": "link",
+      "url": "https://home.nest.com/"
+    }
+  ],
+  "originalTitle": "Nest",
   "rows": [
     {
       "collapse": false,
@@ -1119,6 +1131,17 @@
       "title": "Row"
     }
   ],
+  "schemaVersion": 8,
+  "sharedCrosshair": false,
+  "style": "dark",
+  "tags": [
+    "Thermostat",
+    "Protect",
+    "Firealarm"
+  ],
+  "templating": {
+    "list": []
+  },
   "time": {
     "from": "now-2d",
     "to": "now"
@@ -1148,30 +1171,7 @@
       "30d"
     ]
   },
-  "templating": {
-    "list": []
-  },
-  "annotations": {
-    "list": []
-  },
-  "schemaVersion": 8,
-  "version": 2,
-  "links": [
-    {
-      "icon": "external link",
-      "tags": [
-        "Sentient",
-        "Home"
-      ],
-      "type": "dashboards"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Nest Dashboard",
-      "type": "link",
-      "url": "https://home.nest.com/"
-    }
-  ]
+  "timezone": "browser",
+  "title": "Nest",
+  "version": 2
 }

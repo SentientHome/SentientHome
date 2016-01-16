@@ -1,17 +1,13 @@
 {
-  "id": 2,
-  "title": "Sentient Home",
-  "originalTitle": "Sentient Home",
-  "tags": [
-    "Home",
-    "Sentient",
-    "DevOps"
-  ],
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": false,
+  "id": 2,
+  "links": [],
+  "originalTitle": "Sentient Home",
+  "refresh": "30s",
   "rows": [
     {
       "collapse": false,
@@ -98,7 +94,7 @@
           ],
           "thresholds": "-100000,3500,10000",
           "timeFrom": null,
-          "title": "Home Power",
+          "title": "Home Electricity",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -169,7 +165,7 @@
                 }
               ],
               "measurement": "smawebbox.plant_overview",
-              "query": "SELECT mean(\"GriPwr\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT last(\"GriPwr\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
@@ -182,7 +178,7 @@
                   },
                   {
                     "params": [],
-                    "type": "mean"
+                    "type": "last"
                   }
                 ]
               ],
@@ -209,8 +205,206 @@
           "colorBackground": false,
           "colorValue": true,
           "colors": [
+            "rgba(45, 154, 41, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "datasource": null,
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "format": "watth",
+          "height": "",
+          "id": 64,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/rainforest-eagle",
+              "dashboard": "Rainforest Eagle",
+              "title": "Rainforest Eagle",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "last",
+                  "name": "demand"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "24h"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "eagle",
+              "query": "SELECT derivative(last(\"summation_delivered\"), 24h) FROM \"eagle\" WHERE $timeFilter GROUP BY time(24h)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "summation_delivered"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  },
+                  {
+                    "params": [
+                      "24h"
+                    ],
+                    "type": "derivative"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": "-100000,35000,75000",
+          "timeFrom": null,
+          "title": "From Grid Today",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "format": "watth",
+          "height": "",
+          "id": 65,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/rainforest-eagle",
+              "dashboard": "Rainforest Eagle",
+              "title": "Rainforest Eagle",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "last",
+                  "name": "demand"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "24h"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "eagle",
+              "query": "SELECT derivative(last(\"summation_received\"), 24h) FROM \"eagle\" WHERE $timeFilter GROUP BY time(24h)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "summation_received"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  },
+                  {
+                    "params": [
+                      "24h"
+                    ],
+                    "type": "derivative"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": "-100000,1,2",
+          "timeFrom": null,
+          "title": "To Grid Today",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
             "rgb(246, 238, 238)",
-            "rgba(237, 129, 40, 0)",
+            "rgba(221, 218, 216, 0.85)",
             "rgba(45, 154, 41, 0.97)"
           ],
           "datasource": null,
@@ -285,6 +479,106 @@
           "thresholds": "0,0,5",
           "timeFrom": null,
           "title": "Today Solar",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgba(220, 212, 212, 0.9)",
+            "rgba(216, 221, 216, 0.89)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 41,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": " inch",
+          "postfixFontSize": "80%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "tempf"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "netatmo.module",
+              "query": "SELECT last(\"sum_rain_24i\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule3' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "sum_rain_24i"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule3"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,0,0.01",
+          "timeFrom": null,
+          "title": "Rain Today",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -400,106 +694,6 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(248, 161, 16, 0.89)",
-            "rgba(22, 182, 43, 0.97)"
-          ],
-          "datasource": null,
-          "decimals": 1,
-          "editable": true,
-          "error": false,
-          "format": "percent",
-          "height": "",
-          "id": 30,
-          "interval": "",
-          "links": [
-            {
-              "dashUri": "db/netatmo",
-              "dashboard": "Netatmo",
-              "title": "Netatmo",
-              "type": "dashboard"
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.67)",
-            "full": true,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": true
-          },
-          "targets": [
-            {
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "humidity"
-                }
-              ],
-              "fill": "",
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "netatmo.module",
-              "query": "SELECT mean(\"humidity\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule1' AND $timeFilter GROUP BY time($interval)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "humidity"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "type",
-                  "operator": "=",
-                  "value": "NAModule1"
-                }
-              ]
-            }
-          ],
-          "thresholds": "0,20,40",
-          "timeFrom": null,
-          "title": "Outdoor Humidity",
-          "transparent": false,
-          "type": "singlestat",
-          "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
           "colorValue": false,
           "colors": [
             "rgba(245, 54, 54, 0.9)",
@@ -510,9 +704,9 @@
           "decimals": 1,
           "editable": true,
           "error": false,
-          "format": "percent",
+          "format": "farenheit",
           "height": "",
-          "id": 31,
+          "id": 25,
           "interval": "",
           "links": [
             {
@@ -541,8 +735,8 @@
               "dsType": "influxdb",
               "fields": [
                 {
-                  "func": "mean",
-                  "name": "humidity"
+                  "func": "min",
+                  "name": "tempf"
                 }
               ],
               "fill": "",
@@ -556,20 +750,20 @@
                 }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT mean(\"humidity\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT min(\"tempf\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "humidity"
+                      "tempf"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
-                    "type": "mean"
+                    "type": "min"
                   }
                 ]
               ],
@@ -584,7 +778,7 @@
           ],
           "thresholds": "0,0,1",
           "timeFrom": null,
-          "title": "Avg Indoor Humidity",
+          "title": "Min Room Temp",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -686,106 +880,6 @@
           "thresholds": "0,0,1",
           "timeFrom": null,
           "title": "Avg Room Temp",
-          "transparent": false,
-          "type": "singlestat",
-          "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(45, 154, 41, 0.97)"
-          ],
-          "datasource": null,
-          "decimals": 1,
-          "editable": true,
-          "error": false,
-          "format": "farenheit",
-          "height": "",
-          "id": 25,
-          "interval": "",
-          "links": [
-            {
-              "dashUri": "db/netatmo",
-              "dashboard": "Netatmo",
-              "title": "Netatmo",
-              "type": "dashboard"
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.67)",
-            "full": true,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": true
-          },
-          "targets": [
-            {
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "min",
-                  "name": "tempf"
-                }
-              ],
-              "fill": "",
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "netatmo.module",
-              "query": "SELECT min(\"tempf\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "tempf"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "min"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "type",
-                  "operator": "=",
-                  "value": "NAModule4"
-                }
-              ]
-            }
-          ],
-          "thresholds": "0,0,1",
-          "timeFrom": null,
-          "title": "Min Room Temp",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -995,33 +1089,33 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
-          "colorValue": true,
+          "colorValue": false,
           "colors": [
-            "rgba(220, 212, 212, 0.9)",
-            "rgba(216, 221, 216, 0.89)",
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
             "rgba(45, 154, 41, 0.97)"
           ],
           "datasource": null,
-          "decimals": 3,
+          "decimals": 0,
           "editable": true,
           "error": false,
-          "format": "short",
+          "format": "farenheit",
           "height": "",
-          "id": 41,
-          "interval": "",
+          "id": 26,
+          "interval": null,
           "links": [
             {
-              "dashUri": "db/netatmo",
-              "dashboard": "Netatmo",
-              "title": "Netatmo",
+              "dashUri": "db/autelis-pool",
+              "dashboard": "Autelis Pool",
+              "title": "Autelis Pool",
               "type": "dashboard"
             }
           ],
           "maxDataPoints": 100,
           "nullPointMode": "connected",
           "nullText": null,
-          "postfix": " inch",
-          "postfixFontSize": "80%",
+          "postfix": "",
+          "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
           "span": 2,
@@ -1036,11 +1130,10 @@
               "dsType": "influxdb",
               "fields": [
                 {
-                  "func": "mean",
-                  "name": "tempf"
+                  "func": "last",
+                  "name": "pooltemp"
                 }
               ],
-              "fill": "",
               "groupBy": [
                 {
                   "interval": "auto",
@@ -1050,36 +1143,30 @@
                   "type": "time"
                 }
               ],
-              "measurement": "netatmo.module",
-              "query": "SELECT last(\"sum_rain_24i\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule3' AND $timeFilter GROUP BY time($interval)",
+              "measurement": "autelis",
+              "query": "SELECT mean(\"pooltemp\") FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "sum_rain_24i"
+                      "pooltemp"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
-                    "type": "last"
+                    "type": "mean"
                   }
                 ]
               ],
-              "tags": [
-                {
-                  "key": "type",
-                  "operator": "=",
-                  "value": "NAModule3"
-                }
-              ]
+              "tags": []
             }
           ],
-          "thresholds": "0,0,0.01",
+          "thresholds": "0,0,5",
           "timeFrom": null,
-          "title": "Rain Today",
+          "title": "Pool Temp",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -1091,109 +1178,6 @@
             }
           ],
           "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(202, 197, 197, 0.9)",
-            "rgba(37, 220, 37, 0)",
-            "rgba(45, 154, 41, 0.97)"
-          ],
-          "datasource": null,
-          "decimals": 3,
-          "editable": true,
-          "error": false,
-          "format": "short",
-          "height": "",
-          "hideTimeOverride": true,
-          "id": 55,
-          "interval": "1h",
-          "links": [
-            {
-              "dashUri": "db/netatmo",
-              "dashboard": "Netatmo",
-              "title": "Netatmo",
-              "type": "dashboard"
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": " inch",
-          "postfixFontSize": "80%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.67)",
-            "full": true,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "tempf"
-                }
-              ],
-              "fill": "",
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "netatmo.module",
-              "query": "SELECT difference(\"sum_rain_24i\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule3' AND $timeFilter GROUP BY time($interval)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "sum_rain_24i"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "max"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "type",
-                  "operator": "=",
-                  "value": "NAModule3"
-                }
-              ]
-            }
-          ],
-          "thresholds": "0,0,0.01",
-          "timeFrom": "7d",
-          "timeShift": null,
-          "title": "Rain Total past 7 days",
-          "transparent": false,
-          "type": "singlestat",
-          "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "total"
         },
         {
           "cacheTimeout": null,
@@ -1543,14 +1527,14 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "noise"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "min",
-                    "params": []
+                    "params": [],
+                    "type": "min"
                   }
                 ]
               ],
@@ -1731,14 +1715,14 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "noise"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "max",
-                    "params": []
+                    "params": [],
+                    "type": "max"
                   }
                 ]
               ],
@@ -1763,211 +1747,25 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "rgba(245, 54, 54, 0)",
-            "rgba(237, 129, 40, 0)",
-            "rgba(45, 154, 41, 0.97)"
-          ],
-          "datasource": null,
-          "decimals": 0,
-          "editable": true,
-          "error": false,
-          "format": "farenheit",
-          "height": "",
-          "id": 26,
-          "interval": null,
-          "links": [
-            {
-              "dashUri": "db/autelis-pool",
-              "dashboard": "Autelis Pool",
-              "title": "Autelis Pool",
-              "type": "dashboard"
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.67)",
-            "full": true,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": true
-          },
-          "targets": [
-            {
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "last",
-                  "name": "pooltemp"
-                }
-              ],
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "autelis",
-              "query": "SELECT mean(\"pooltemp\") FROM \"autelis\" WHERE $timeFilter GROUP BY time($interval)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "pooltemp"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "thresholds": "0,0,5",
-          "timeFrom": null,
-          "title": "Pool Temp",
-          "transparent": false,
-          "type": "singlestat",
-          "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
           "colorValue": true,
           "colors": [
-            "rgb(245, 54, 54)",
-            "rgba(237, 129, 40, 0)",
-            "rgba(45, 154, 41, 0.97)"
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(248, 161, 16, 0.89)",
+            "rgba(22, 182, 43, 0.97)"
           ],
           "datasource": null,
-          "decimals": 0,
+          "decimals": 1,
           "editable": true,
           "error": false,
-          "format": "s",
+          "format": "percent",
           "height": "",
-          "id": 40,
+          "id": 30,
           "interval": "",
           "links": [
             {
-              "dashUri": "db/apc",
-              "dashboard": "APC",
-              "title": "APC",
-              "type": "dashboard"
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.67)",
-            "full": true,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": true
-          },
-          "targets": [
-            {
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "count",
-                  "name": "tracer_count"
-                }
-              ],
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "apcups",
-              "query": "SELECT mean(\"runtime\") FROM \"apcups\" WHERE $timeFilter GROUP BY time($interval)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "runtime"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "thresholds": "0,600,3000",
-          "timeFrom": null,
-          "title": "UPS Runtime",
-          "transparent": false,
-          "type": "singlestat",
-          "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(216, 221, 216, 0.97)",
-            "rgba(237, 129, 40, 0)",
-            "rgba(245, 54, 54, 0.87)"
-          ],
-          "datasource": null,
-          "decimals": 0,
-          "editable": true,
-          "error": false,
-          "format": "short",
-          "height": "",
-          "id": 34,
-          "interval": "",
-          "links": [
-            {
-              "dashUri": "db/usgs-earthquakes",
-              "dashboard": "USGS Earthquakes",
-              "title": "USGS Earthquakes",
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
               "type": "dashboard"
             }
           ],
@@ -1991,9 +1789,10 @@
               "fields": [
                 {
                   "func": "mean",
-                  "name": "count"
+                  "name": "humidity"
                 }
               ],
+              "fill": "",
               "groupBy": [
                 {
                   "interval": "auto",
@@ -2003,15 +1802,15 @@
                   "type": "time"
                 }
               ],
-              "measurement": "usgs.earthquake.metadata",
-              "query": "SELECT mean(\"count\") FROM \"usgs.earthquake.metadata\" WHERE $timeFilter GROUP BY time($interval)",
+              "measurement": "netatmo.module",
+              "query": "SELECT mean(\"humidity\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule1' AND $timeFilter GROUP BY time($interval)",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "count"
+                      "humidity"
                     ],
                     "type": "field"
                   },
@@ -2021,13 +1820,18 @@
                   }
                 ]
               ],
-              "tags": [],
-              "target": ""
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule1"
+                }
+              ]
             }
           ],
-          "thresholds": "0,7,12",
+          "thresholds": "0,20,40",
           "timeFrom": null,
-          "title": "Earthquakes Last Hour",
+          "title": "Outdoor Humidity",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -2043,25 +1847,25 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
-          "colorValue": true,
+          "colorValue": false,
           "colors": [
-            "rgba(213, 220, 213, 0.97)",
-            "rgba(237, 129, 40, 0.9)",
-            "rgba(245, 54, 54, 0.87)"
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(45, 154, 41, 0.97)"
           ],
           "datasource": null,
-          "decimals": 2,
+          "decimals": 1,
           "editable": true,
           "error": false,
-          "format": "short",
+          "format": "percent",
           "height": "",
-          "id": 36,
-          "interval": ">1h",
+          "id": 31,
+          "interval": "",
           "links": [
             {
-              "dashUri": "db/usgs-earthquakes",
-              "dashboard": "USGS Earthquakes",
-              "title": "USGS Earthquakes",
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
               "type": "dashboard"
             }
           ],
@@ -2084,10 +1888,11 @@
               "dsType": "influxdb",
               "fields": [
                 {
-                  "func": "max",
-                  "name": "mag"
+                  "func": "mean",
+                  "name": "humidity"
                 }
               ],
+              "fill": "",
               "groupBy": [
                 {
                   "interval": "auto",
@@ -2097,31 +1902,36 @@
                   "type": "time"
                 }
               ],
-              "measurement": "usgs.earthquake.feature",
-              "query": "SELECT max(\"mag\") FROM \"usgs.earthquake.feature\" WHERE $timeFilter GROUP BY time($interval)",
+              "measurement": "netatmo.module",
+              "query": "SELECT mean(\"humidity\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule4' AND $timeFilter GROUP BY time($interval)",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "mag"
+                      "humidity"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
-                    "type": "max"
+                    "type": "mean"
                   }
                 ]
               ],
-              "tags": [],
-              "target": ""
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule4"
+                }
+              ]
             }
           ],
-          "thresholds": "0,2.5,5",
+          "thresholds": "0,0,1",
           "timeFrom": null,
-          "title": "Max Magnitude Last Hour",
+          "title": "Avg Indoor Humidity",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -2332,7 +2142,7 @@
           "colorValue": true,
           "colors": [
             "rgb(245, 54, 54)",
-            "rgba(237, 129, 40, 0)",
+            "rgba(237, 129, 40, 0.87)",
             "rgb(214, 218, 214)"
           ],
           "datasource": null,
@@ -2410,7 +2220,7 @@
               ]
             }
           ],
-          "thresholds": "0,0.1,5",
+          "thresholds": "0,0.1,1",
           "timeFrom": null,
           "title": "ISY Heartbeat",
           "transparent": false,
@@ -2506,6 +2316,387 @@
           "thresholds": "0,0,5",
           "timeFrom": null,
           "title": "Sentient Heartbeat",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgb(245, 54, 54)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "s",
+          "height": "",
+          "id": 40,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/apc",
+              "dashboard": "APC",
+              "title": "APC",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "count",
+                  "name": "tracer_count"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "apcups",
+              "query": "SELECT mean(\"runtime\") FROM \"apcups\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "runtime"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": "0,600,3000",
+          "timeFrom": null,
+          "title": "UPS Runtime",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgba(216, 221, 216, 0.97)",
+            "rgba(237, 129, 40, 0.87)",
+            "rgba(245, 54, 54, 0.87)"
+          ],
+          "datasource": null,
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 34,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/usgs-earthquakes",
+              "dashboard": "USGS Earthquakes",
+              "title": "USGS Earthquakes",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "count"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "usgs.earthquake.metadata",
+              "query": "SELECT mean(\"count\") FROM \"usgs.earthquake.metadata\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "count"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [],
+              "target": ""
+            }
+          ],
+          "thresholds": "0,7,12",
+          "timeFrom": null,
+          "title": "Earthquakes by Hour",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgba(213, 220, 213, 0.97)",
+            "rgba(237, 129, 40, 0.9)",
+            "rgba(245, 54, 54, 0.87)"
+          ],
+          "datasource": null,
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 36,
+          "interval": ">1h",
+          "links": [
+            {
+              "dashUri": "db/usgs-earthquakes",
+              "dashboard": "USGS Earthquakes",
+              "title": "USGS Earthquakes",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "max",
+                  "name": "mag"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "usgs.earthquake.feature",
+              "query": "SELECT max(\"mag\") FROM \"usgs.earthquake.feature\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "mag"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [],
+              "target": ""
+            }
+          ],
+          "thresholds": "0,2.5,5",
+          "timeFrom": null,
+          "title": "World Max Mag by Hour",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgba(213, 220, 213, 0.97)",
+            "rgba(237, 129, 40, 0.9)",
+            "rgba(245, 54, 54, 0.87)"
+          ],
+          "datasource": null,
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 61,
+          "interval": ">1h",
+          "links": [
+            {
+              "dashUri": "db/usgs-earthquakes",
+              "dashboard": "USGS Earthquakes",
+              "title": "USGS Earthquakes",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "max",
+                  "name": "mag"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "usgs.earthquake.feature",
+              "query": "SELECT max(\"mag\") FROM \"usgs.earthquake.feature\" WHERE \"place\" =~ /California/ AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "mag"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "place",
+                  "operator": "=~",
+                  "value": "/California/"
+                }
+              ],
+              "target": ""
+            }
+          ],
+          "thresholds": "0,2.5,5",
+          "timeFrom": null,
+          "title": "California Max Mag by Hour",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -3618,6 +3809,91 @@
           "error": false,
           "fontSize": "100%",
           "height": "",
+          "id": 60,
+          "isNew": true,
+          "links": [],
+          "pageSize": 25,
+          "scroll": true,
+          "showHeader": true,
+          "sort": {
+            "col": 2,
+            "desc": true
+          },
+          "span": 3,
+          "styles": [
+            {
+              "dateFormat": "HH:mm:ss",
+              "pattern": "Time",
+              "type": "date"
+            },
+            {
+              "colorMode": "row",
+              "colors": [
+                "rgba(50, 172, 45, 0.97)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgb(245, 54, 54)"
+              ],
+              "decimals": 0,
+              "pattern": "/.*/",
+              "thresholds": [
+                "0",
+                "40",
+                "60"
+              ],
+              "type": "number",
+              "unit": "dB"
+            }
+          ],
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "query": "SELECT last(\"noise\") AS \"noise\" FROM \"netatmo.module\" WHERE $timeFilter GROUP BY \"module_name\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "table",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": "30m",
+          "title": "Noise Levels",
+          "transform": "table",
+          "transparent": false,
+          "type": "table"
+        },
+        {
+          "columns": [],
+          "editable": true,
+          "error": false,
+          "fontSize": "100%",
+          "height": "",
           "id": 53,
           "isNew": true,
           "links": [],
@@ -3628,7 +3904,7 @@
             "col": 3,
             "desc": true
           },
-          "span": 6,
+          "span": 5,
           "styles": [
             {
               "dateFormat": "MMM DD HH:mm:ss",
@@ -3716,6 +3992,17 @@
       "title": "Events"
     }
   ],
+  "schemaVersion": 8,
+  "sharedCrosshair": false,
+  "style": "dark",
+  "tags": [
+    "Home",
+    "Sentient",
+    "DevOps"
+  ],
+  "templating": {
+    "list": []
+  },
   "time": {
     "from": "now-2d",
     "to": "now"
@@ -3746,14 +4033,7 @@
       "30d"
     ]
   },
-  "templating": {
-    "list": []
-  },
-  "annotations": {
-    "list": []
-  },
-  "refresh": "30s",
-  "schemaVersion": 8,
-  "version": 88,
-  "links": []
+  "timezone": "browser",
+  "title": "Sentient Home",
+  "version": 104
 }

@@ -1,17 +1,29 @@
 {
-  "id": 4,
-  "title": "Financial",
-  "originalTitle": "Financial",
-  "tags": [
-    "Rates",
-    "Indices",
-    "Stocks"
-  ],
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": false,
+  "id": 4,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Google Finance",
+      "type": "link",
+      "url": "https://www.google.com/finance"
+    }
+  ],
+  "originalTitle": "Financial",
   "rows": [
     {
       "collapse": false,
@@ -1216,6 +1228,17 @@
       "title": "Row"
     }
   ],
+  "schemaVersion": 8,
+  "sharedCrosshair": false,
+  "style": "dark",
+  "tags": [
+    "Rates",
+    "Indices",
+    "Stocks"
+  ],
+  "templating": {
+    "list": []
+  },
   "time": {
     "from": "now-2d",
     "to": "now"
@@ -1245,30 +1268,7 @@
       "30d"
     ]
   },
-  "templating": {
-    "list": []
-  },
-  "annotations": {
-    "list": []
-  },
-  "schemaVersion": 8,
-  "version": 9,
-  "links": [
-    {
-      "icon": "external link",
-      "tags": [
-        "Sentient",
-        "Home"
-      ],
-      "type": "dashboards"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Google Finance",
-      "type": "link",
-      "url": "https://www.google.com/finance"
-    }
-  ]
+  "timezone": "browser",
+  "title": "Financial",
+  "version": 9
 }

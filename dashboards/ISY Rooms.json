@@ -1,17 +1,31 @@
 {
-  "id": 14,
-  "title": "ISY Rooms",
-  "originalTitle": "ISY Rooms",
-  "tags": [
-    "ISY",
-    "Insteon",
-    "Automation"
-  ],
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": true,
+  "id": 14,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "includeVars": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "ISY Dashboard",
+      "type": "link",
+      "url": "http://isy"
+    }
+  ],
+  "originalTitle": "ISY Rooms",
+  "refresh": false,
   "rows": [
     {
       "collapse": false,
@@ -2183,6 +2197,125 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
+          "id": 28,
+          "interval": "",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "[[tag_Event.node.name]]",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "Event.node"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "previous"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "isy",
+              "query": "SELECT \"Event.action\" AS action FROM \"isy\" WHERE \"Event.node.name\" =~ /Gate/ AND \"Event.node.name\" !~ /ABC/ AND  \"Event.control\" = 'ST' AND $timeFilter GROUP BY \"Event.node.name\"",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "Event.action"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "Event.control",
+                  "operator": "=",
+                  "value": "ST"
+                },
+                {
+                  "condition": "AND",
+                  "key": "Event.node",
+                  "operator": "=~",
+                  "value": "/ 1$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Gate",
+          "tooltip": {
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "short",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {
+            "Water Circulation East": "#EAB839",
+            "Water Circulation West": "#1F78C1"
+          },
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": 255,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
           "id": 26,
           "interval": "",
           "isNew": true,
@@ -2530,6 +2663,17 @@
       "title": "New row"
     }
   ],
+  "schemaVersion": 8,
+  "sharedCrosshair": true,
+  "style": "dark",
+  "tags": [
+    "ISY",
+    "Insteon",
+    "Automation"
+  ],
+  "templating": {
+    "list": []
+  },
   "time": {
     "from": "now-3d",
     "to": "now"
@@ -2560,32 +2704,7 @@
       "30d"
     ]
   },
-  "templating": {
-    "list": []
-  },
-  "annotations": {
-    "list": []
-  },
-  "refresh": false,
-  "schemaVersion": 8,
-  "version": 22,
-  "links": [
-    {
-      "icon": "external link",
-      "tags": [
-        "Sentient",
-        "Home"
-      ],
-      "type": "dashboards"
-    },
-    {
-      "icon": "external link",
-      "includeVars": false,
-      "tags": [],
-      "targetBlank": true,
-      "title": "ISY Dashboard",
-      "type": "link",
-      "url": "http://isy"
-    }
-  ]
+  "timezone": "browser",
+  "title": "ISY Rooms",
+  "version": 27
 }
