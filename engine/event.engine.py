@@ -1,12 +1,17 @@
 #!/usr/local/bin/python3 -u
-__author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
-__copyright__ = 'Copyright (C) 2016 Oliver Ratzesberger'
-__license__ = 'Apache License, Version 2.0'
+"""
+    Author:     Oliver Ratzesberger <https://github.com/fxstein>
+    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
+    License:    Apache License, Version 2.0
+"""
 
 # Make sure we have access to SentientHome commons
 import os
 import sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
+try:
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
+except:
+    exit(1)
 
 import asyncio
 import json
