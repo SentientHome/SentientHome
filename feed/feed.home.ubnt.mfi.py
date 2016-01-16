@@ -1,12 +1,17 @@
 #!/usr/local/bin/python3 -u
-__author__ = 'Oliver Ratzesberger <https://github.com/fxstein>'
-__copyright__ = 'Copyright (C) 2016 Oliver Ratzesberger'
-__license__ = 'Apache License, Version 2.0'
+"""
+    Author:     Oliver Ratzesberger <https://github.com/fxstein>
+    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
+    License:    Apache License, Version 2.0
+"""
 
 # Make sure we have access to SentientHome commons
 import os
 import sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
+try:
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
+except:
+    exit(1)
 
 # Sentient Home Application
 from common.shapp import shApp
@@ -15,6 +20,12 @@ from common.shutil import epoch2date, CtoF
 
 import requests
 import json
+
+# Default settings
+from cement.utils.misc import init_defaults
+
+defaults = init_defaults('ubnt_mfi', 'ubnt_mfi')
+defaults['ubnt_mfi']['poll_interval'] = 5.0
 
 
 def mapSensor(sensor):
@@ -45,12 +56,6 @@ def mapSensor(sensor):
 
     return event
 
-
-# Default settings
-from cement.utils.misc import init_defaults
-
-defaults = init_defaults('ubnt_mfi', 'ubnt_mfi')
-defaults['ubnt_mfi']['poll_interval'] = 5.0
 
 with shApp('ubnt_mfi', config_defaults=defaults) as app:
     app.run()

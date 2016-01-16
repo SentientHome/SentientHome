@@ -1,16 +1,30 @@
 {
-  "id": 9,
-  "title": "USGS Earthquakes",
-  "originalTitle": "USGS Earthquakes",
-  "tags": [
-    "Earthquakes",
-    "Tsunamis"
-  ],
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": true,
+  "id": 9,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "USGS Earthquakes > 2.5",
+      "tooltip": "Open USGS website",
+      "type": "link",
+      "url": "http://earthquake.usgs.gov/earthquakes/map/"
+    },
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    }
+  ],
+  "originalTitle": "USGS Earthquakes",
   "rows": [
     {
       "collapse": false,
@@ -714,6 +728,16 @@
       "title": "New row"
     }
   ],
+  "schemaVersion": 8,
+  "sharedCrosshair": true,
+  "style": "dark",
+  "tags": [
+    "Earthquakes",
+    "Tsunamis"
+  ],
+  "templating": {
+    "list": []
+  },
   "time": {
     "from": "now-7d",
     "to": "now"
@@ -749,31 +773,7 @@
     ],
     "type": "timepicker"
   },
-  "templating": {
-    "list": []
-  },
-  "annotations": {
-    "list": []
-  },
-  "schemaVersion": 8,
-  "version": 19,
-  "links": [
-    {
-      "icon": "external link",
-      "tags": [],
-      "targetBlank": true,
-      "title": "USGS Earthquakes > 2.5",
-      "tooltip": "Open USGS website",
-      "type": "link",
-      "url": "http://earthquake.usgs.gov/earthquakes/map/"
-    },
-    {
-      "icon": "external link",
-      "tags": [
-        "Sentient",
-        "Home"
-      ],
-      "type": "dashboards"
-    }
-  ]
+  "timezone": "browser",
+  "title": "USGS Earthquakes",
+  "version": 19
 }

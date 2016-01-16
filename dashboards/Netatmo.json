@@ -1,16 +1,37 @@
 {
-  "id": 6,
-  "title": "Netatmo",
-  "originalTitle": "Netatmo",
-  "tags": [
-    "Climate",
-    "Weather"
-  ],
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": false,
+  "id": 6,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Netatmo Dashboard",
+      "type": "link",
+      "url": "https://my.netatmo.com/app/station"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Weather.com",
+      "type": "link",
+      "url": "http://www.weather.com/"
+    }
+  ],
+  "originalTitle": "Netatmo",
   "rows": [
     {
       "collapse": false,
@@ -1307,6 +1328,16 @@
       "title": "Row"
     }
   ],
+  "schemaVersion": 8,
+  "sharedCrosshair": false,
+  "style": "dark",
+  "tags": [
+    "Climate",
+    "Weather"
+  ],
+  "templating": {
+    "list": []
+  },
   "time": {
     "from": "now-2d",
     "to": "now"
@@ -1342,38 +1373,7 @@
     ],
     "type": "timepicker"
   },
-  "templating": {
-    "list": []
-  },
-  "annotations": {
-    "list": []
-  },
-  "schemaVersion": 8,
-  "version": 14,
-  "links": [
-    {
-      "icon": "external link",
-      "tags": [
-        "Sentient",
-        "Home"
-      ],
-      "type": "dashboards"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Netatmo Dashboard",
-      "type": "link",
-      "url": "https://my.netatmo.com/app/station"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Weather.com",
-      "type": "link",
-      "url": "http://www.weather.com/"
-    }
-  ]
+  "timezone": "browser",
+  "title": "Netatmo",
+  "version": 14
 }

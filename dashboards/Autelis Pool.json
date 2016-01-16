@@ -1,18 +1,12 @@
 {
-  "id": 3,
-  "title": "Autelis Pool",
-  "originalTitle": "Autelis Pool",
-  "tags": [
-    "Pool",
-    "Spa",
-    "Pentair",
-    "Autelis"
-  ],
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": false,
+  "id": 3,
+  "links": [],
+  "originalTitle": "Autelis Pool",
   "rows": [
     {
       "collapse": false,
@@ -919,6 +913,18 @@
       "title": "Row"
     }
   ],
+  "schemaVersion": 8,
+  "sharedCrosshair": false,
+  "style": "dark",
+  "tags": [
+    "Pool",
+    "Spa",
+    "Pentair",
+    "Autelis"
+  ],
+  "templating": {
+    "list": []
+  },
   "time": {
     "from": "now-2d",
     "to": "now"
@@ -948,13 +954,7 @@
       "30d"
     ]
   },
-  "templating": {
-    "list": []
-  },
-  "annotations": {
-    "list": []
-  },
-  "schemaVersion": 8,
-  "version": 3,
-  "links": []
+  "timezone": "browser",
+  "title": "Autelis Pool",
+  "version": 3
 }

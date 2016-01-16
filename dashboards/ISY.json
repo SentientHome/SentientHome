@@ -1,17 +1,31 @@
 {
-  "id": 12,
-  "title": "ISY",
-  "originalTitle": "ISY",
-  "tags": [
-    "ISY",
-    "Insteon",
-    "Automation"
-  ],
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": true,
+  "id": 12,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "includeVars": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "ISY Dashboard",
+      "type": "link",
+      "url": "http://isy"
+    }
+  ],
+  "originalTitle": "ISY",
+  "refresh": false,
   "rows": [
     {
       "collapse": false,
@@ -798,6 +812,17 @@
       "title": "New row"
     }
   ],
+  "schemaVersion": 8,
+  "sharedCrosshair": true,
+  "style": "dark",
+  "tags": [
+    "ISY",
+    "Insteon",
+    "Automation"
+  ],
+  "templating": {
+    "list": []
+  },
   "time": {
     "from": "now-2d",
     "to": "now"
@@ -828,32 +853,7 @@
       "30d"
     ]
   },
-  "templating": {
-    "list": []
-  },
-  "annotations": {
-    "list": []
-  },
-  "refresh": false,
-  "schemaVersion": 8,
-  "version": 23,
-  "links": [
-    {
-      "icon": "external link",
-      "tags": [
-        "Sentient",
-        "Home"
-      ],
-      "type": "dashboards"
-    },
-    {
-      "icon": "external link",
-      "includeVars": false,
-      "tags": [],
-      "targetBlank": true,
-      "title": "ISY Dashboard",
-      "type": "link",
-      "url": "http://isy"
-    }
-  ]
+  "timezone": "browser",
+  "title": "ISY",
+  "version": 23
 }

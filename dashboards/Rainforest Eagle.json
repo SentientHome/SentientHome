@@ -1,17 +1,30 @@
 {
-  "id": 7,
-  "title": "Rainforest Eagle",
-  "originalTitle": "Rainforest Eagle",
-  "tags": [
-    "Power",
-    "Electricity",
-    "Grid"
-  ],
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": true,
+  "id": 7,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Rainforest Eagle",
+      "type": "link",
+      "url": "http://eagle/"
+    }
+  ],
+  "originalTitle": "Rainforest Eagle",
+  "refresh": false,
   "rows": [
     {
       "collapse": false,
@@ -344,7 +357,7 @@
             "leftMax": null,
             "leftMin": null,
             "rightLogBase": 1,
-            "rightMax": null,
+            "rightMax": 15000,
             "rightMin": null,
             "threshold1": null,
             "threshold1Color": "rgba(216, 200, 27, 0.27)",
@@ -371,10 +384,20 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "per hour",
+              "bars": true,
+              "yaxis": 2
+            },
+            {
+              "alias": "per day",
+              "yaxis": 2
+            }
+          ],
           "span": 6,
           "stack": false,
-          "steppedLine": false,
+          "steppedLine": true,
           "targets": [
             {
               "alias": "summation_delivered",
@@ -395,6 +418,7 @@
                   "type": "time"
                 }
               ],
+              "hide": false,
               "measurement": "eagle",
               "query": "SELECT mean(\"summation_delivered\") FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
               "rawQuery": false,
@@ -415,6 +439,52 @@
                 ]
               ],
               "tags": []
+            },
+            {
+              "alias": "per hour",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "summation_delivered"
+                }
+              ],
+              "fill": "previous",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "1h"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "eagle",
+              "query": "SELECT derivative(last(\"summation_delivered\"), 1h) FROM \"eagle\" WHERE $timeFilter GROUP BY time(1h) fill(previous)",
+              "rawQuery": false,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "summation_delivered"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  },
+                  {
+                    "params": [
+                      "1h"
+                    ],
+                    "type": "derivative"
+                  }
+                ]
+              ],
+              "tags": []
             }
           ],
           "timeFrom": null,
@@ -430,7 +500,7 @@
           "y-axis": true,
           "y_formats": [
             "watth",
-            "short"
+            "watth"
           ]
         },
         {
@@ -475,7 +545,14 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "per hour",
+              "bars": true,
+              "steppedLine": true,
+              "yaxis": 2
+            }
+          ],
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -519,6 +596,52 @@
                 ]
               ],
               "tags": []
+            },
+            {
+              "alias": "per hour",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "summation_received"
+                }
+              ],
+              "fill": "previous",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "1h"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "eagle",
+              "query": "SELECT derivative(last(\"summation_received\"), 1h) FROM \"eagle\" WHERE $timeFilter GROUP BY time(1h) fill(previous)",
+              "rawQuery": false,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "summation_received"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  },
+                  {
+                    "params": [
+                      "1h"
+                    ],
+                    "type": "derivative"
+                  }
+                ]
+              ],
+              "tags": []
             }
           ],
           "timeFrom": null,
@@ -534,7 +657,639 @@
           "y-axis": true,
           "y_formats": [
             "watth",
-            "short"
+            "watth"
+          ]
+        },
+        {
+          "aliasColors": {
+            "eagle.mean": "#EF843C",
+            "summation_delivered": "#EF843C"
+          },
+          "bars": false,
+          "datasource": null,
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "hideTimeOverride": false,
+          "id": 21,
+          "interval": "",
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "per day",
+              "bars": true,
+              "steppedLine": true,
+              "yaxis": 2
+            }
+          ],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "summation_delivered",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "summation_delivered"
+                }
+              ],
+              "fill": "previous",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "measurement": "eagle",
+              "query": "SELECT mean(\"summation_delivered\") FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "summation_delivered"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "per day",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "summation_delivered"
+                }
+              ],
+              "fill": "previous",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "1d"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "eagle",
+              "query": "SELECT derivative(last(\"summation_delivered\"), 1d) FROM \"eagle\" WHERE $timeFilter GROUP BY time(1d) fill(previous)",
+              "rawQuery": false,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "summation_delivered"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  },
+                  {
+                    "params": [
+                      "1d"
+                    ],
+                    "type": "derivative"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": "30d",
+          "timeShift": null,
+          "title": "Energy consumed from Grid [Wh]",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "watth",
+            "watth"
+          ]
+        },
+        {
+          "aliasColors": {
+            "eagle.mean": "#7EB26D"
+          },
+          "bars": false,
+          "datasource": null,
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "hideTimeOverride": false,
+          "id": 22,
+          "interval": "",
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "per day",
+              "bars": true,
+              "steppedLine": true,
+              "yaxis": 2
+            }
+          ],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "summation_received",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "summation_received"
+                }
+              ],
+              "fill": "previous",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "eagle",
+              "query": "SELECT mean(\"summation_received\") FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "summation_received"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "per day",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "summation_received"
+                }
+              ],
+              "fill": "previous",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "1d"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "eagle",
+              "query": "SELECT derivative(last(\"summation_received\"), 1d) FROM \"eagle\" WHERE $timeFilter GROUP BY time(1d) fill(previous)",
+              "rawQuery": false,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "summation_received"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  },
+                  {
+                    "params": [
+                      "1d"
+                    ],
+                    "type": "derivative"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": "30d",
+          "timeShift": null,
+          "title": "Energy delivered to Grid [Wh]",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "watth",
+            "watth"
+          ]
+        },
+        {
+          "aliasColors": {
+            "eagle.mean": "#EF843C",
+            "summation_delivered": "#EF843C"
+          },
+          "bars": false,
+          "datasource": null,
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "hideTimeOverride": false,
+          "id": 23,
+          "interval": "",
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "per week",
+              "bars": true,
+              "steppedLine": true,
+              "yaxis": 2
+            }
+          ],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "summation_delivered",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "summation_delivered"
+                }
+              ],
+              "fill": "previous",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "measurement": "eagle",
+              "query": "SELECT mean(\"summation_delivered\") FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "summation_delivered"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "per week",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "summation_delivered"
+                }
+              ],
+              "fill": "previous",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "7d"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "eagle",
+              "query": "SELECT derivative(last(\"summation_delivered\"), 7d) FROM \"eagle\" WHERE $timeFilter GROUP BY time(7d) fill(previous)",
+              "rawQuery": false,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "summation_delivered"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  },
+                  {
+                    "params": [
+                      "7d"
+                    ],
+                    "type": "derivative"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": "180d",
+          "timeShift": null,
+          "title": "Energy consumed from Grid [Wh]",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "watth",
+            "watth"
+          ]
+        },
+        {
+          "aliasColors": {
+            "eagle.mean": "#7EB26D"
+          },
+          "bars": false,
+          "datasource": null,
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "hideTimeOverride": false,
+          "id": 24,
+          "interval": "",
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "per week",
+              "bars": true,
+              "steppedLine": true,
+              "yaxis": 2
+            }
+          ],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "summation_received",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "summation_received"
+                }
+              ],
+              "fill": "previous",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "eagle",
+              "query": "SELECT mean(\"summation_received\") FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "summation_received"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "per week",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "summation_received"
+                }
+              ],
+              "fill": "previous",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "7d"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "eagle",
+              "query": "SELECT derivative(last(\"summation_received\"), 7d) FROM \"eagle\" WHERE $timeFilter GROUP BY time(7d) fill(previous)",
+              "rawQuery": false,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "summation_received"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  },
+                  {
+                    "params": [
+                      "7d"
+                    ],
+                    "type": "derivative"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": "180d",
+          "timeShift": null,
+          "title": "Energy delivered to Grid [Wh]",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "watth",
+            "watth"
           ]
         },
         {
@@ -648,11 +1403,23 @@
       "title": "Rainforest EAGLE - Home Power Consumption"
     }
   ],
+  "schemaVersion": 8,
+  "sharedCrosshair": true,
+  "style": "dark",
+  "tags": [
+    "Power",
+    "Electricity",
+    "Grid"
+  ],
+  "templating": {
+    "list": []
+  },
   "time": {
-    "from": "now-2d",
+    "from": "now-3d",
     "to": "now"
   },
   "timepicker": {
+    "now": true,
     "refresh_intervals": [
       "5s",
       "10s",
@@ -677,31 +1444,7 @@
       "30d"
     ]
   },
-  "templating": {
-    "list": []
-  },
-  "annotations": {
-    "list": []
-  },
-  "refresh": false,
-  "schemaVersion": 8,
-  "version": 4,
-  "links": [
-    {
-      "icon": "external link",
-      "tags": [
-        "Sentient",
-        "Home"
-      ],
-      "type": "dashboards"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Rainforest Eagle",
-      "type": "link",
-      "url": "http://eagle/"
-    }
-  ]
+  "timezone": "browser",
+  "title": "Rainforest Eagle",
+  "version": 8
 }

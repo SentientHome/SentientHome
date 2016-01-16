@@ -1,13 +1,29 @@
 {
-  "id": 11,
-  "title": "Zillow",
-  "originalTitle": "Zillow",
-  "tags": [],
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": true,
+  "id": 11,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [
+        "Sentient",
+        "Home"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Zillow",
+      "type": "link",
+      "url": "http://www.zillow.com/savedhomes/"
+    }
+  ],
+  "originalTitle": "Zillow",
   "rows": [
     {
       "collapse": false,
@@ -443,6 +459,18 @@
       "title": "Row"
     }
   ],
+  "schemaVersion": 8,
+  "sharedCrosshair": true,
+  "style": "dark",
+  "tags": [
+    "Zillow",
+    "Property",
+    "Value",
+    "FInancial"
+  ],
+  "templating": {
+    "list": []
+  },
   "time": {
     "from": "now-7d",
     "to": "now"
@@ -473,30 +501,7 @@
       "30d"
     ]
   },
-  "templating": {
-    "list": []
-  },
-  "annotations": {
-    "list": []
-  },
-  "schemaVersion": 8,
-  "version": 4,
-  "links": [
-    {
-      "icon": "external link",
-      "tags": [
-        "Sentient",
-        "Home"
-      ],
-      "type": "dashboards"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Zillow",
-      "type": "link",
-      "url": "http://www.zillow.com/savedhomes/"
-    }
-  ]
+  "timezone": "browser",
+  "title": "Zillow",
+  "version": 5
 }
