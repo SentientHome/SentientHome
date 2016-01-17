@@ -1020,6 +1020,7 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
+          "decimals": 1,
           "editable": true,
           "error": false,
           "fill": 1,
