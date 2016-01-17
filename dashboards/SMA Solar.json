@@ -1020,6 +1020,7 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
+          "decimals": 1,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1655,5 +1656,5 @@
   },
   "timezone": "browser",
   "title": "SMA Solar",
-  "version": 7
+  "version": 8
 }
