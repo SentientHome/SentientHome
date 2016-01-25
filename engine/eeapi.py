@@ -20,8 +20,8 @@ import time
 from collections import defaultdict
 
 
-class shRestInterface:
-    'SentientHome event engine restful interfaces'
+class eeAPI:
+    'SentientHome event engine restful api'
 
     def __init__(self, app):
         self._app = app
