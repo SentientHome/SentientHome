@@ -1,7 +1,7 @@
 SentientHome
 ============
 
-[![Build Status](https://travis-ci.org/fxstein/SentientHome.svg?branch=master)](https://travis-ci.org/fxstein/SentientHome)
+[![Build Status](https://travis-ci.org/fxstein/SentientHome.svg?branch=develop)](https://travis-ci.org/fxstein/SentientHome)
 
 This is currently work in progress for a Sentient Home Automation project I am working on. It is still in its infancy and has not been packaged for easy deployment.
 
