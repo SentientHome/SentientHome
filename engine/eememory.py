@@ -18,7 +18,7 @@ from collections import defaultdict, deque
 import pickle
 
 
-class shMemoryManager:
+class eeMemory:
     'SentientHome event engine memory manager'
 
     def __init__(self, app, loop):

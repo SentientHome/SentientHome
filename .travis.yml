@@ -20,8 +20,8 @@ script:
   - python common/shapp.py
   - python common/sheventhandler.py
   - python common/shutil.py
-  - python engine/restinterface.py
-  - python engine/memorymanager.py
+  - python engine/eeapi.py
+  - python engine/eememory.py
   - python feed/feed.home.tracer.py --help
   - python feed/feed.home.apcups.py --help
   - python feed/feed.home.autelis.py --help
@@ -33,6 +33,7 @@ script:
   - python feed/feed.home.netatmo.py --help
   - python feed/feed.home.sma.webbox.py --help
   - python feed/feed.home.ubnt.mfi.py --help
+  - python feed/feed.home.ubnt.toughswitch.py --help
   - python feed/feed.home.usgs.earthquake.py --help
   - python feed/feed.home.zillow.py --help
 after_script:

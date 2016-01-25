@@ -27,9 +27,9 @@ from common.shapp import shApp
 from cement.core.exc import CaughtSignal
 
 # Restful/JSON interface API for event engine
-from restinterface import shRestInterface
+from eeapi import eeAPI
 # In memory data manager for processing and persitance
-from memorymanager import shMemoryManager
+from eememory import eeMemory
 
 from cement.core import hook
 
@@ -67,7 +67,7 @@ class shEventEngine(shApp):
     def _post_run(self, app):
         self.log.debug('_post_run()')
 
-        self._memory = shMemoryManager(self, self._loop)
+        self._memory = eeMemory(self, self._loop)
 
         self._loop.run_until_complete(self.init(self._loop))
 
@@ -113,7 +113,7 @@ class shEventEngine(shApp):
 
         # Register and implement all other RESTful interfaces
         # interface =
-        shRestInterface(self)
+        eeAPI(self)
 
         self._webapp_handler = self._webapp.make_handler()
 
