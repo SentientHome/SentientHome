@@ -833,7 +833,22 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "netatmo.module.Temp",
+              "fillBelowTo": "netatmo.module.TempMin",
+              "lines": false,
+              "yaxis": 2,
+              "zindex": -3
+            },
+            {
+              "alias": "netatmo.module.TempMin",
+              "legend": false,
+              "lines": false,
+              "yaxis": 2,
+              "zindex": -3
+            }
+          ],
           "span": 6,
           "stack": false,
           "steppedLine": false,
@@ -871,7 +886,7 @@
                 }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(\"v_pv\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "query": "SELECT max(\"v_pv\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
@@ -884,11 +899,78 @@
                   },
                   {
                     "params": [],
-                    "type": "mean"
+                    "type": "max"
                   }
                 ]
               ],
               "tags": []
+            },
+            {
+              "alias": "",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "24h"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "netatmo.module",
+              "query": "SELECT max(\"tempf\") AS \"Temp\", min(\"tempf\") AS \"TempMin\" FROM \"netatmo.module\" WHERE \"module_name\" = 'Outdoor.Guest' AND $timeFilter GROUP BY time(24h) fill(null)",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "tempf"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  },
+                  {
+                    "params": [
+                      "Temp"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "tempf"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  },
+                  {
+                    "params": [
+                      "TempMin"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "module_name",
+                  "operator": "=",
+                  "value": "Outdoor.Guest"
+                }
+              ]
             }
           ],
           "timeFrom": null,
@@ -1131,6 +1213,7 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
+          "decimals": 1,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1656,5 +1739,5 @@
   },
   "timezone": "browser",
   "title": "SMA Solar",
-  "version": 8
+  "version": 11
 }
