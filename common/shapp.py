@@ -27,6 +27,15 @@ from cement.core.foundation import CementApp
 from cement.ext.ext_colorlog import ColorLogHandler
 from cement.ext.ext_configparser import ConfigParserConfigHandler
 
+LOG_FORMAT = '%(asctime)s (%(levelname)s) %(namespace)s: %(message)s'
+
+
+class shLogHandler(ColorLogHandler):
+    class Meta:
+        file_format = LOG_FORMAT
+        console_format = LOG_FORMAT
+        debug_format = LOG_FORMAT
+
 
 class shConfigHandler(ConfigParserConfigHandler):
     class Meta:
@@ -61,7 +70,7 @@ class shApp(CementApp):
 # avoid erroring out due to missing package
 #       extensions = ['reload_config', 'colorlog']
 
-        log_handler = ColorLogHandler(colors=COLORS)
+        log_handler = shLogHandler(colors=COLORS)
         config_handler = 'sh_config_handler'
         handlers = [shConfigHandler]
 
