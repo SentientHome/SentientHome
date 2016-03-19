@@ -4,7 +4,7 @@
   },
   "editable": true,
   "hideControls": false,
-  "id": 8,
+  "id": 20,
   "links": [
     {
       "icon": "external link",
@@ -23,7 +23,7 @@
       "url": "https://www.sunnyportal.com/FixedPages/Dashboard.aspx"
     }
   ],
-  "originalTitle": "SMA Solar",
+  "originalTitle": "SMA Solar Analysis",
   "refresh": false,
   "rows": [
     {
@@ -48,15 +48,21 @@
             "threshold1": null,
             "threshold1Color": "rgba(216, 200, 27, 0.27)",
             "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            "threshold2Color": "rgba(234, 112, 112, 0.22)",
+            "thresholdLine": false
           },
           "id": 7,
+          "leftYAxisLabel": "",
           "legend": {
+            "alignAsTable": false,
             "avg": false,
             "current": true,
-            "max": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": false,
             "min": false,
-            "show": true,
+            "rightSide": false,
+            "show": false,
             "total": false,
             "values": true
           },
@@ -85,7 +91,7 @@
               "zindex": 3
             }
           ],
-          "span": 6,
+          "span": 3,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -222,7 +228,7 @@
             "current": true,
             "max": true,
             "min": false,
-            "show": true,
+            "show": false,
             "total": false,
             "values": true
           },
@@ -235,7 +241,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 6,
+          "span": 3,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -320,495 +326,6 @@
             "leftMin": null,
             "rightLogBase": 1,
             "rightMax": null,
-            "rightMin": 0,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 8,
-          "legend": {
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [
-            {
-              "alias": "per hour",
-              "bars": true,
-              "steppedLine": true,
-              "yaxis": 2
-            }
-          ],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "GriEgyTdy",
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "GriEgyTdy"
-                }
-              ],
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "smawebbox.plant_overview",
-              "query": "SELECT mean(\"GriEgyTdy\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "GriEgyTdy"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
-            },
-            {
-              "alias": "per hour",
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "GriEgyTdy"
-                }
-              ],
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "1h"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "smawebbox.plant_overview",
-              "query": "SELECT derivative(last(\"GriEgyTot\"), 1h) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time(1h)",
-              "refId": "B",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "GriEgyTot"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "last"
-                  },
-                  {
-                    "params": [
-                      "1h"
-                    ],
-                    "type": "derivative"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Solar Production Daily",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "watth",
-            "watth"
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 9,
-          "legend": {
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "GriEgyTot",
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "GriEgyTot"
-                }
-              ],
-              "fill": "previous",
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "smawebbox.plant_overview",
-              "query": "SELECT mean(\"GriEgyTot\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "GriEgyTot"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Solar Production Total",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "watth",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "decimals": 2,
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 18,
-          "legend": {
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [
-            {
-              "alias": "per week",
-              "bars": true,
-              "steppedLine": true,
-              "yaxis": 2
-            }
-          ],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "GriEgyTdy",
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "GriEgyTdy"
-                }
-              ],
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "smawebbox.plant_overview",
-              "query": "SELECT last(\"GriEgyTdy\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "GriEgyTdy"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "last"
-                  }
-                ]
-              ],
-              "tags": []
-            },
-            {
-              "alias": "per week",
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "GriEgyTdy"
-                }
-              ],
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "7d"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "smawebbox.plant_overview",
-              "query": "SELECT derivative(last(\"GriEgyTot\"), 7d) FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time(7d)",
-              "refId": "B",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "GriEgyTot"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "last"
-                  },
-                  {
-                    "params": [
-                      "7d"
-                    ],
-                    "type": "derivative"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "timeFrom": "30d",
-          "timeShift": null,
-          "title": "Solar Production Daily",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "watth",
-            "watth"
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 19,
-          "legend": {
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "GriEgyTot",
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "GriEgyTot"
-                }
-              ],
-              "fill": "previous",
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "smawebbox.plant_overview",
-              "query": "SELECT mean(\"GriEgyTot\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "GriEgyTot"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "timeFrom": "30d",
-          "timeShift": null,
-          "title": "Solar Production Total",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "watth",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
             "rightMin": null,
             "threshold1": null,
             "threshold1Color": "rgba(216, 200, 27, 0.27)",
@@ -821,7 +338,7 @@
             "current": true,
             "max": true,
             "min": false,
-            "show": true,
+            "show": false,
             "total": false,
             "values": true
           },
@@ -849,7 +366,7 @@
               "zindex": -3
             }
           ],
-          "span": 6,
+          "span": 3,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -904,188 +421,11 @@
                 ]
               ],
               "tags": []
-            },
-            {
-              "alias": "",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "24h"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "netatmo.module",
-              "query": "SELECT max(\"tempf\") AS \"Temp\", min(\"tempf\") AS \"TempMin\" FROM \"netatmo.module\" WHERE \"module_name\" = 'Outdoor.Guest' AND $timeFilter GROUP BY time(24h) fill(null)",
-              "refId": "B",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "tempf"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "max"
-                  },
-                  {
-                    "params": [
-                      "Temp"
-                    ],
-                    "type": "alias"
-                  }
-                ],
-                [
-                  {
-                    "params": [
-                      "tempf"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "min"
-                  },
-                  {
-                    "params": [
-                      "TempMin"
-                    ],
-                    "type": "alias"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "module_name",
-                  "operator": "=",
-                  "value": "Outdoor.Guest"
-                }
-              ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
           "title": "PV Voltage by Device",
-          "tooltip": {
-            "shared": true,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "volt",
-            "short"
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 14,
-          "legend": {
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "$tag_device",
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "mean",
-                  "name": "v_ac"
-                }
-              ],
-              "fill": "",
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "key": "device",
-                  "params": [
-                    "tag"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "device"
-                  ],
-                  "type": "tag"
-                }
-              ],
-              "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(\"v_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "v_ac"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "AC Voltage by Device",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -1124,7 +464,7 @@
             "current": true,
             "max": true,
             "min": false,
-            "show": true,
+            "show": false,
             "total": false,
             "values": true
           },
@@ -1137,7 +477,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 6,
+          "span": 3,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -1213,7 +553,6 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "decimals": 1,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1229,13 +568,179 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 12,
+          "id": 18,
           "legend": {
             "avg": false,
             "current": true,
             "max": true,
             "min": false,
-            "show": true,
+            "show": false,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "smawebbox.plant_overview.max",
+              "fillBelowTo": "smawebbox.plant_overview.min",
+              "legend": false,
+              "lines": false
+            },
+            {
+              "alias": "smawebbox.plant_overview.min",
+              "legend": false,
+              "lines": false
+            },
+            {
+              "alias": "Power",
+              "zindex": 3
+            }
+          ],
+          "span": 3,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Power",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "GriPwr"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "smawebbox.plant_overview",
+              "query": "SELECT mean(\"GriPwr\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GriPwr"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "min",
+                  "name": "GriPwr"
+                },
+                {
+                  "func": "max",
+                  "name": "GriPwr"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "smawebbox.plant_overview",
+              "query": "SELECT min(\"GriPwr\"), max(\"GriPwr\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GriPwr"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "GriPwr"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": "1d",
+          "title": "Solar Production",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "watt",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 19,
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": false,
             "total": false,
             "values": true
           },
@@ -1248,7 +753,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 6,
+          "span": 3,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -1258,7 +763,132 @@
               "fields": [
                 {
                   "func": "mean",
-                  "name": "i_ac"
+                  "name": "power_ac"
+                }
+              ],
+              "fill": "previous",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "smawebbox.process_data",
+              "query": "SELECT mean(\"power_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\" fill(previous)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "power_ac"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": "1d",
+          "title": "Solar Production by Device",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "watt",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 20,
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "netatmo.module.Temp",
+              "fillBelowTo": "netatmo.module.TempMin",
+              "lines": false,
+              "yaxis": 2,
+              "zindex": -3
+            },
+            {
+              "alias": "netatmo.module.TempMin",
+              "legend": false,
+              "lines": false,
+              "yaxis": 2,
+              "zindex": -3
+            }
+          ],
+          "span": 3,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_device",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "v_pv"
                 }
               ],
               "fill": "",
@@ -1285,32 +915,91 @@
                 }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(\"i_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "query": "SELECT max(\"v_pv\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "i_ac"
+                      "v_pv"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
-                    "type": "mean"
+                    "type": "max"
                   }
                 ]
               ],
               "tags": []
-            },
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": "1d",
+          "title": "PV Voltage by Device",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "volt",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 21,
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 3,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
             {
-              "alias": "total",
+              "alias": "$tag_device",
               "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
-                  "name": "i_ac"
+                  "name": "i_pv"
                 }
               ],
               "fill": "",
@@ -1321,24 +1010,36 @@
                     "auto"
                   ],
                   "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
                 }
               ],
-              "hide": true,
               "measurement": "smawebbox.process_data",
-              "query": "SELECT sum(\"i_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval)",
-              "refId": "B",
+              "query": "SELECT mean(\"i_pv\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "i_ac"
+                      "i_pv"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
-                    "type": "sum"
+                    "type": "mean"
                   }
                 ]
               ],
@@ -1346,8 +1047,8 @@
             }
           ],
           "timeFrom": null,
-          "timeShift": null,
-          "title": "AC Current by Device",
+          "timeShift": "1d",
+          "title": "PV Current by Device",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -1379,13 +1080,13 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 16,
+          "id": 22,
           "legend": {
             "avg": false,
             "current": true,
             "max": true,
             "min": false,
-            "show": true,
+            "show": false,
             "total": false,
             "values": true
           },
@@ -1397,21 +1098,36 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
+          "seriesOverrides": [
+            {
+              "alias": "smawebbox.plant_overview.max",
+              "fillBelowTo": "smawebbox.plant_overview.min",
+              "legend": false,
+              "lines": false
+            },
+            {
+              "alias": "smawebbox.plant_overview.min",
+              "legend": false,
+              "lines": false
+            },
+            {
+              "alias": "Power",
+              "zindex": 3
+            }
+          ],
+          "span": 3,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "alias": "$tag_device",
+              "alias": "Power",
               "dsType": "influxdb",
               "fields": [
                 {
                   "func": "mean",
-                  "name": "pcb_tempf"
+                  "name": "GriPwr"
                 }
               ],
-              "fill": "",
               "groupBy": [
                 {
                   "interval": "auto",
@@ -1419,30 +1135,17 @@
                     "auto"
                   ],
                   "type": "time"
-                },
-                {
-                  "key": "device",
-                  "params": [
-                    "tag"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "device"
-                  ],
-                  "type": "tag"
                 }
               ],
-              "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(\"pcb_tempf\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "measurement": "smawebbox.plant_overview",
+              "query": "SELECT mean(\"GriPwr\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "pcb_tempf"
+                      "GriPwr"
                     ],
                     "type": "field"
                   },
@@ -1453,11 +1156,65 @@
                 ]
               ],
               "tags": []
+            },
+            {
+              "alias": "",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "min",
+                  "name": "GriPwr"
+                },
+                {
+                  "func": "max",
+                  "name": "GriPwr"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "smawebbox.plant_overview",
+              "query": "SELECT min(\"GriPwr\"), max(\"GriPwr\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GriPwr"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "GriPwr"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": []
             }
           ],
           "timeFrom": null,
-          "timeShift": null,
-          "title": "PCB Temp by Device",
+          "timeShift": "2d",
+          "title": "Solar Production",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -1466,7 +1223,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "farenheit",
+            "watt",
             "short"
           ]
         },
@@ -1489,13 +1246,13 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 15,
+          "id": 23,
           "legend": {
             "avg": false,
             "current": true,
             "max": true,
             "min": false,
-            "show": true,
+            "show": false,
             "total": false,
             "values": true
           },
@@ -1508,7 +1265,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 6,
+          "span": 3,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -1518,10 +1275,10 @@
               "fields": [
                 {
                   "func": "mean",
-                  "name": "inverter_tempf"
+                  "name": "power_ac"
                 }
               ],
-              "fill": "",
+              "fill": "previous",
               "groupBy": [
                 {
                   "interval": "auto",
@@ -1545,14 +1302,14 @@
                 }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(\"inverter_tempf\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "query": "SELECT mean(\"power_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\" fill(previous)",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "inverter_tempf"
+                      "power_ac"
                     ],
                     "type": "field"
                   },
@@ -1566,8 +1323,8 @@
             }
           ],
           "timeFrom": null,
-          "timeShift": null,
-          "title": "Inverter Temp by Device",
+          "timeShift": "2d",
+          "title": "Solar Production by Device",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -1576,7 +1333,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "farenheit",
+            "watt",
             "short"
           ]
         },
@@ -1584,7 +1341,6 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
-          "decimals": 2,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1600,14 +1356,13 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 17,
-          "leftYAxisLabel": "",
+          "id": 24,
           "legend": {
             "avg": false,
             "current": true,
             "max": true,
             "min": false,
-            "show": true,
+            "show": false,
             "total": false,
             "values": true
           },
@@ -1619,8 +1374,23 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 6,
+          "seriesOverrides": [
+            {
+              "alias": "netatmo.module.Temp",
+              "fillBelowTo": "netatmo.module.TempMin",
+              "lines": false,
+              "yaxis": 2,
+              "zindex": -3
+            },
+            {
+              "alias": "netatmo.module.TempMin",
+              "legend": false,
+              "lines": false,
+              "yaxis": 2,
+              "zindex": -3
+            }
+          ],
+          "span": 3,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -1630,7 +1400,7 @@
               "fields": [
                 {
                   "func": "mean",
-                  "name": "r_iso"
+                  "name": "v_pv"
                 }
               ],
               "fill": "",
@@ -1657,14 +1427,125 @@
                 }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(\"r_iso\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "query": "SELECT max(\"v_pv\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "r_iso"
+                      "v_pv"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": "2d",
+          "title": "PV Voltage by Device",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "volt",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 25,
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 3,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_device",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "i_pv"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "smawebbox.process_data",
+              "query": "SELECT mean(\"i_pv\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "i_pv"
                     ],
                     "type": "field"
                   },
@@ -1678,8 +1559,8 @@
             }
           ],
           "timeFrom": null,
-          "timeShift": null,
-          "title": "r-iso by Device",
+          "timeShift": "2d",
+          "title": "PV Current by Device",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -1688,12 +1569,524 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "short",
+            "amp",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 26,
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "smawebbox.plant_overview.max",
+              "fillBelowTo": "smawebbox.plant_overview.min",
+              "legend": false,
+              "lines": false
+            },
+            {
+              "alias": "smawebbox.plant_overview.min",
+              "legend": false,
+              "lines": false
+            },
+            {
+              "alias": "Power",
+              "zindex": 3
+            }
+          ],
+          "span": 3,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Power",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "GriPwr"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "smawebbox.plant_overview",
+              "query": "SELECT mean(\"GriPwr\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GriPwr"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "min",
+                  "name": "GriPwr"
+                },
+                {
+                  "func": "max",
+                  "name": "GriPwr"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "smawebbox.plant_overview",
+              "query": "SELECT min(\"GriPwr\"), max(\"GriPwr\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "GriPwr"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "GriPwr"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": "7d",
+          "title": "Solar Production",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "watt",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 27,
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 3,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_device",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "power_ac"
+                }
+              ],
+              "fill": "previous",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "smawebbox.process_data",
+              "query": "SELECT mean(\"power_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\" fill(previous)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "power_ac"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": "7d",
+          "title": "Solar Production by Device",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "watt",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 28,
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "netatmo.module.Temp",
+              "fillBelowTo": "netatmo.module.TempMin",
+              "lines": false,
+              "yaxis": 2,
+              "zindex": -3
+            },
+            {
+              "alias": "netatmo.module.TempMin",
+              "legend": false,
+              "lines": false,
+              "yaxis": 2,
+              "zindex": -3
+            }
+          ],
+          "span": 3,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_device",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "v_pv"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "smawebbox.process_data",
+              "query": "SELECT max(\"v_pv\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "v_pv"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": "7d",
+          "title": "PV Voltage by Device",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "volt",
+            "short"
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 29,
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 3,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_device",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "i_pv"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "key": "device",
+                  "params": [
+                    "tag"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "device"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "smawebbox.process_data",
+              "query": "SELECT mean(\"i_pv\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "i_pv"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": "7d",
+          "title": "PV Current by Device",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "amp",
             "short"
           ]
         }
       ],
-      "showTitle": true,
+      "showTitle": false,
       "title": "SMA Solar - PV Production"
     }
   ],
@@ -1708,7 +2101,7 @@
     "list": []
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-9h",
     "to": "now"
   },
   "timepicker": {
@@ -1738,6 +2131,6 @@
     ]
   },
   "timezone": "browser",
-  "title": "SMA Solar",
-  "version": 15
+  "title": "SMA Solar Analysis",
+  "version": 11
 }
