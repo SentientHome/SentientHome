@@ -32,8 +32,8 @@
           "fill": 1,
           "grid": {
             "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
+            "leftMax": 200000,
+            "leftMin": 0,
             "rightLogBase": 1,
             "rightMax": null,
             "rightMin": null,
@@ -59,7 +59,7 @@
           "links": [],
           "nullPointMode": "connected",
           "percentage": false,
-          "pointradius": 5,
+          "pointradius": 1,
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
@@ -73,7 +73,7 @@
               "groupBy": [
                 {
                   "params": [
-                    "$interval"
+                    "auto"
                   ],
                   "type": "time"
                 },
@@ -91,7 +91,7 @@
                 }
               ],
               "measurement": "ubnt.toughswitch",
-              "query": "SELECT mean(\"RxGoodByte\") FROM \"ubnt.toughswitch\" WHERE $timeFilter GROUP BY time($interval), \"switch\" fill(previous)",
+              "query": "SELECT derivative(mean(\"RxGoodByte\"), 1s) FROM \"ubnt.toughswitch\" WHERE $timeFilter GROUP BY time($interval), \"switch\" fill(previous)",
               "rawQuery": false,
               "refId": "A",
               "resultFormat": "time_series",
@@ -106,6 +106,12 @@
                   {
                     "params": [],
                     "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "derivative"
                   }
                 ]
               ],
@@ -123,7 +129,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "bytes",
+            "Bps",
             "short"
           ]
         },
@@ -136,8 +142,8 @@
           "fill": 1,
           "grid": {
             "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
+            "leftMax": 200000,
+            "leftMin": 0,
             "rightLogBase": 1,
             "rightMax": null,
             "rightMin": null,
@@ -194,7 +200,7 @@
                 }
               ],
               "measurement": "ubnt.toughswitch",
-              "query": "SELECT mean(\"TxByte\") FROM \"ubnt.toughswitch\" WHERE $timeFilter GROUP BY time($interval), \"switch\" fill(previous)",
+              "query": "SELECT derivative(mean(\"TxByte\"), 1s) FROM \"ubnt.toughswitch\" WHERE $timeFilter GROUP BY time($interval), \"switch\" fill(previous)",
               "rawQuery": false,
               "refId": "A",
               "resultFormat": "time_series",
@@ -209,6 +215,12 @@
                   {
                     "params": [],
                     "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "derivative"
                   }
                 ]
               ],
@@ -226,7 +238,7 @@
           "x-axis": true,
           "y-axis": true,
           "y_formats": [
-            "bytes",
+            "Bps",
             "short"
           ]
         },
@@ -968,5 +980,5 @@
   },
   "timezone": "browser",
   "title": "UBNT Toughswitch",
-  "version": 11
+  "version": 13
 }
