@@ -73,45 +73,21 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "engine",
-              "query": "SELECT mean(\"blksWrite\") AS \"blksWrite\", mean(\"pointsWrite\") AS \"pointsWrite\" FROM \"engine\" WHERE $timeFilter GROUP BY time($interval) fill(null)",
+              "measurement": "runtime",
+              "query": "SELECT mean(\"Alloc\") FROM \"runtime\" WHERE $timeFilter GROUP BY time($interval) fill(null)",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "blksWrite"
+                      "Alloc"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
                     "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "blksWrite"
-                    ],
-                    "type": "alias"
-                  }
-                ],
-                [
-                  {
-                    "params": [
-                      "pointsWrite"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "pointsWrite"
-                    ],
-                    "type": "alias"
                   }
                 ]
               ],
@@ -120,7 +96,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Engine",
+          "title": "Runtime",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -676,5 +652,5 @@
   },
   "timezone": "browser",
   "title": "Influx",
-  "version": 5
+  "version": 6
 }

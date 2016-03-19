@@ -320,7 +320,7 @@
             "leftMin": null,
             "rightLogBase": 1,
             "rightMax": null,
-            "rightMin": null,
+            "rightMin": 0,
             "threshold1": null,
             "threshold1Color": "rgba(216, 200, 27, 0.27)",
             "threshold2": null,
@@ -620,7 +620,7 @@
                 }
               ],
               "measurement": "smawebbox.plant_overview",
-              "query": "SELECT mean(\"GriEgyTdy\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT last(\"GriEgyTdy\") FROM \"smawebbox.plant_overview\" WHERE $timeFilter GROUP BY time($interval)",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
@@ -633,7 +633,7 @@
                   },
                   {
                     "params": [],
-                    "type": "mean"
+                    "type": "last"
                   }
                 ]
               ],
@@ -1174,14 +1174,14 @@
                 }
               ],
               "measurement": "smawebbox.process_data",
-              "query": "SELECT mean(\"i_ac\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
+              "query": "SELECT mean(\"i_pv\") FROM \"smawebbox.process_data\" WHERE $timeFilter GROUP BY time($interval), \"tag\", \"device\"",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
                     "params": [
-                      "i_ac"
+                      "i_pv"
                     ],
                     "type": "field"
                   },
@@ -1196,7 +1196,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "PV Amperage by Device",
+          "title": "PV Current by Device",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -1347,7 +1347,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "AC Amperage by Device",
+          "title": "AC Current by Device",
           "tooltip": {
             "shared": true,
             "value_type": "cumulative"
@@ -1739,5 +1739,5 @@
   },
   "timezone": "browser",
   "title": "SMA Solar",
-  "version": 11
+  "version": 15
 }

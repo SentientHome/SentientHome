@@ -71,7 +71,7 @@
                 }
               ],
               "measurement": "eagle",
-              "query": "SELECT mean(\"demand\") FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval)",
+              "query": "SELECT last(\"demand\") FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval)",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
@@ -84,7 +84,7 @@
                   },
                   {
                     "params": [],
-                    "type": "mean"
+                    "type": "last"
                   }
                 ]
               ],
@@ -4034,5 +4034,5 @@
   },
   "timezone": "browser",
   "title": "Sentient Home",
-  "version": 106
+  "version": 107
 }
