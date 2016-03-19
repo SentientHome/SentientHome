@@ -1946,6 +1946,106 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgba(45, 154, 41, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "datasource": null,
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "format": "velocitymph",
+          "height": "",
+          "id": 66,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/netatmo",
+              "dashboard": "Netatmo",
+              "title": "Netatmo",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "humidity"
+                }
+              ],
+              "fill": "",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "netatmo.module",
+              "query": "SELECT mean(\"wind_str\") FROM \"netatmo.module\" WHERE \"type\" = 'NAModule2' AND $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "wind_str"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "type",
+                  "operator": "=",
+                  "value": "NAModule2"
+                }
+              ]
+            }
+          ],
+          "thresholds": "0,10,20",
+          "timeFrom": null,
+          "title": "Wind",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
           "colorValue": false,
           "colors": [
             "rgba(245, 54, 54, 0)",
@@ -2222,99 +2322,6 @@
           "thresholds": "0,0.1,1",
           "timeFrom": null,
           "title": "ISY Heartbeat",
-          "transparent": false,
-          "type": "singlestat",
-          "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "rgba(245, 54, 54, 0)",
-            "rgba(237, 129, 40, 0)",
-            "rgba(45, 154, 41, 0.97)"
-          ],
-          "datasource": null,
-          "decimals": 0,
-          "editable": true,
-          "error": false,
-          "format": "short",
-          "height": "",
-          "id": 28,
-          "interval": "",
-          "links": [
-            {
-              "dashUri": "db/sma-solar",
-              "dashboard": "",
-              "title": "",
-              "type": "dashboard"
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.67)",
-            "full": true,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": true
-          },
-          "targets": [
-            {
-              "dsType": "influxdb",
-              "fields": [
-                {
-                  "func": "count",
-                  "name": "tracer_count"
-                }
-              ],
-              "groupBy": [
-                {
-                  "interval": "auto",
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "tracer",
-              "query": "SELECT count(\"tracer_count\") FROM \"tracer\" WHERE $timeFilter GROUP BY time($interval)",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "tracer_count"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "count"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "thresholds": "0,0,5",
-          "timeFrom": null,
-          "title": "Sentient Heartbeat",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -2796,6 +2803,99 @@
           "thresholds": "0,0.01,3",
           "timeFrom": null,
           "title": "North Korea Tracker",
+          "transparent": false,
+          "type": "singlestat",
+          "valueFontSize": "100%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0)",
+            "rgba(237, 129, 40, 0)",
+            "rgba(45, 154, 41, 0.97)"
+          ],
+          "datasource": null,
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "short",
+          "height": "",
+          "id": 28,
+          "interval": "",
+          "links": [
+            {
+              "dashUri": "db/sma-solar",
+              "dashboard": "",
+              "title": "",
+              "type": "dashboard"
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.67)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "count",
+                  "name": "tracer_count"
+                }
+              ],
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "measurement": "tracer",
+              "query": "SELECT count(\"tracer_count\") FROM \"tracer\" WHERE $timeFilter GROUP BY time($interval)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "tracer_count"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "count"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": "0,0,5",
+          "timeFrom": null,
+          "title": "Sentient Heartbeat",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "100%",
@@ -4034,5 +4134,5 @@
   },
   "timezone": "browser",
   "title": "Sentient Home",
-  "version": 107
+  "version": 108
 }
