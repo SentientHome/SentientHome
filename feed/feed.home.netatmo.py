@@ -103,8 +103,8 @@ def mapModule(station, module):
 
     # Now add module type specific mappings
     if module['type'] in ['NAModule1', 'NAModule4']:  # Outdoor & Indoor
-        fields['date_max_temp'] = epoch2date(dashboard['date_max_temp']),
-        fields['date_min_temp'] = epoch2date(dashboard['date_min_temp']),
+        fields['date_max_temp'] = epoch2date(dashboard['date_max_temp'])
+        fields['date_min_temp'] = epoch2date(dashboard['date_min_temp'])
 
         fields['humidity'] = int(dashboard['Humidity'])
         fields['temp'] = dashboard['Temperature']
