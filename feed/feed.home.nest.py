@@ -33,6 +33,8 @@ def mapStructure(structure):
         'measurement': 'nest.structure',
         'tags': {
             'name': structure.name,
+            },
+        'fields': {
             'postal_code': structure.postal_code,
             'country_code': structure.country_code,
             'house_type': structure.house_type,
@@ -43,8 +45,6 @@ def mapStructure(structure):
             'emergency_contact_phone': structure.emergency_contact_phone,
             'structure_area_m2': ('%0.0f' % structure.structure_area),
             'structure_area_ft2': ('%0.0f' % m2toft2(structure.structure_area)),  # noqa
-            },
-        'fields': {
             'dr_reminder_enabled': boolify(structure.dr_reminder_enabled),
             'enhanced_auto_away_enabled': boolify(structure.enhanced_auto_away_enabled),  # noqa
             'eta_preconditioning_active': boolify(structure.eta_preconditioning_active),  # noqa
@@ -76,13 +76,13 @@ def mapThermostat(thermostat):
             'name': thermostat.name,
             'where': thermostat.where,
             'serial': thermostat.serial,
+            },
+        'fields': {
             'last_ip': thermostat.last_ip,
             'local_ip': thermostat.local_ip,
             'mode': thermostat.mode,
             'last_connection': epoch2date(thermostat.last_connection/1000),
             'error_code': thermostat.error_code,
-            },
-        'fields': {
             'fan': boolify(thermostat.fan),
             'temperature_C': (float)('%0.1f' % thermostat.temperature),
             'temperature_F': (float)('%0.1f' % CtoF(thermostat.temperature)),
@@ -116,24 +116,8 @@ def mapProtect(protect):
         'tags': {
             'name': protect.name,
             'where': protect.where,
-            'description': protect.description,
             'serial': protect.serial,
             'product_id': protect.product_id,
-            'software_version': protect.software_version,
-            'wifi_ip_address': protect.wifi_ip_address,
-            'wifi_mac_address': protect.wifi_mac_address,
-            'thread_mac_address': protect.thread_mac_address,
-            'battery_health_state': protect.battery_health_state,
-            'capability_level': protect.capability_level,
-            'certification_body': protect.certification_body,
-            'creation_time': epoch2date(protect.creation_time/1000),
-            'home_alarm_link_type': protect.home_alarm_link_type,
-            'latest_manual_test_end_utc_secs': protect.latest_manual_test_end_utc_secs,  # noqa
-            'latest_manual_test_start_utc_secs': protect.latest_manual_test_start_utc_secs,  # noqa
-            'replace_by_date_utc_secs': epoch2date(protect.replace_by_date_utc_secs),  # noqa
-            'co_sequence_number': protect.co_sequence_number,
-            'smoke_sequence_number': protect.smoke_sequence_number,
-            'wired_or_battery': protect.wired_or_battery
             },
         'fields': {
             'auto_away': boolify(protect.auto_away),
@@ -165,6 +149,22 @@ def mapProtect(protect):
             'ntp_green_led_enable': boolify(protect.ntp_green_led_enable),  # noqa
             'steam_detection_enable': boolify(protect.steam_detection_enable),  # noqa
             'wired_led_enable': boolify(protect.wired_led_enable),
+            'description': protect.description,
+            'software_version': protect.software_version,
+            'wifi_ip_address': protect.wifi_ip_address,
+            'wifi_mac_address': protect.wifi_mac_address,
+            'thread_mac_address': protect.thread_mac_address,
+            'battery_health_state': protect.battery_health_state,
+            'capability_level': protect.capability_level,
+            'certification_body': protect.certification_body,
+            'creation_time': epoch2date(protect.creation_time/1000),
+            'home_alarm_link_type': protect.home_alarm_link_type,
+            'latest_manual_test_end_utc_secs': protect.latest_manual_test_end_utc_secs,  # noqa
+            'latest_manual_test_start_utc_secs': protect.latest_manual_test_start_utc_secs,  # noqa
+            'replace_by_date_utc_secs': epoch2date(protect.replace_by_date_utc_secs),  # noqa
+            'co_sequence_number': protect.co_sequence_number,
+            'smoke_sequence_number': protect.smoke_sequence_number,
+            'wired_or_battery': protect.wired_or_battery
             }
     }]
 

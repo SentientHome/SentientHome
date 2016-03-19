@@ -55,7 +55,7 @@ def mapPort(switch, config, port, data):
                 except ValueError:
                     fields[stat] = data[key][stat]
         else:
-            tags[key] = data[key]
+            fields[key] = data[key]
 
     return event
 

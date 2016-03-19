@@ -54,10 +54,6 @@ def mapStation(station):
             'module_name': station['module_name'],
             'firmware': int(station['firmware']),
             'type': station['type'],
-            'date_max_temp':
-                epoch2date(station['dashboard_data']['date_max_temp']),
-            'date_min_temp':
-                epoch2date(station['dashboard_data']['date_min_temp']),
             # 'pressure_trend': station['dashboard_data']['pressure_trend'],
             # 'temp_trend': station['dashboard_data']['temp_trend'],
             },
@@ -76,6 +72,10 @@ def mapStation(station):
             'tempf': CtoF(station['dashboard_data']['Temperature']),
             'max_tempf': CtoF(station['dashboard_data']['max_temp']),
             'min_tempf': CtoF(station['dashboard_data']['min_temp']),
+            'date_max_temp':
+                epoch2date(station['dashboard_data']['date_max_temp']),
+            'date_min_temp':
+                epoch2date(station['dashboard_data']['date_min_temp']),
             }
     }]
 
@@ -104,8 +104,8 @@ def mapModule(station, module):
 
     # Now add module type specific mappings
     if module['type'] in ['NAModule1', 'NAModule4']:  # Outdoor & Indoor
-        tags['date_max_temp'] = epoch2date(dashboard['date_max_temp']),
-        tags['date_min_temp'] = epoch2date(dashboard['date_min_temp']),
+        fields['date_max_temp'] = epoch2date(dashboard['date_max_temp']),
+        fields['date_min_temp'] = epoch2date(dashboard['date_min_temp']),
 
         fields['humidity'] = int(dashboard['Humidity'])
         fields['temp'] = dashboard['Temperature']
@@ -114,6 +114,76 @@ def mapModule(station, module):
         fields['tempf'] = CtoF(dashboard['Temperature'])
         fields['max_tempf'] = CtoF(dashboard['max_temp'])
         fields['min_tempf'] = CtoF(dashboard['min_temp'])
+
+    elif module['type'] == 'NAModule2':  # Wind
+        fields['wind_str'] = float(dashboard['WindStrength'])
+        fields['wind_angle'] = float(dashboard['WindAngle'])
+        fields['gust_str'] = float(dashboard['GustStrength'])
+        fields['gust_angle'] = float(dashboard['GustAngle'])
+        fields['max_wind_str'] = float(dashboard['max_wind_str'])
+        fields['max_wind_angle'] = float(dashboard['max_wind_angle'])
+
+        # {   "_id": "06:00:00:00:f9:0a",
+        #     "battery_percent": 100.0,
+        #     "battery_vp": 6403.0,
+        #     "dashboard_data":
+        #     {   "GustAngle": 243.0,
+        #         "GustStrength": 5.0,
+        #         "WindAngle": 237.0,
+        #         "WindHistoric":
+        #             [{  "WindAngle": 270.0,
+        #                 "WindStrength": 2.0,
+        #                 "time_utc": 1458409515.0},
+        #              {  "WindAngle": 270.0,
+        #                 "WindStrength": 2.0,
+        #                 "time_utc": 1458409817.0},
+        #              {  "WindAngle": 252.0,
+        #                 "WindStrength": 2.0,
+        #                 "time_utc": 1458410117.0},
+        #              {  "WindAngle": 249.0,
+        #                 "WindStrength": 2.0,
+        #                 "time_utc": 1458410418.0},
+        #              {  "WindAngle": 244.0,
+        #                 "WindStrength": 2.0,
+        #                 "time_utc": 1458410726.0},
+        #              {  "WindAngle": 270.0,
+        #                 "WindStrength": 2.0,
+        #                 "time_utc": 1458411027.0},
+        #              {  "WindAngle": 249.0,
+        #                 "WindStrength": 2.0,
+        #                 "time_utc": 1458411329.0},
+        #              {  "WindAngle": 236.0,
+        #                 "WindStrength": 3.0,
+        #                 "time_utc": 1458411630.0},
+        #              {  "WindAngle": 200.0,
+        #                 "WindStrength": 2.0,
+        #                 "time_utc": 1458411930.0},
+        #              {  "WindAngle": 225.0,
+        #                 "WindStrength": 2.0,
+        #                 "time_utc": 1458412232.0},
+        #              {  "WindAngle": 206.0,
+        #                 "WindStrength": 2.0,
+        #                 "time_utc": 1458412533.0},
+        #              {  "WindAngle": 237.0,
+        #                 "WindStrength": 2.0,
+        #                 "time_utc": 1458412834.0}],
+        #         "WindStrength": 2.0,
+        #         "date_max_temp": 1458370953.0,
+        #         "date_max_wind_str": 1458398980.0,
+        #         "date_min_temp": 1458370953.0,
+        #         "max_temp": 0.0,
+        #         "max_wind_angle": 259.0,
+        #         "max_wind_str": 6.0,
+        #         "min_temp": 0.0,
+        #         "time_utc": 1458412834.0},
+        #     "data_type": ["Wind"],
+        #     "firmware": 14.0,
+        #     "last_message": 1458412847.0,
+        #     "last_seen": 1458412847.0,
+        #     "last_setup": 1458092732.0,
+        #     "module_name": "BBQ",
+        #     "rf_status": 66.0,
+        #     "type": "NAModule2"}
 
     elif module['type'] == 'NAModule3':  # Rain
         fields['rain'] = dashboard['Rain']
