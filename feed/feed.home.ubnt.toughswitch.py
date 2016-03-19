@@ -45,7 +45,6 @@ def mapPort(switch, config, port, data):
     }]
 
     fields = event[0]['fields']
-    tags = event[0]['tags']
 
     for key in data.keys():
         if key == 'stats':
@@ -55,7 +54,7 @@ def mapPort(switch, config, port, data):
                 except ValueError:
                     fields[stat] = data[key][stat]
         else:
-            tags[key] = data[key]
+            fields[key] = data[key]
 
     return event
 
