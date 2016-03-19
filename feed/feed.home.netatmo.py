@@ -98,7 +98,6 @@ def mapModule(station, module):
             }
     }]
 
-    tags = event[0]['tags']
     fields = event[0]['fields']
     dashboard = module['dashboard_data']
 
