@@ -172,8 +172,6 @@ class shApp(CementApp):
         self.log.info('#')
         self.log.info('# Event Listener: %s' % self._event_listener)
         self.log.info('# Host:           %s' % self._listener_path)
-
-
         self.log.info('#')
         self.log.info('#' * 78)
 
