@@ -8,6 +8,8 @@
 # Make sure we have access to SentientHome commons
 import os
 import sys
+import platform
+import subprocess
 
 try:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
@@ -78,6 +80,9 @@ class shApp(CementApp):
         # always run core setup first
         super(shApp, self).setup()
 
+        # Interigate git for current version info
+        self._initVersion()
+
         # Lets store who is using this module - used for filenames
         (self._origin_pathname, self._origin_filename) =\
             os.path.split(inspect.stack()[-1][1])
@@ -97,6 +102,80 @@ class shApp(CementApp):
         self._setEventStore()
         self._setEventEngine()
         self._setListener()
+
+        # Once everything is setup log the application header
+        self._LogHeader()
+
+    def _initVersion(self, gitPath=None):
+        """Initialize the version and GIT revision."""
+        if not gitPath:
+            gitPath = "git"
+            self.log.debug("Git path not specified, using system path.")
+        self._gitVersion = None
+        self._gitRevision = None
+        self._gitDirty = None
+        try:
+            self._gitVersion = subprocess.check_output(
+                [gitPath, "--version"],
+                stderr=subprocess.STDOUT).decode("utf-8").strip()
+            self._gitRevision = subprocess.check_output(
+                [gitPath, "describe", "--tags", "--always", "HEAD"],
+                stderr=subprocess.STDOUT).decode("utf-8").strip()
+            self._gitModifiedFiles = subprocess.check_output(
+                [gitPath, "status", "--porcelain"],
+                stderr=subprocess.STDOUT).decode("utf-8").splitlines()
+            self._gitDirty = True if self._gitModifiedFiles else False
+        except subprocess.CalledProcessError as e:
+            self.log.debug(
+                "Git information is not available: %s." %
+                e.output.decode("utf-8"))
+        except Exception as e:
+            self.log.debug("Git is not available: %s" % e)
+
+    def _LogHeader(self):
+        """Log default logging header for App."""
+        # Output default logheader
+        self.log.info('#' * 78)
+        self.log.info('#')
+        self.log.info('# SentientHome')
+        self.log.info('#')
+        self.log.info('# Module:         %s' % self._origin_filename)
+        self.log.info('# Path:           %s' % self._origin_pathname)
+        self.log.info('# Revison:        %s' % self._gitRevision)
+        self.log.info('# Dirty:          %s' % self._gitDirty)
+        self.log.info('#')
+        self.log.info('# Git:            %s' % self._gitVersion)
+        self.log.info('#')
+        self.log.info('# Python:         %s' % platform.python_version())
+        # self.log.info('# Python Rev:     %s' % platform.python_revision())
+        self.log.info('# Platform:       %s' % platform.platform())
+        self.log.info('# Node:           %s' % platform.node())
+        # self.log.info('# System:         %s' % platform.system())
+        # self.log.info('# Release:        %s' % platform.release())
+        # self.log.info('# Version:        %s' % platform.version())
+        self.log.info('#')
+        self.log.info('# Retries:        %s' % self._retries)
+        self.log.info('# Interval:       %ss' % self._retry_interval)
+        self.log.info('# Checkpointing:  %s' % self._checkpointing)
+        self.log.info('#')
+        self.log.info('# Event Store:    %s' % self._event_store)
+        self.log.info('# Host:           %s' % self._event_store_host)
+        self.log.info('# Port:           %s' % self._event_store_port)
+        self.log.info('# User:           %s' % self._event_store_user)
+        self.log.info('# Database:       %s' % self._event_store_db)
+        self.log.info('# Info:           %s' % self._event_store_info)
+        self.log.info('#')
+        self.log.info('# Event Engine:   %s' % self._event_engine)
+        self.log.info('# Host:           %s' % self._event_engine_addr)
+        self.log.info('# Port:           %s' % self._event_engine_port)
+        self.log.info('# Info:           %s' % self._event_engine_path_safe)
+        self.log.info('#')
+        self.log.info('# Event Listener: %s' % self._event_listener)
+        self.log.info('# Host:           %s' % self._listener_path)
+
+
+        self.log.info('#')
+        self.log.info('#' * 78)
 
     def _setEventStore(self):
         config = self.config
@@ -151,6 +230,9 @@ class shApp(CementApp):
     def _setEventEngine(self):
         config = self.config
 
+        self._event_engine = config.get('SentientHome', 'event_engine',
+                                        fallback='OFF')
+
         self._event_engine_active = 0
 
         self._event_engine_addr = None
@@ -158,7 +240,7 @@ class shApp(CementApp):
         self._event_engine_path_safe = None
         self._event_engine_path = None
 
-        if config.get('SentientHome', 'event_engine', fallback='OFF') == 'ON':
+        if self._event_engine == 'ON':
             self._event_engine_active = 1
             self._event_engine_addr = config.get('SentientHome', 'event_addr')
             self._event_engine_port = config.get('SentientHome', 'event_port')
@@ -175,12 +257,14 @@ class shApp(CementApp):
     def _setListener(self):
         config = self.config
 
+        self._event_listener = config.get('SentientHome', 'listener',
+                                          fallback='OFF')
         self._listener_active = 0
 
         self._listener_path = None
         self._listener_auth = None
 
-        if config.get('SentientHome', 'listener', fallback='OFF') == 'ON':
+        if self._event_listener == 'ON':
             self._listener_active = 1
             self._listener_path = config.get('SentientHome', 'listener_addr')
             api_key = config.get('SentientHome', 'listener_api_key')
