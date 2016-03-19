@@ -44,7 +44,7 @@ def mapSensor(sensor):
         if key in ['_id', 'label', 'mac', 'model', 'port', 'tag']:
             tags[key] = sensor[key]
         elif 'time' in key:
-            tags[key] = epoch2date(sensor[key]/1000)
+            fields[key] = epoch2date(sensor[key]/1000)
         else:
             try:
                 fields[key] = float(sensor[key])
