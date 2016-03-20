@@ -82,7 +82,7 @@ Contributing
 We appreciate any contribution to SentientHome, whether it is related to bugs, grammar, or simply a suggestion or improvement.
 However, we ask that any contributions follow our simple guidelines in order to be properly received.
 
-All our projects follow the [GitFlow branching model][gitflow-model], from development to release. If you are not familiar with it, there are several guides and tutorials to make you understand what it is about.
+All our projects follow the [GitFlow branching model](http://nvie.com/posts/a-successful-git-branching-model/), from development to release. If you are not familiar with it, there are several guides and tutorials to make you understand what it is about.
 
 You will probably want to get started by installing [this very good collection of git extensions][gitflow-extensions].
 
