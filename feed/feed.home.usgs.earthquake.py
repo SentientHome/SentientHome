@@ -64,7 +64,7 @@ def mapFeature(feature):
             'long': float(feature['geometry']['coordinates'][0]),
             'lat': float(feature['geometry']['coordinates'][1]),
             'depth': float(feature['geometry']['coordinates'][2]),
-            'mag': feature['properties']['mag'],
+            'mag': float(feature['properties']['mag']),
             'felt': feature['properties']['felt'],
             'sig': feature['properties']['sig'],
             'dmin': feature['properties']['dmin'],
@@ -77,7 +77,6 @@ def mapFeature(feature):
             'updated': epoch2date(feature['properties']['updated']/1000),
             'tz': feature['properties']['tz'],
             'ids': feature['properties']['ids'],
-            'cdi': feature['properties']['cdi'],
         }
     }]
 
@@ -95,6 +94,9 @@ def mapFeature(feature):
 
     if feature['properties']['mag'] is not None:
         fields['mag'] = float(feature['properties']['mag'])
+
+    if feature['properties']['cdi'] is not None:
+        fields['cdi'] = float(feature['properties']['cdi'])
 
     return event
 
