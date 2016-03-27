@@ -305,10 +305,16 @@ ample storage including multiple backups.
     inventory, update, configure the Raspberry PI (or many) from a single
     central location.
 
-    When down unmount the new SD card from the system by typing
-    `sudo umount /dev/sda`. With that the card can be safely removed from the
+    We can now unmount the new SD card from the system by typing
+
+    ``` shell
+    sudo umount /tmp/pi.sd.restore/boot
+    sudo umount /tmp/pi.sd.restore
+    ```
+
+    With that the card can be safely removed from the
     Raspberry PI, either for retention/safekeeping or to boot up new instances
-    of additional Rapsberry PIs. By using these clones you can quickly bring up
+    of additional Raspberry PIs. By using these clones you can quickly bring up
     and entire army of PIs if you so desire.
 
 ## Operating from HDD or SSD
