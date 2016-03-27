@@ -156,12 +156,12 @@ SD card.
     the following commands:
 
     ``` shell
-    sudo su⏎
-    apt-get update⏎
-    apt-get upgrade⏎
-    apt-get install rpi-update⏎
-    rpi-update⏎
-    reboot⏎
+    sudo su
+    apt-get update
+    apt-get upgrade
+    apt-get install rpi-update
+    rpi-update
+    reboot
     ```
 
     These will update all core components of our setup to the very latest
@@ -169,3 +169,148 @@ SD card.
 
 We now have a basic working and initialized setup that we can leverage for one
 or multiple Raspberry PIs.
+
+## Backing up the Raspberry PI
+
+With the necessary tools in place we can start doing our first backup of the
+newly configured Raspberry PI:
+
+``` shell
+mkdir -p /home/pi/backups
+sudo tar --exclude=/home/pi/backups --one-file-system -cvzf "/home/pi/backups/`uname -n`.`date +%Y%m%d%H%M%S`.backup.tar.gz" / /boot
+ls -la /home/pi/backups
+```
+
+Make a note of the backup file name as we will need it for cloning/restoring
+on to the new SD Card in the next step:
+
+``` shell
+total 370448
+drwxr-xr-x 2 pi   pi        4096 Mar 27 19:13 .
+drwxr-xr-x 3 pi   pi        4096 Mar 27 17:51 ..
+-rw-r--r-- 1 root root 379325527 Mar 27 18:20 raspberrypi.20160327181510.backup.tar.gz
+```
+
+Note: Since we are making a complete backup of the boot SD onto itself, we need
+ample storage in order to not fill up the device with as little as a single
+backup archive. This is why we recommend a 32GB boot SD card. This is also the
+reason why we chose the Raspbian LITE distribution. A full backup should be
+approximately 380MB - before installing additional software or any Sentient
+Home data.
+
+## Cloning the SD Card
+
+Now that we have a full backup of the clean install we can create an SD Card
+clone by simply restoring the backup onto a newly partitioned and formatted
+card. We recommend you continue to use 32GB cards, that way you always have
+ample storage including multiple backups.
+
+1.  Insert a brand new 32GB Micro SD card into a USB adpater and into one of the
+    USB ports of the Raspberry.
+
+2.  Now we need to identify the device name that we need to partion, format and
+    restore the backup to. Simply enter `sudo fdisk -l⏎`.
+
+    The bottom of the output should look similar to this:
+
+    ``` shell
+    Device         Boot  Start      End  Sectors  Size Id Type
+    /dev/mmcblk0p1        8192   131071   122880   60M  c W95 FAT32 (LBA)
+    /dev/mmcblk0p2      131072 62333951 62202880 29.7G 83 Linux
+
+    Disk /dev/sda: 29.7 GiB, 31914983424 bytes, 62333952 sectors
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    Disklabel type: dos
+    Disk identifier: 0x00000000
+
+    Device     Boot Start      End  Sectors  Size Id Type
+    /dev/sda1        8192 62333951 62325760 29.7G  c W95 FAT32 (LBA)
+
+    ```
+
+    Note: Ignore all the RAM disks but if you have additional storage devices
+    attached pay extra attention to pick the right disk name. The name you pick
+    will get repartitioned, formatted and overwritten. As such any data on that
+    device will be lost.
+
+    In this case the name of our external SD Card is `/dev/sda` and matches
+    approximately the 32GB of capacity. (Storage vendors always multiply and
+    round in decimals rather than binary)
+
+    To verify one more time that we have selected the correct name simply run
+    `sudo parted --script /dev/sda "print"⏎`
+
+    The output should look similar to this:
+
+    ``` shell
+    Model: Mass Storage Device (scsi)
+    Disk /dev/sda: 31.9GB
+    Sector size (logical/physical): 512B/512B
+    Partition Table: msdos
+    Disk Flags:
+
+    Number  Start   End     Size    Type     File system  Flags
+     1      4194kB  31.9GB  31.9GB  primary  ext4         lba
+    ```
+
+    Note: The bottom list represents existing partitions on the device.
+    Depending on brand and prior usage this can be a single or multiple ones.
+
+3.  With the name of the SD Card `/dev/sda` disk in hand we can now partition
+    the card so it can be used as a boot card.
+
+    ``` shell
+    sudo parted --script /dev/sda  "mklabel msdos"
+    sudo parted --script /dev/sda  "mkpart primary fat16 1MiB 64MB"
+    sudo parted --script /dev/sda  "mkpart primary ext4 64MB -1s"
+    sudo mkfs.vfat  "/dev/sda1"
+    sudo mkfs.ext4 -F -j "/dev/sda2"
+    ```
+
+    Note: We are creating 2 partitions: A 64MB msdos fat and the remainder of
+    the card as a Linux ext4 and formatting them in their respective file
+    systems.
+
+    To verify the new card layout run `sudo parted --script /dev/sda  print⏎`
+
+    The output should look similar to this:
+
+    ``` shell
+    Model: Mass Storage Device (scsi)
+    Disk /dev/sda: 31.9GB
+    Sector size (logical/physical): 512B/512B
+    Partition Table: msdos
+    Disk Flags:
+
+    Number  Start   End     Size    Type     File system  Flags
+     1      1049kB  64.0MB  62.9MB  primary               lba
+     2      64.0MB  31.9GB  31.9GB  primary
+    ```
+
+4.  With the card newly partitioned and formatted its time to mount the file
+    systems and copy/restore our backup onto the card.
+
+    ``` shell
+    sudo mkdir -p /tmp/pi.sd.restore
+    sudo mount "/dev/sda2" "/tmp/pi.sd.restore"
+    sudo mkdir -p /tmp/pi.sd.restore/boot
+    sudo mount "/dev/sda1" "/tmp/pi.sd.restore/boot"
+    sudo tar -xvzf  "/home/pi/backups/raspberrypi.20160327181510.backup.tar.gz" -C "/tmp/pi.sd.restore"
+    ```
+
+5.  With this the restore/clone is complete. At this point modifications can be
+    made but should not be required, as we will leverage Ansible scripts to
+    inventory, update, configure the Raspberry PI (or many) from a single
+    central location.
+
+    When down unmount the new SD card from the system by typing
+    `sudo umount /dev/sda`. With that the card can be safely removed from the
+    Raspberry PI, either for retention/safekeeping or to boot up new instances
+    of additional Rapsberry PIs. By using these clones you can quickly bring up
+    and entire army of PIs if you so desire.
+
+## Operating from HDD or SSD
+
+TBD
