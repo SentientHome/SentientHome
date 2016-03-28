@@ -227,7 +227,6 @@ ample storage including multiple backups.
 
     Device     Boot Start      End  Sectors  Size Id Type
     /dev/sda1        8192 62333951 62325760 29.7G  c W95 FAT32 (LBA)
-
     ```
 
     Note: Ignore all the RAM disks but if you have additional storage devices
@@ -319,4 +318,165 @@ ample storage including multiple backups.
 
 ## Operating from HDD or SSD
 
-TBD
+Now onto some more permanent and scalable as well as reliable storage options.
+A 32GB SD Card provides ample of storage for the basics, but beyond that we will
+require 'real' storage. A bit part of that is also reliability.
+SD Cards don't like to be written to a lot and will fail fairly quickly if too
+much data gets continuously written to them.
+
+This is where an HDD or better an SDD comes into the play. As mentioned in the
+recommended configuration README for the Raspberry PI, we opt to use a Samsung
+T1 or the newer T3 external SSDs. They are fast - in fact way faster that the
+PI can currently utilize, they are reliable and extremely low on power
+consumption. They don't require an external USB hub and as such we can leverage
+the 10W PoE power supplies to power both the Raspberry PI 2/3 as well as the
+SSD.
+
+Note: We commonly see 3-5W of power draw from the complete config including an
+external SD Card (for ongoing backups) and the mentioned 500GB SSD.
+
+You cannot run a Raspberry PI only on an HDD or SDD and you always require the
+boot loader SD Card from witch the Raspberry needs to start its boot sequence.
+However we can 'catch' the boot process and continue it from the SSD.
+
+This is how to setup the Raspberry to run off an HDD/SDD. The setup is very
+similar to the process of creating and cloning a boot SD card.
+
+1.  Attache the SDD or HDD to one of the USB ports of the Raspberry. We
+    recommend to leave the Micro SD USB adapter in its exiting slot for ongoing
+    backups and in case you need to clone more SD card. This will also ensure
+    that the SDD or HDD gets a new deveice name different from the '/dev/sda'
+    the SD card occupies.
+
+2.  Now we need to identify the device name that we need to partion, format and
+    restore the backup to. Like before simply enter `sudo fdisk -l⏎`.
+
+    The bottom of the output should look similar to this:
+
+    ``` shell
+    Disklabel type: dos
+    Disk identifier: 0x6f92008e
+
+    Device         Boot  Start      End  Sectors  Size Id Type
+    /dev/mmcblk0p1        8192   131071   122880   60M  c W95 FAT32 (LBA)
+    /dev/mmcblk0p2      131072 62333951 62202880 29.7G 83 Linux
+
+    Disk /dev/sda: 29.7 GiB, 31914983424 bytes, 62333952 sectors
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    Disklabel type: dos
+    Disk identifier: 0x60b85697
+
+    Device     Boot  Start      End  Sectors  Size Id Type
+    /dev/sda1         2048   124927   122880   60M  e W95 FAT16 (LBA)
+    /dev/sda2       124928 62333951 62209024 29.7G 83 Linux
+
+    Disk /dev/sdb: 232.9 GiB, 250059350016 bytes, 488397168 sectors
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    Disklabel type: dos
+    Disk identifier: 0x01a46122
+
+    Device     Boot Start       End   Sectors   Size Id Type
+    /dev/sdb1  *       64 488392128 488392065 232.9G  7 HPFS/NTFS/exFAT
+    ```
+
+    In this case the name of our external SSD is `/dev/sdb` and matches
+    approximately the 500GB of capacity. (Storage vendors always multiply and
+    round in decimals rather than binary)
+
+    To verify one more time that we have selected the correct name simply run
+    `sudo parted --script /dev/sdb "print"⏎`
+
+    The output should look similar to this:
+
+    ``` shell
+    Model: Samsung Portable SSD T3 (scsi)
+    Disk /dev/sdb: 250GB
+    Sector size (logical/physical): 512B/512B
+    Partition Table: msdos
+    Disk Flags:
+
+    Number  Start   End    Size   Type     File system  Flags
+     1      32.8kB  250GB  250GB  primary               boot
+    ```
+
+    Note: The bottom list represents existing partitions on the device.
+    Depending on brand and prior usage this can be a single or multiple ones.
+
+3.  With the name of the SSD `/dev/sdb` disk in hand we can now partition
+    the disk so it can be used as a our system drive.
+
+    ``` shell
+    sudo parted --script /dev/sdb  "mklabel msdos"
+    sudo parted --script /dev/sdb  "mkpart primary fat16 1MiB 64MB"
+    sudo parted --script /dev/sdb  "mkpart primary linux-swap(v1) 64MB 4G"
+    sudo parted --script /dev/sdb  "mkpart primary ext4 4G -1s"
+    sudo mkfs.vfat  "/dev/sdb1"
+    sudo mkswap /dev/sdb2
+    sudo mkfs.ext4 -F -j "/dev/sdb3"
+    ```
+
+    Note: We are creating 3 partitions: A 64MB msdos fat partion, a 4GB swap and
+    the remainder of the disk as a Linux ext4 and formatting them in their
+    respective file formats.
+
+    To verify the new SSD layout run `sudo parted --script /dev/sdb  print⏎`
+
+    The output should look similar to this:
+
+    ``` shell
+    Model: Samsung Portable SSD T3 (scsi)
+    Disk /dev/sdb: 250GB
+    Sector size (logical/physical): 512B/512B
+    Partition Table: msdos
+    Disk Flags:
+
+    Number  Start   End     Size    Type     File system     Flags
+     1      1049kB  64.0MB  62.9MB  primary  fat16           lba
+     2      64.0MB  4000MB  3936MB  primary  linux-swap(v1)
+     3      4000MB  250GB   246GB   primary  ext4
+    ```
+
+4.  With the SSD newly partitioned and formatted its time to mount the file
+    systems and copy/restore our backup onto the card.
+
+    ``` shell
+    sudo mkdir -p /tmp/pi.ssd
+    sudo mount "/dev/sdb3" "/tmp/pi.ssd"
+    sudo mkdir -p /tmp/pi.ssd/boot
+    sudo mount "/dev/sdb1" "/tmp/pi.ssd/boot"
+    sudo tar -xvzf  "/home/pi/backups/raspberrypi.20160327181510.backup.tar.gz" -C "/tmp/pi.ssd"
+    ```
+
+5.  Now that the SSD or HDD has a copy of our current system, we need to modify
+    some of the boot settings to start using the SSD as soon as the boot has
+    progressed far enough beyond the point were it needs the SD Card as a boot
+    medium.
+    Change the mount configuration file on the new root:
+
+    ``` shell
+    sudo vi /tmp/pi.ssd/etc/fstab
+    ```
+
+    and replace '/dev/mmcblk0p2' with '/dev/sdb3' and add /dev/sdb2 as a swap
+    partition by adding this line: '/dev/sdb2 none swap sw 0 0'
+
+    Now remove the old swapfiles that will no longer get used because of
+    the dedicated swap partition.
+
+    ``` shell
+    sudo rm /tmp/pi.ssd/etc/rc?.d/*dphys-swapfile
+    sudo rm /tmp/pi.ssd/var/swap
+    sudo cp /boot/cmdline.txt /boot/cmdline.orig
+    ```
+
+    Finally point the boot loader to the new file system on the SSD:
+
+    ``` shell
+    sudo vi /boot/cmdline.txt
+    ```
+
+    and replace '/dev/mmcblk0p2' with '/dev/sdb3' and `reboot⏎`
