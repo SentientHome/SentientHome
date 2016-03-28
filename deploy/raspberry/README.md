@@ -69,5 +69,5 @@ fit for a project like this. Most come with USB3 interfaces that are also a
 decent investment for the future.
 
 Our choice for the Rasperry PI is the
-[Samsung T1 Portable 250GB USB 3.0 External SSD](http://www.amazon.com/Samsung-Portable-500GB-External-MU-PS500B/dp/B00RWXVMRS)
-available in sizes 250GB, 500GB and 1TB 
+[Samsung T3 Portable 250GB USB 3.0 External SSD](http://www.amazon.com/Samsung-Portable-External-MU-PT250B-AM/dp/B01AVF6WN2)
+available in sizes 250GB, 500GB and 1TB
