@@ -3533,7 +3533,7 @@
       "title": "Financial"
     },
     {
-      "collapse": false,
+      "collapse": true,
       "editable": true,
       "height": "100px",
       "panels": [
@@ -4134,5 +4134,5 @@
   },
   "timezone": "browser",
   "title": "Sentient Home",
-  "version": 108
+  "version": 109
 }

@@ -7,6 +7,7 @@
   "id": 18,
   "links": [],
   "originalTitle": "UBNT mFi",
+  "refresh": false,
   "rows": [
     {
       "collapse": false,
@@ -340,8 +341,8 @@
           "fill": 1,
           "grid": {
             "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": null,
+            "leftMax": 30,
+            "leftMin": 0,
             "rightLogBase": 1,
             "rightMax": null,
             "rightMin": null,
@@ -525,5 +526,5 @@
   },
   "timezone": "browser",
   "title": "UBNT mFi",
-  "version": 9
+  "version": 11
 }
