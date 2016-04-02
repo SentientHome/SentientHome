@@ -57,7 +57,6 @@ with shApp('zillow', config_defaults=defaults) as app:
             'measurement': 'zillow',
             'tags': {
                 'zpid': request_data['zpid'],
-                'last_updated': property_data['last-updated'],
                 'region': local_data['region']['@name'],
                 'region_type': local_data['region']['@type'],
             },
@@ -69,6 +68,7 @@ with shApp('zillow', config_defaults=defaults) as app:
                 'percentile': int(property_data['percentile']),
                 'zindexValue': float(local_data['region']
                                      ['zindexValue'].replace(',', '')),
+                'last_updated': property_data['last-updated'],
             }
         }]
 

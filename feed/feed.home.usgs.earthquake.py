@@ -33,11 +33,11 @@ def mapMetadata(metadata):
         'measurement': 'usgs.earthquake.metadata',     # Time Series Name
         'tags': {
             'title': metadata['title'],
-            'generated': epoch2date(metadata['generated']/1000),
             'api': metadata['api'],
             'status': metadata['status'],
         },
         'fields': {
+            'generated': epoch2date(metadata['generated']/1000),
             'count': metadata['count']
         }
     }]
@@ -49,22 +49,12 @@ def mapFeature(feature):
     event = [{
         'measurement': 'usgs.earthquake.feature',      # Time Series Name
         'tags': {
-            'id': feature['id'],
-            'status': feature['properties']['status'],
-            'title': feature['properties']['title'],
-            'place': feature['properties']['place'],
-            'status': feature['properties']['status'],
             'type': feature['properties']['type'],
             'gtype': feature['geometry']['type'],
             'types': feature['properties']['types'],
             'magType': feature['properties']['magType'],
             'tsunami': feature['properties']['tsunami'],
             'code': feature['properties']['code'],
-            'time': epoch2date(feature['properties']['time']/1000),
-            'updated': epoch2date(feature['properties']['updated']/1000),
-            'tz': feature['properties']['tz'],
-            'ids': feature['properties']['ids'],
-            'cdi': feature['properties']['cdi'],
             'net': feature['properties']['net'],
             'nst': feature['properties']['nst'],
             'sources': feature['properties']['sources'],
@@ -74,10 +64,18 @@ def mapFeature(feature):
             'long': float(feature['geometry']['coordinates'][0]),
             'lat': float(feature['geometry']['coordinates'][1]),
             'depth': float(feature['geometry']['coordinates'][2]),
-            'mag': feature['properties']['mag'],
             'felt': feature['properties']['felt'],
             'sig': feature['properties']['sig'],
             'dmin': feature['properties']['dmin'],
+            'id': feature['id'],
+            'status': feature['properties']['status'],
+            'title': feature['properties']['title'],
+            'place': feature['properties']['place'],
+            'status': feature['properties']['status'],
+            'time': epoch2date(feature['properties']['time']/1000),
+            'updated': epoch2date(feature['properties']['updated']/1000),
+            'tz': feature['properties']['tz'],
+            'ids': feature['properties']['ids'],
         }
     }]
 
@@ -92,6 +90,12 @@ def mapFeature(feature):
 
     if feature['properties']['rms'] is not None:
         fields['rms'] = float(feature['properties']['rms'])
+
+    if feature['properties']['mag'] is not None:
+        fields['mag'] = float(feature['properties']['mag'])
+
+    if feature['properties']['cdi'] is not None:
+        fields['cdi'] = float(feature['properties']['cdi'])
 
     if feature['properties']['mag'] is not None:
         fields['mag'] = float(feature['properties']['mag'])

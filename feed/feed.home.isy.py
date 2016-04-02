@@ -86,8 +86,8 @@ def eventFeed(*arg):
         # Ok if it does not exist
         pass
 
-    tags = extract_tags(data, ['Event-sid', 'Event.node', 'Event.node.name',
-                        'Event.control', 'Event.eventInfo.id'])
+    tags = extract_tags(data, ['Event.node', 'Event.node.name',
+                        'Event.control'])
 
     event = [{
         'measurement': 'isy',
