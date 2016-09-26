@@ -53,6 +53,8 @@ def mapSensor(sensor):
                     fields['temperatureF'] = CtoF(sensor[key])
             except ValueError:
                 fields[key] = sensor[key]
+            except TypeError:
+                fields[key] = None
 
     return event
 
