@@ -16,6 +16,14 @@
     },
     {
       "icon": "external link",
+      "tags": [
+        "Solar",
+        "Analytics"
+      ],
+      "type": "dashboards"
+    },
+    {
+      "icon": "external link",
       "tags": [],
       "targetBlank": true,
       "title": "SMA Sunny Portal",
@@ -1739,5 +1747,5 @@
   },
   "timezone": "browser",
   "title": "SMA Solar",
-  "version": 15
+  "version": 17
 }

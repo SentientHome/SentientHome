@@ -1397,6 +1397,113 @@
             "percent",
             "short"
           ]
+        },
+        {
+          "aliasColors": {
+            "eagle.mean": "#EF843C",
+            "summation_delivered": "#EF843C"
+          },
+          "bars": false,
+          "datasource": null,
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "fill": 2,
+          "grid": {
+            "leftLogBase": 1,
+            "leftMax": null,
+            "leftMin": 0,
+            "rightLogBase": 1,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": 18000,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": 20000,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)",
+            "thresholdLine": false
+          },
+          "hideTimeOverride": false,
+          "id": 25,
+          "interval": ">24h",
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": true,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "summation_delivered",
+              "dsType": "influxdb",
+              "fields": [
+                {
+                  "func": "mean",
+                  "name": "summation_delivered"
+                }
+              ],
+              "fill": "previous",
+              "groupBy": [
+                {
+                  "interval": "auto",
+                  "params": [
+                    "auto"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "measurement": "eagle",
+              "query": "SELECT max(\"demand\") FROM \"eagle\" WHERE $timeFilter GROUP BY time($interval) fill(previous)",
+              "rawQuery": false,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "demand"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": "180d",
+          "timeShift": null,
+          "title": "Maximum Demand [W]",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "y_formats": [
+            "watt",
+            "watth"
+          ]
         }
       ],
       "showTitle": true,
@@ -1446,5 +1553,5 @@
   },
   "timezone": "browser",
   "title": "Rainforest Eagle",
-  "version": 8
+  "version": 9
 }

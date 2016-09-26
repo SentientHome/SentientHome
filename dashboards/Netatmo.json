@@ -713,6 +713,7 @@
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
           "id": 12,
+          "interval": "",
           "leftYAxisLabel": "",
           "legend": {
             "avg": false,
@@ -768,7 +769,7 @@
                 }
               ],
               "measurement": "netatmo.module",
-              "query": "SELECT last(\"wind_str\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\"",
+              "query": "SELECT mean(\"wind_str\") FROM \"netatmo.module\" WHERE $timeFilter GROUP BY time($interval), \"tag\"",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
@@ -781,7 +782,7 @@
                   },
                   {
                     "params": [],
-                    "type": "last"
+                    "type": "mean"
                   }
                 ]
               ],
@@ -1532,5 +1533,5 @@
   },
   "timezone": "browser",
   "title": "Netatmo",
-  "version": 16
+  "version": 17
 }
