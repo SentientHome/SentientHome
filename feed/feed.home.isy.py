@@ -18,6 +18,8 @@ from common.shapp import shApp
 from common.shutil import flatten_dict, extract_tags
 from common.sheventhandler import shEventHandler
 
+import time
+
 # Add path to submodule dependencies.ISYlib-python
 try:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
@@ -49,7 +51,15 @@ except Exception as e:
     exit(1)
 
 # Make sure we pre populate all internal isy structures
-isy.load_nodes()
+try:
+    isy.load_nodes()
+except Exception as e:
+    app.log.error('Unable to load ISY nodes.', __name__)
+    app.log.error(e)
+    app.close()
+    # Wait a few seconds to recover in case process restarts under supervisord
+    time.sleep(5)
+    exit(2)
 
 
 # Realtime event feeder
