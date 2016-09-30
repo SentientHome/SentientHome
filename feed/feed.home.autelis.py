@@ -45,7 +45,14 @@ with shApp('autelis', config_defaults=defaults) as app:
 
         app.log.debug('Fetch data: %s' % r.text)
 
-        rawdata = xml_to_dict(r.text)
+        try:
+            rawdata = xml_to_dict(r.text)
+        except Exception as e:
+            # If xml is malfored - error but ignore/skip
+            app.log.error(e)
+            # Wait for next poll interval
+            handler.sleep()
+            continue
 
         data = dict(list(rawdata['response']['equipment'].items()) +
                     list(rawdata['response']['system'].items()) +
