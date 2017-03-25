@@ -1,26 +1,28 @@
 #!/usr/local/bin/python3 -u
 """
-    Author:     Oliver Ratzesberger <https://github.com/fxstein>
-    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
-    License:    Apache License, Version 2.0
+SentientHome Application - based on Cement framework.
+
+Author:     Oliver Ratzesberger <https://github.com/fxstein>
+Copyright:  Copyright (C) 2017 Oliver Ratzesberger
+License:    Apache License, Version 2.0
 """
 
 # Make sure we have access to SentientHome commons
 import os
-import sys
 import platform
 import subprocess
+import sys
 
 try:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
-except:
+except Exception:
     exit(1)
 
 # Sentient Home Application
 from common.shutil import boolify
 
-import inspect
 import configparser
+import inspect
 
 # Storage engine support - might move into a plugin at some point in time
 from influxdb import InfluxDBClient
@@ -33,17 +35,26 @@ LOG_FORMAT = '%(asctime)s (%(levelname)s) %(namespace)s: %(message)s'
 
 
 class shLogHandler(ColorLogHandler):
-    class Meta:
+    """Setup default log handler."""
+
+    class Meta(object):
+        """Define log format."""
+
         file_format = LOG_FORMAT
         console_format = LOG_FORMAT
         debug_format = LOG_FORMAT
 
 
 class shConfigHandler(ConfigParserConfigHandler):
-    class Meta:
+    """Setup default config handler."""
+
+    class Meta(object):
+        """Setup label."""
+
         label = 'sh_config_handler'
 
     def get(self, *args, **kw):
+        """Fail mandatory but missing config settings."""
         try:
             return super(shConfigHandler, self).get(*args, **kw)
         except configparser.Error as e:
@@ -60,16 +71,20 @@ COLORS = {
 
 
 class shApp(CementApp):
-    class Meta:
+    """SentientHome application."""
+
+    class Meta(object):
+        """Setup defaults."""
+
         config_files = ['~/.config/sentienthome/sentienthome.conf',
                         '/etc/sentienthome.conf']
         extensions = ['colorlog']
         arguments_override_config = True
 
-# TODO: reload_config is currently not supported as of Cement 2.6 due to the
-# fact that pyinotify does not support OSX. Opened an issue with Cement to see
-# if the python watchdog extension could be used instead. Disabling for now to
-# avoid erroring out due to missing package
+# TODO(fxstein): reload_config is currently not supported as of Cement 2.6 due
+# to the fact that pyinotify does not support OSX. Opened an issue with Cement
+# to see if the python watchdog extension could be used instead. Disabling for
+# now to avoid erroring out due to missing package
 #       extensions = ['reload_config', 'colorlog']
 
         log_handler = shLogHandler(colors=COLORS)
@@ -77,6 +92,7 @@ class shApp(CementApp):
         handlers = [shConfigHandler]
 
     def setup(self):
+        """Perform application setup."""
         # always run core setup first
         super(shApp, self).setup()
 
@@ -247,7 +263,7 @@ class shApp(CementApp):
                 self._event_engine_port + \
                 config.get('SentientHome', 'event_path')
 
-            # TODO: Add authentication to event engine
+            # TODO(fxstein): Add authentication to event engine
             self._event_engine_path = self._event_engine_path_safe
 
         self.log.debug('Event engine @: %s' % self._event_engine_path_safe)
@@ -273,50 +289,62 @@ class shApp(CementApp):
 
     @property
     def retries(self):
+        """Number of retries before we should give up."""
         return self._retries
 
     @property
     def retry_interval(self):
+        """Retry interval in seconds."""
         return self._retry_interval
 
     @property
     def checkpointing(self):
+        """Checkpointing flag."""
         return self._checkpointing
 
     @property
     def event_store(self):
+        """Event store address."""
         return self._event_store
 
     @property
     def event_store_active(self):
+        """Event store flag."""
         return self._event_store_active
 
     @property
     def event_store_path_safe(self):
+        """Event store path without confidential info for e.g. logging."""
         return self._event_store_path_safe
 
     @property
     def event_store_path(self):
+        """Event store path including all data."""
         return self._event_store_path
 
     @property
     def event_engine_active(self):
+        """Event engine flag."""
         return self._event_engine_active
 
     @property
     def event_engine_path_safe(self):
+        """Event engine path without confidential info for e.g. logging."""
         return self._event_engine_path_safe
 
     @property
     def event_engine_path(self):
+        """Event engine path including all data."""
         return self._event_engine_path
 
     @property
     def origin_filename(self):
+        """Origin file name for logging."""
         return self._origin_filename
 
     @property
     def origin_pathname(self):
+        """Origin path name for logging."""
         return self._origin_pathname
 
 #

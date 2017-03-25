@@ -1,24 +1,27 @@
 #!/usr/local/bin/python3 -u
 """
-    Author:     Oliver Ratzesberger <https://github.com/fxstein>
-    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
-    License:    Apache License, Version 2.0
+SentientHome utility functions.
+
+Author:     Oliver Ratzesberger <https://github.com/fxstein>
+Copyright:  Copyright (C) 2017 Oliver Ratzesberger
+License:    Apache License, Version 2.0
 """
 
 from collections import defaultdict
-import xml.etree.ElementTree as ET
 import locale
 import time
+import xml.etree.ElementTree as ET
 
 
 def xml_to_dict(text):
+    """Parse an xml document into a python dict."""
     t = ET.fromstring(text)
 
     return etree_to_dict(t)
 
 
-# Helper function needed to convert an XML response to a Dictionary
 def etree_to_dict(t):
+    """Helper function needed to convert an XML response to a dict."""
     d = {t.tag: {} if t.attrib else None}
 
     c = list(t)
@@ -41,9 +44,11 @@ def etree_to_dict(t):
     return d
 
 
-# Turn text encoded numeric values into numbers
-# Added locale functions to deal with thousands separators in incoming
 def numerify(v):
+    """Turn text encoded numeric values into numbers.
+
+    Added locale functions to deal with thousands separators in incoming
+    """
     try:
         return float(v)
     except Exception:
@@ -53,16 +58,18 @@ def numerify(v):
             return v
 
 
-# Helper to rekey flattened dicts in dot notation
 def rekey_dict(key, d):
+    """Helper to rekey flattened dicts in dot notation."""
     return dict((key + '.' + k, numerify(v)) for k, v in d.items())
 
 
-# Helper to flatten embeded structures
-# If there is a dict within a dict this function will pop the dict and
-# insert it's rekeyed keys and values into the main dict. The key of the
-# embedded dict will be prepended with a separator '.' to the keys
 def flatten_dict(d):
+    """Helper to flatten embeded structures.
+
+    If there is a dict within a dict this function will pop the dict and
+    insert it's rekeyed keys and values into the main dict. The key of the
+    embedded dict will be prepended with a separator '.' to the keys
+    """
     f = d
 
     if type(d) is dict:
@@ -80,8 +87,8 @@ def flatten_dict(d):
     return f
 
 
-# Helper function to extract tags out of data dict
 def extract_tags(data, keys):
+    """Helper function to extract tags out of data dict."""
     tags = dict()
 
     for key in keys:
@@ -94,39 +101,39 @@ def extract_tags(data, keys):
     return tags
 
 
-# Conversion: Celcius to Fahrenheit
 def CtoF(t):
+    """Conversion: Celcius to Fahrenheit."""
     return (t*9)/5+32
 
 
-# Conversion: mili Bar to inch Hg
 def mBtoiHg(p):
+    """Conversion: mili Bar to inch Hg."""
     return p*0.02953
 
 
-# Conversion: millimeter to inch
 def mmtoin(m):
+    """Conversion: millimeter to inch."""
     return m*0.03937
 
 
-# Conversion: square meter to square foot
 def m2toft2(a):
+    """Conversion: square meter to square foot."""
     return a*10.764
 
 
-# Conversion: string to bool
 def boolify(s):
+    """Conversion: string to bool."""
     return (str)(s).lower() in['true', '1', 't', 'y', 'yes', 'on', 'enable',
                                'enabled']
 
 
-# Conversion: string to bool to int
 def boolify2int(str):
+    """Conversion: string to bool to int."""
     return (int)(boolify(str))
 
 
-# Conversion epoch to local timestamp string
 def epoch2date(epoch):
+    """# Conversion epoch to local timestamp string."""
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(epoch))
 
 #

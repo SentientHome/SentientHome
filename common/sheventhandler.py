@@ -1,23 +1,26 @@
 #!/usr/local/bin/python3 -u
 """
-    Author:     Oliver Ratzesberger <https://github.com/fxstein>
-    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
-    License:    Apache License, Version 2.0
+SentientHome event handler.
+
+Author:     Oliver Ratzesberger <https://github.com/fxstein>
+Copyright:  Copyright (C) 2017 Oliver Ratzesberger
+License:    Apache License, Version 2.0
 """
 
-import requests
-import json
-import time
-import os
 from collections import deque
-import pickle
 import copy
+import json
+import os
+import pickle
+import requests
+import time
 
 
-class shEventHandler:
-    'SentientHome event handler'
+class shEventHandler(object):
+    """SentientHome event handler."""
 
     def __init__(self, app, interval_key='poll_interval', dedupe=False):
+        """Initialize event handler."""
         self._app = app
 
         self._app.log.info('Starting feed for %s' % self._app._meta.label)
@@ -109,7 +112,8 @@ class shEventHandler:
                 self._app.log.info('Event engine response: %s' % r)
             except Exception as e:
                 self._app.log.fatal(e)
-                self._app.log.fatal('Exception posting data to event engine: %s'
+                self._app.log.fatal('Exception posting data to ' +
+                                    'event engine: %s'
                                     % self._app.event_engine_path_safe)
                 self._app.close(1)
 
@@ -133,7 +137,7 @@ class shEventHandler:
                 self._app.close(1)
 
     def postEvent(self, event, dedupe=False, batch=False):
-
+        """Post event data to store, engine and optional listener."""
         # Timestamp the event - only applied to events heading to event engine
         timestamp = time.time()
 
@@ -166,6 +170,7 @@ class shEventHandler:
             self._postListener(event, timestamp)
 
     def checkPoint(self, write=False):
+        """Take a check point."""
         if self._app.checkpointing is True:
             if (self._dedupe and write and self._events_modified) is True:
                 # Write checkpoint deque type manages maxlength automatically
@@ -184,6 +189,7 @@ class shEventHandler:
         self._checkpoint = time.clock()
 
     def sleep(self, sleeptime=None):
+        """Go to sleep for configured time."""
         # Before anything else flush batch if one has been accumulated
         if len(self._batch) > 0:
             self._app.log.info('Batch Event Count: %s' % len(self._batch))
@@ -225,8 +231,8 @@ class shEventHandler:
 
         self.checkPoint()
 
-    # RESTful get helper to handle retries
     def get(self, url, auth=None):
+        """Restful get helper to handle retries."""
         retries = 0
 
         while True:
@@ -252,8 +258,8 @@ class shEventHandler:
                 self.sleep(self._app._retry_interval)
                 continue
 
-    # RESTful post helper to handle retries
     def post(self, url, auth=None, data=None, headers=None):
+        """Restful post helper to handle retries."""
         retries = 0
 
         while True:
