@@ -285,6 +285,7 @@ class shEventHandler(object):
                 self.sleep(self._app._retry_interval)
                 continue
 
+
 #
 # Do nothing
 #

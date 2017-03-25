@@ -61,6 +61,7 @@ class shConfigHandler(ConfigParserConfigHandler):
             self.app.log.fatal('Missing configuration setting: %s' % e)
             self.app.close(1)
 
+
 COLORS = {
     'DEBUG':    'cyan',
     'INFO':     'green',
@@ -346,6 +347,7 @@ class shApp(CementApp):
     def origin_pathname(self):
         """Origin path name for logging."""
         return self._origin_pathname
+
 
 #
 # Do nothing

@@ -136,6 +136,7 @@ def epoch2date(epoch):
     """# Conversion epoch to local timestamp string."""
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(epoch))
 
+
 #
 # Do nothing
 # (syntax check)
