@@ -1,8 +1,10 @@
 #!/usr/local/bin/python3 -u
 """
-    Author:     Oliver Ratzesberger <https://github.com/fxstein>
-    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
-    License:    Apache License, Version 2.0
+SentientHome ISY event engine plugin.
+
+Author:     Oliver Ratzesberger <https://github.com/fxstein>
+Copyright:  Copyright (C) 2017 Oliver Ratzesberger
+License:    Apache License, Version 2.0
 """
 
 # Make sure we have access to SentientHome commons
@@ -10,10 +12,11 @@ import os
 import sys
 try:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
-except:
+except Exception:
     exit(1)
 
-from collections import defaultdict, deque
+from collections import defaultdict
+from collections import deque
 
 from cement.core import hook
 from cement.utils.misc import init_defaults
@@ -23,14 +26,14 @@ try:
                     '/../dependencies/ISYlib-python')
 
     from ISY.IsyClass import Isy
-except:
+except Exception:
     exit(1)
 
 defaults = init_defaults('plugin.isy')
 
 
 def extend_app(app):
-
+    """Extened event engine app through plugin."""
     isy_addr = app.config.get('isy', 'isy_addr')
     isy_user = app.config.get('isy', 'isy_user')
     isy_pass = app.config.get('isy', 'isy_pass')
@@ -53,6 +56,7 @@ def extend_app(app):
 
 
 def event_state(app, event_type, event):
+    """Extend event state processing with plugin."""
     app.log.debug('event_state() Event: %s %s' %
                   (event_type, event), __name__)
     try:
@@ -87,10 +91,12 @@ def event_state(app, event_type, event):
 
 
 def load(app):
+    """Register plugin on load."""
     hook.register('post_run', extend_app)
     hook.register('event_state', event_state)
 
     app.log.info('Succeful ISY Plugin registration', __name__)
+
 
 #
 # Do nothing
