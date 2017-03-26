@@ -1,8 +1,10 @@
 #!/usr/local/bin/python3 -u
 """
-    Author:     Oliver Ratzesberger <https://github.com/fxstein>
-    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
-    License:    Apache License, Version 2.0
+SentientHome event engine. Listen to all events from the various feeds.
+
+Author:     Oliver Ratzesberger <https://github.com/fxstein>
+Copyright:  Copyright (C) 2017 Oliver Ratzesberger
+License:    Apache License, Version 2.0
 """
 
 # Make sure we have access to SentientHome commons
@@ -10,21 +12,21 @@ import os
 import sys
 try:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
-except:
+except Exception:
     exit(1)
 
 import asyncio
+import copy
 import json
 import time
-import copy
 
 from aiohttp import web
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 
 # Sentient Home Application
-from common.shapp import shApp
 from cement.core.exc import CaughtSignal
+from common.shapp import shApp
 
 # Restful/JSON interface API for event engine
 from eeapi import eeAPI
@@ -35,7 +37,11 @@ from cement.core import hook
 
 
 class shEventEngine(shApp):
-    class Meta:
+    """Event engine."""
+
+    class Meta(object):
+        """Event engine default settings."""
+
         label = 'sheventengine'
 
         # Define hooks that plugins may implment to extend the event engine
@@ -51,6 +57,7 @@ class shEventEngine(shApp):
                               '~/SentientHome/rules']
 
     def setup(self):
+        """Setup event engine."""
         # always run core setup first
         super(shEventEngine, self).setup()
 
@@ -77,7 +84,6 @@ class shEventEngine(shApp):
         self._loop.run_until_complete(self.finish())
 
     def _checkpoint(self):
-
         if app.checkpointing is True:
             app.log.debug('Checkpointing memory cache')
 
@@ -94,10 +100,12 @@ class shEventEngine(shApp):
                                   self._checkpoint)
 
     def run_forever(self):
+        """Forever loop."""
         self._loop.run_forever()
 
     @asyncio.coroutine
     def init(self, loop):
+        """Initialize event engine."""
         eaddr = self.config.get('SentientHome', 'event_addr')
         eport = self.config.get('SentientHome', 'event_port')
         epath = self.config.get('SentientHome', 'event_path')
@@ -129,13 +137,14 @@ class shEventEngine(shApp):
                                                         fallback=60)),
                                   app._checkpoint)
         except Exception as e:
-            self.log.fatal("Unable to start RESTful interface at http://%s:%s" %
+            self.log.fatal("Unable to start RESTful interface @ http://%s:%s" %
                            (eaddr, eport))
             self.log.fatal(e)
             self._loop.stop()
 
     @asyncio.coroutine
     def handle_event(self, request):
+        """Event engine - handle incoming events."""
         self.log.debug('shEventEngine handle_event')
 
         try:
@@ -149,7 +158,7 @@ class shEventEngine(shApp):
 
                 # Initialize raw event cache if it does not exist yet
                 if not self._memory.raw[event['measurement']]:
-                    # TODO: Lookup cache size from config
+                    # TODO(fxstein): Lookup cache size from config
                     self._memory.raw[event['measurement']] = deque(maxlen=5000)
 
                 # Populate raw event memory
@@ -201,6 +210,7 @@ class shEventEngine(shApp):
 
     @asyncio.coroutine
     def process_event(self, event_type, event):
+        """Event engine process incoming event."""
         self.log.debug('process_event() Event: %s %s' % (event_type, event))
 
         # Enable plugins to define state/status caches specific to
@@ -220,6 +230,7 @@ class shEventEngine(shApp):
 
     @asyncio.coroutine
     def finish(self):
+        """Shutting down event engine."""
         self.log.debug('shEventEngine finish')
 
         self.log.info('Shuting down Event Engine...')

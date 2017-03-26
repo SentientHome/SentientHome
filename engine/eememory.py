@@ -1,8 +1,10 @@
 #!/usr/local/bin/python3 -u
 """
-    Author:     Oliver Ratzesberger <https://github.com/fxstein>
-    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
-    License:    Apache License, Version 2.0
+SentientHome event engine memory manager.
+
+Author:     Oliver Ratzesberger <https://github.com/fxstein>
+Copyright:  Copyright (C) 2017 Oliver Ratzesberger
+License:    Apache License, Version 2.0
 """
 
 # Make sure we have access to SentientHome commons
@@ -10,24 +12,26 @@ import os
 import sys
 try:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
-except:
+except Exception:
     exit(1)
 
-import time
-from collections import defaultdict, deque
+from collections import defaultdict
+from collections import deque
 import pickle
+import time
 
 
-class eeMemory:
-    'SentientHome event engine memory manager'
+class eeMemory(object):
+    """SentientHome event engine memory manager."""
 
     def __init__(self, app, loop):
+        """Initialize memory manager."""
         self._app = app
         self._loop = loop
         self._eventmemory = defaultdict(defaultdict)
         self._eventmemory['raw'] = defaultdict(deque)
         self._eventmemory['state'] = defaultdict(defaultdict)
-        # TODO: Look up length from config
+        # TODO(fxstein): Look up length from config
         self._eventmemory['action'] = deque(maxlen=5000)
 
         # Assemble a filename for the physical checkpoint
@@ -37,7 +41,7 @@ class eeMemory:
             self._app.origin_filename + '.p')
 
         if app.checkpointing is True:
-            # See if we can restore the event memory from a previsous checkpoint
+            # See if we can restore the event memory from a previous checkpoint
             try:
                 with open(self._checkpoint_filename, 'rb') as f:
                     app.log.debug('Restoring from previous checkpoint: %s' %
@@ -51,6 +55,7 @@ class eeMemory:
                 pass
 
     def checkpoint(self):
+        """Checkpoint memory manager."""
         if self._app.checkpointing is True:
             # persist memory manager to disk
             self._app.log.debug('Checkpoint memory manager: %s' %
@@ -82,19 +87,24 @@ class eeMemory:
 
     @property
     def eventmemory(self):
+        """Event memory."""
         return self._eventmemory
 
     @property
     def action(self):
+        """Event memory actions."""
         return self._eventmemory['action']
 
     @property
     def raw(self):
+        """Event memory raw."""
         return self._eventmemory['raw']
 
     @property
     def state(self):
+        """Event memory state."""
         return self._eventmemory['state']
+
 
 #
 # Do nothing

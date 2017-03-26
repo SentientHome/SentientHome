@@ -1,8 +1,10 @@
 #!/usr/local/bin/python3 -u
 """
-    Author:     Oliver Ratzesberger <https://github.com/fxstein>
-    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
-    License:    Apache License, Version 2.0
+SentientHome event engine api.
+
+Author:     Oliver Ratzesberger <https://github.com/fxstein>
+Copyright:  Copyright (C) 2017 Oliver Ratzesberger
+License:    Apache License, Version 2.0
 """
 
 # Make sure we have access to SentientHome commons
@@ -10,20 +12,21 @@ import os
 import sys
 try:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
-except:
+except Exception:
     exit(1)
 
-import asyncio
 from aiohttp import web
+import asyncio
+from collections import defaultdict
 import json
 import time
-from collections import defaultdict
 
 
-class eeAPI:
-    'SentientHome event engine restful api'
+class eeAPI(object):
+    """SentientHome event engine restful api."""
 
     def __init__(self, app):
+        """Initialize event engine api."""
         self._app = app
         self._webapp = app._webapp
         self._memory = app._memory
@@ -42,6 +45,7 @@ class eeAPI:
 
     @asyncio.coroutine
     def handle_default(self, request):
+        """Event engine default handler."""
         output = {'msg': 'SentientHome Event Engine',
                   'body': 'I`m alive!'}
 
@@ -52,7 +56,7 @@ class eeAPI:
 
     @asyncio.coroutine
     def handle_samplecache(self, request):
-
+        """Event engine sample cache handler."""
         try:
             name = request.match_info.get('name', 'all')
 
@@ -74,6 +78,7 @@ class eeAPI:
 
     @asyncio.coroutine
     def handle_cacheinfo(self, request):
+        """Event engine cache info handler."""
         try:
             output = {'msg': 'SentientHome Event Engine',
                       'body': 'Cache Statistics',
@@ -128,7 +133,7 @@ class eeAPI:
 
     @asyncio.coroutine
     def handle_isycontrol(self, request):
-
+        """Event engine isy sample cache handler."""
         try:
             name = request.match_info.get('name', 'ST')
 
@@ -154,7 +159,7 @@ class eeAPI:
 
     @asyncio.coroutine
     def handle_isycontrolinfo(self, request):
-
+        """Event engine isy control info cache handler."""
         try:
             output = {'msg': 'SentientHome Event Engine',
                       'body': 'ISY Control Info Data in Cache'}
@@ -171,7 +176,7 @@ class eeAPI:
 
     @asyncio.coroutine
     def handle_isystate(self, request):
-
+        """Event engine isy state cache handler."""
         try:
             node = request.match_info.get('node')
 
@@ -193,6 +198,7 @@ class eeAPI:
 
         return web.Response(body=json.dumps(output,
                                             sort_keys=True).encode('utf-8'))
+
 
 #
 # Do nothing
