@@ -1,8 +1,10 @@
 #!/usr/local/bin/python3 -u
 """
-    Author:     Oliver Ratzesberger <https://github.com/fxstein>
-    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
-    License:    Apache License, Version 2.0
+SentientHome google finance data feed.
+
+Author:     Oliver Ratzesberger <https://github.com/fxstein>
+Copyright:  Copyright (C) 2017 Oliver Ratzesberger
+License:    Apache License, Version 2.0
 """
 
 # Make sure we have access to SentientHome commons
@@ -10,13 +12,14 @@ import os
 import sys
 try:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
-except:
+except Exception:
     exit(1)
 
 # Sentient Home Application
 from common.shapp import shApp
-from common.shutil import numerify, extract_tags
 from common.sheventhandler import shEventHandler
+from common.shutil import extract_tags
+from common.shutil import numerify
 
 import json
 
@@ -51,7 +54,7 @@ CODES_GOOGLE = {
 
 
 def quotes_feed(app, handler, finance_path, series_name, symbol_list):
-
+    """Google finance quotes feed."""
     data = handler.get(finance_path + symbol_list)
 
     app.log.debug('Fetch data: %s' % data.text)
@@ -77,6 +80,7 @@ def quotes_feed(app, handler, finance_path, series_name, symbol_list):
         app.log.debug('Event data: %s' % event)
 
         handler.postEvent(event, batch=True)
+
 
 with shApp('finance', config_defaults=defaults) as app:
     app.run()

@@ -1,8 +1,10 @@
 #!/usr/local/bin/python3 -u
 """
-    Author:     Oliver Ratzesberger <https://github.com/fxstein>
-    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
-    License:    Apache License, Version 2.0
+SentientHome ISY event feed.
+
+Author:     Oliver Ratzesberger <https://github.com/fxstein>
+Copyright:  Copyright (C) 2017 Oliver Ratzesberger
+License:    Apache License, Version 2.0
 """
 
 # Make sure we have access to SentientHome commons
@@ -10,13 +12,14 @@ import os
 import sys
 try:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
-except:
+except Exception:
     exit(1)
 
 # Sentient Home Application
 from common.shapp import shApp
-from common.shutil import flatten_dict, extract_tags
 from common.sheventhandler import shEventHandler
+from common.shutil import extract_tags
+from common.shutil import flatten_dict
 
 import time
 
@@ -26,7 +29,7 @@ try:
                     '/../dependencies/ISYlib-python')
     from ISY.IsyClass import Isy
     from ISY.IsyEvent import ISYEvent
-except:
+except Exception:
     exit(1)
 
 app = shApp('isy')
@@ -62,9 +65,8 @@ except Exception as e:
     exit(2)
 
 
-# Realtime event feeder
 def eventFeed(*arg):
-
+    """Realtime event feeder."""
     # Flatten dict and turn embedded structure into dot notation
     data = flatten_dict(arg[0])
 
@@ -108,6 +110,7 @@ def eventFeed(*arg):
     app.log.debug('Event data: %s' % event)
 
     handler.postEvent(event)
+
 
 # Setup ISY socket listener
 # Be aware: Even though we are able to update the config at runtime

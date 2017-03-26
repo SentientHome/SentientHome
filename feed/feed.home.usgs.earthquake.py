@@ -1,8 +1,10 @@
 #!/usr/local/bin/python3 -u
 """
-    Author:     Oliver Ratzesberger <https://github.com/fxstein>
-    Copyright:  Copyright (C) 2016 Oliver Ratzesberger
-    License:    Apache License, Version 2.0
+USGS earthquake feed.
+
+Author:     Oliver Ratzesberger <https://github.com/fxstein>
+Copyright:  Copyright (C) 2017 Oliver Ratzesberger
+License:    Apache License, Version 2.0
 """
 
 # Make sure we have access to SentientHome commons
@@ -10,7 +12,7 @@ import os
 import sys
 try:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
-except:
+except Exception:
     exit(1)
 
 # Sentient Home Application
@@ -28,7 +30,7 @@ defaults['usgs_quake']['poll_interval'] = 10.0
 
 
 def mapMetadata(metadata):
-
+    """USGS map metadata."""
     event = [{
         'measurement': 'usgs.earthquake.metadata',     # Time Series Name
         'tags': {
@@ -46,6 +48,7 @@ def mapMetadata(metadata):
 
 
 def mapFeature(feature):
+    """USGS map feature data."""
     event = [{
         'measurement': 'usgs.earthquake.feature',      # Time Series Name
         'tags': {
@@ -71,7 +74,6 @@ def mapFeature(feature):
             'status': feature['properties']['status'],
             'title': feature['properties']['title'],
             'place': feature['properties']['place'],
-            'status': feature['properties']['status'],
             'time': epoch2date(feature['properties']['time']/1000),
             'updated': epoch2date(feature['properties']['updated']/1000),
             'tz': feature['properties']['tz'],
@@ -101,6 +103,7 @@ def mapFeature(feature):
         fields['mag'] = float(feature['properties']['mag'])
 
     return event
+
 
 with shApp('usgs_quake', config_defaults=defaults) as app:
     app.run()
